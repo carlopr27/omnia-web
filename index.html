@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Omnia Transformation Partners — Consultoría boutique que alinea estrategia, procesos y tecnología para empresas en México y LatAm. Sprints concretos, entregables reales desde la primera semana.">
+<meta name="description" content="Omnia Transformation Partners — Consultoría boutique que alinea estrategia, procesos y tecnología para empresas en México. Sprints concretos, entregables reales desde la primera semana.">
 <meta property="og:title" content="Omnia Transformation Partners">
-<meta property="og:description" content="Tu empresa crece. Tu operación no está lista para eso. Alineamos estrategia, procesos y tecnología en sprints concretos.">
+<meta property="og:description" content="Tu empresa crece. Tu operación no está lista para eso. Alineamos estrategia, procesos y tecnología en sprints concretos. Solo México.">
 <meta property="og:type" content="website">
 <title>Omnia Transformation Partners — Consultoría Boutique · México & LatAm</title>
 
@@ -1067,7 +1067,7 @@
   <div class="hero-inner">
     <div class="hero-eyebrow">
       <span class="eyebrow-dot"></span>
-      Consultoría boutique · México &amp; LatAm
+      Consultoría boutique · México
     </div>
 
     <h1>Tu empresa crece.<br><em>Tu operación no<br>está lista para eso.</em></h1>
@@ -1241,12 +1241,12 @@
       <div class="partner-role">Socio · Estrategia &amp; Desarrollo de Negocio</div>
       <h3>Aldo</h3>
       <p class="partner-title">Lead Partner — Estrategia, Diagnóstico &amp; Crecimiento</p>
-      <p>Especialista en diagnóstico empresarial, estructuración de estrategias de crecimiento e inteligencia de mercado. Ha analizado y acompañado empresas en sectores de salud, proptech y servicios en México y LatAm. Ve el negocio completo, identifica las brechas más costosas y diseña el camino más directo al resultado. Es la cara de entrada, el arquitecto del engagement y quien define qué se resuelve primero y por qué.</p>
+      <p>Especialista en diagnóstico empresarial, estructuración de estrategias de crecimiento e inteligencia de mercado. Ha analizado y acompañado empresas en sectores de salud, proptech y servicios profesionales en México. Ve el negocio completo, identifica las brechas más costosas y diseña el camino más directo al resultado. Es la cara de entrada, el arquitecto del engagement y quien define qué se resuelve primero y por qué.</p>
       <div class="partner-tags">
         <span class="tag">Diagnóstico estratégico</span>
         <span class="tag">Inteligencia de mercado</span>
         <span class="tag">Desarrollo de negocio</span>
-        <span class="tag">LatAm · México</span>
+        <span class="tag">México</span>
       </div>
     </div>
 
@@ -1335,14 +1335,14 @@
         <button class="form-submit" id="submitBtn" type="button" onclick="handleSubmit()">
           Enviar — solicitar diagnóstico <span class="submit-arrow">→</span>
         </button>
-        <p class="form-disclaimer">Tu información es confidencial. Lo lee directamente Aldo o Eric — no un equipo de ventas.</p>
+        <p class="form-disclaimer">Al enviar, se abrirá WhatsApp con tu mensaje listo. Lo recibe directamente Aldo o Eric — no un equipo de ventas.</p>
       </div>
 
       <!-- Success State -->
       <div class="form-success" id="formSuccess">
         <div class="success-icon">✓</div>
-        <h4>Mensaje recibido</h4>
-        <p>Aldo o Eric te responden en menos de 24 horas hábiles. Sin intermediarios, sin pitch de ventas.</p>
+        <h4>¡Mensaje enviado!</h4>
+        <p>Se abrió WhatsApp con tu información. Aldo o Eric te responden en menos de 24 horas hábiles. Sin intermediarios, sin pitch de ventas.</p>
       </div>
     </div>
   </div>
@@ -1355,8 +1355,8 @@
     <div class="sub">Transformation Partners</div>
   </div>
   <div class="footer-right">
-    <a href="mailto:contacto@omniapartners.mx">contacto@omniapartners.mx</a>
-    <a href="#inicio">México &amp; LatAm · Consultoría Boutique</a>
+    <a href="mailto:hola@omniaex.com">hola@omniaex.com</a>
+    <a href="#inicio">México · Consultoría Boutique</a>
     <div class="copyright">© 2025 Omnia Transformation Partners. Todos los derechos reservados.</div>
   </div>
 </footer>
@@ -1396,7 +1396,7 @@
 
   revealEls.forEach(el => observer.observe(el));
 
-  /* ── Form Submit ── */
+  /* ── Form Submit → WhatsApp ── */
   function handleSubmit() {
     const name      = document.getElementById('fname').value.trim();
     const company   = document.getElementById('fcompany').value.trim();
@@ -1404,7 +1404,6 @@
     const challenge = document.getElementById('fchallenge').value.trim();
 
     if (!name || !company || !industry || !challenge) {
-      // Simple validation shake
       const btn = document.getElementById('submitBtn');
       btn.style.background = '#c0392b';
       btn.textContent = 'Completa todos los campos';
@@ -1415,7 +1414,25 @@
       return;
     }
 
-    // Hide form, show success
+    // Armar mensaje de WhatsApp
+    const msg = [
+      `🔔 *Nuevo lead — Omnia Transformation Partners*`,
+      ``,
+      `*Nombre:* ${name}`,
+      `*Empresa:* ${company}`,
+      `*Industria:* ${industry}`,
+      ``,
+      `*¿Cuál es su mayor reto?*`,
+      `${challenge}`,
+      ``,
+      `_Enviado desde home.omniaex.com_`
+    ].join('\n');
+
+    // Abrir WhatsApp con el mensaje pre-armado
+    const waURL = `https://wa.me/525514745072?text=${encodeURIComponent(msg)}`;
+    window.open(waURL, '_blank');
+
+    // Mostrar estado de éxito
     document.getElementById('theForm').style.display = 'none';
     document.getElementById('formSuccess').classList.add('visible');
   }
