@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Omnia Transformation Partners — Consultoría boutique que alinea estrategia, procesos y tecnología para empresas en México y LatAm. Sprints concretos, entregables reales desde la primera semana.">
+<meta property="og:title" content="Omnia Transformation Partners">
+<meta property="og:description" content="Tu empresa crece. Tu operación no está lista para eso. Alineamos estrategia, procesos y tecnología en sprints concretos.">
+<meta property="og:type" content="website">
+<title>Omnia Transformation Partners — Consultoría Boutique · México & LatAm</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+
+<style>
+  /* ─── TOKENS ─── */
+  :root {
+    --navy:       #1B2D5B;
+    --navy-deep:  #0D1A38;
+    --navy-mid:   #152347;
+    --blue:       #2B5DA6;
+    --blue-light: #4A7BC4;
+    --gold:       #B89B45;
+    --gold-light: #D4B85A;
+    --gold-pale:  rgba(184,155,69,0.12);
+    --off-white:  #F7F6F2;
+    --light-blue: #EEF3FB;
+    --text-dark:  #0D1B2A;
+    --text-mid:   #4A5568;
+    --text-light: #8A9AB8;
+    --white:      #FFFFFF;
+    --border:     rgba(27,45,91,0.11);
+    --border-w:   rgba(255,255,255,0.09);
+  }
+
+  /* ─── RESET ─── */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-dark);
+    background: var(--white);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes gradientShift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.65s cubic-bezier(.22,1,.36,1), transform 0.65s cubic-bezier(.22,1,.36,1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 68px;
+    transition: box-shadow 0.3s;
+  }
+  nav.scrolled {
+    box-shadow: 0 2px 20px rgba(13,26,56,0.08);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    text-decoration: none;
+  }
+  .logo-mark {
+    width: 36px;
+    height: 36px;
+    background: var(--navy);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    flex-shrink: 0;
+  }
+  .logo-text { display: flex; flex-direction: column; line-height: 1.15; }
+  .logo-text .brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: 0.08em;
+  }
+  .logo-text .sub {
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    font-weight: 500;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-mid);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--navy); }
+
+  .nav-right { display: flex; align-items: center; gap: 24px; }
+
+  .nav-cta {
+    background: var(--navy);
+    color: var(--white);
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .nav-cta:hover { background: var(--blue); }
+
+  /* Hamburger */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 4px;
+    background: none;
+    border: none;
+  }
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--navy);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* Mobile nav */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 68px;
+    left: 0;
+    right: 0;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 5%;
+    z-index: 199;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 8px 32px rgba(13,26,56,0.1);
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-dark);
+    text-decoration: none;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .mobile-menu .mobile-cta {
+    background: var(--navy);
+    color: var(--white);
+    padding: 14px 20px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 600;
+    border: none;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    background: var(--navy);
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    padding: 120px 5% 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Radial gradient orbs */
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -10%;
+    right: -8%;
+    width: 60%;
+    height: 130%;
+    background: radial-gradient(ellipse at center, rgba(43,93,166,0.38) 0%, transparent 68%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold) 0%, rgba(184,155,69,0.3) 60%, transparent 100%);
+  }
+
+  /* Noise texture overlay */
+  .hero-noise {
+    position: absolute;
+    inset: 0;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 128px;
+    pointer-events: none;
+  }
+
+  /* Decorative grid lines */
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 64px 64px;
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 820px;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.9s cubic-bezier(.22,1,.36,1) both;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(184,155,69,0.12);
+    border: 1px solid rgba(184,155,69,0.32);
+    border-radius: 2px;
+    padding: 7px 15px;
+    margin-bottom: 32px;
+    font-size: 11px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    font-weight: 600;
+  }
+  .eyebrow-dot {
+    width: 5px;
+    height: 5px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(42px, 5.5vw, 68px);
+    font-weight: 600;
+    line-height: 1.06;
+    color: var(--white);
+    letter-spacing: -0.015em;
+    margin-bottom: 26px;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    line-height: 1.72;
+    color: rgba(255,255,255,0.68);
+    max-width: 580px;
+    margin-bottom: 48px;
+    font-weight: 300;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 72px;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--navy-deep);
+    padding: 15px 34px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    border: none;
+    display: inline-block;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-ghost {
+    color: rgba(255,255,255,0.72);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    letter-spacing: 0.01em;
+    padding: 15px 0;
+    transition: color 0.2s;
+  }
+  .btn-ghost:hover { color: var(--white); }
+  .btn-ghost .arr { transition: transform 0.2s; }
+  .btn-ghost:hover .arr { transform: translateX(5px); }
+
+  .hero-stats {
+    display: flex;
+    gap: 0;
+    border-top: 1px solid rgba(255,255,255,0.09);
+    padding-top: 0;
+  }
+  .stat-item {
+    padding: 28px 40px 0 0;
+    margin-top: 28px;
+    margin-right: 40px;
+    border-right: 1px solid rgba(255,255,255,0.09);
+  }
+  .stat-item:last-child { border-right: none; margin-right: 0; padding-right: 0; }
+  .stat-item .num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 38px;
+    font-weight: 700;
+    color: var(--gold-light);
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+  .stat-item .label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 500;
+    line-height: 1.4;
+    max-width: 140px;
+  }
+
+  /* ─── SECTION COMMONS ─── */
+  section { padding: 100px 5%; }
+
+  .section-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--blue);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 3.8vw, 50px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.012em;
+    color: var(--navy);
+    margin-bottom: 20px;
+  }
+  h2 em { font-style: italic; color: var(--blue); }
+
+  .section-intro {
+    font-size: 17px;
+    line-height: 1.72;
+    color: var(--text-mid);
+    font-weight: 300;
+  }
+
+  .two-col-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: end;
+    margin-bottom: 64px;
+  }
+
+  /* ─── PAIN POINTS ─── */
+  #dolores { background: var(--off-white); }
+
+  .pain-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: rgba(27,45,91,0.08);
+  }
+
+  .pain-card {
+    background: var(--white);
+    padding: 40px;
+    position: relative;
+    transition: background 0.25s;
+  }
+  .pain-card:hover { background: var(--light-blue); }
+
+  .pain-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 700;
+    color: rgba(27,45,91,0.07);
+    line-height: 1;
+    margin-bottom: 18px;
+    letter-spacing: -0.02em;
+  }
+
+  .pain-card h3 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 10px;
+    line-height: 1.35;
+  }
+  .pain-card p {
+    font-size: 14.5px;
+    line-height: 1.68;
+    color: var(--text-mid);
+  }
+
+  .pain-quote {
+    margin-top: 2px;
+    background: var(--navy);
+    border-left: 3px solid var(--gold);
+    padding: 32px 44px;
+  }
+  .pain-quote blockquote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-style: italic;
+    color: rgba(255,255,255,0.82);
+    line-height: 1.58;
+    font-weight: 400;
+  }
+  .pain-quote blockquote strong { color: var(--gold-light); font-style: normal; }
+
+  /* ─── SERVICES ─── */
+  #servicios { background: var(--white); }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .svc-card {
+    background: var(--white);
+    padding: 42px 36px;
+    transition: background 0.25s;
+    cursor: default;
+  }
+  .svc-card:hover { background: var(--navy); }
+  .svc-card:hover .svc-icon      { color: var(--gold-light); }
+  .svc-card:hover h3             { color: var(--white); }
+  .svc-card:hover p              { color: rgba(255,255,255,0.6); }
+  .svc-card:hover .svc-duration  { border-color: rgba(255,255,255,0.18); color: rgba(255,255,255,0.45); }
+
+  .svc-icon {
+    font-size: 24px;
+    margin-bottom: 22px;
+    color: var(--gold);
+    display: block;
+    transition: color 0.25s;
+  }
+  .svc-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 12px;
+    line-height: 1.28;
+    transition: color 0.25s;
+  }
+  .svc-card p {
+    font-size: 14px;
+    line-height: 1.68;
+    color: var(--text-mid);
+    margin-bottom: 22px;
+    transition: color 0.25s;
+  }
+  .svc-duration {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    border: 1px solid var(--border);
+    padding: 4px 11px;
+    border-radius: 2px;
+    font-weight: 500;
+    transition: all 0.25s;
+  }
+
+  /* Sprint wide card */
+  .svc-card.wide {
+    grid-column: span 3;
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 48px;
+    align-items: center;
+    border-top: none;
+  }
+  .svc-card.wide .svc-card-left { }
+  .svc-card.wide p { margin-bottom: 0; }
+
+  /* ─── HOW WE WORK ─── */
+  #como-trabajamos {
+    background: var(--navy);
+    color: var(--white);
+  }
+  #como-trabajamos .section-eyebrow { color: var(--gold-light); }
+  #como-trabajamos h2              { color: var(--white); }
+  #como-trabajamos h2 em           { color: var(--gold-light); }
+  #como-trabajamos .section-intro  { color: rgba(255,255,255,0.6); }
+
+  .sprint-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,0.08);
+    margin-top: 64px;
+  }
+
+  .sprint-step {
+    background: var(--navy);
+    padding: 38px 30px;
+    transition: background 0.25s;
+  }
+  .sprint-step:hover { background: rgba(43,93,166,0.28); }
+
+  .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 54px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.06);
+    line-height: 1;
+    margin-bottom: 18px;
+    letter-spacing: -0.02em;
+  }
+  .step-week {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .sprint-step h3 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+  .sprint-step p {
+    font-size: 13.5px;
+    line-height: 1.62;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .how-callout {
+    margin-top: 48px;
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 26px 34px;
+    background: rgba(184,155,69,0.09);
+    border: 1px solid rgba(184,155,69,0.22);
+    border-radius: 4px;
+  }
+  .callout-icon { font-size: 20px; margin-top: 1px; flex-shrink: 0; }
+  .how-callout p {
+    font-size: 15px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.65;
+  }
+  .how-callout strong { color: var(--gold-light); }
+
+  /* ─── TEAM ─── */
+  #equipo { background: var(--off-white); }
+
+  .team-header {
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto 64px;
+  }
+  .team-header .section-intro {
+    text-align: center;
+    margin-top: 14px;
+  }
+
+  .partners {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--border);
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  .partner-card {
+    background: var(--white);
+    padding: 52px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .partner-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--navy), var(--blue));
+  }
+  .partner-card.gold-top::before {
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  }
+
+  .partner-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 26px;
+    letter-spacing: -0.01em;
+  }
+  .partner-avatar.gold {
+    background: var(--gold);
+    color: var(--navy-deep);
+  }
+
+  .partner-role {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--blue);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .gold-top .partner-role { color: var(--gold); }
+
+  .partner-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .partner-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-mid);
+    margin-bottom: 24px;
+  }
+  .partner-card p {
+    font-size: 14.5px;
+    line-height: 1.72;
+    color: var(--text-mid);
+    margin-bottom: 30px;
+  }
+
+  .partner-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tag {
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 2px;
+    font-weight: 500;
+    background: var(--light-blue);
+    color: var(--navy);
+    letter-spacing: 0.01em;
+  }
+
+  /* ─── CTA / FORM ─── */
+  #contacto {
+    background: var(--navy-deep);
+    position: relative;
+    overflow: hidden;
+  }
+  #contacto::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 72% 50%, rgba(43,93,166,0.36) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  #contacto .hero-noise { opacity: 0.02; }
+
+  .cta-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 88px;
+    align-items: start;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-copy .section-eyebrow { color: var(--gold-light); }
+  .cta-copy h2 { color: var(--white); }
+  .cta-copy h2 em { color: var(--gold-light); }
+  .cta-copy > p {
+    font-size: 16px;
+    line-height: 1.72;
+    color: rgba(255,255,255,0.62);
+    margin-bottom: 36px;
+    font-weight: 300;
+  }
+
+  .trust-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.62);
+    line-height: 1.45;
+  }
+  .trust-check {
+    width: 22px;
+    height: 22px;
+    background: rgba(184,155,69,0.18);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--gold-light);
+    flex-shrink: 0;
+  }
+
+  /* Form */
+  .cta-form-wrap {
+    background: var(--white);
+    border-radius: 6px;
+    padding: 48px 44px;
+    position: relative;
+  }
+  .cta-form-wrap::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 44px; right: 44px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 0 0 2px 2px;
+  }
+
+  .cta-form-wrap h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 8px;
+    margin-top: 10px;
+  }
+  .form-sub {
+    font-size: 14px;
+    color: var(--text-mid);
+    margin-bottom: 30px;
+    line-height: 1.55;
+  }
+
+  .form-group { margin-bottom: 16px; }
+  .form-group label {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-mid);
+    margin-bottom: 6px;
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text-dark);
+    background: var(--off-white);
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    resize: vertical;
+    appearance: none;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    border-color: var(--navy);
+    background: var(--white);
+  }
+  .form-group textarea { min-height: 96px; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .form-submit {
+    width: 100%;
+    background: var(--navy);
+    color: var(--white);
+    padding: 15px;
+    border: none;
+    border-radius: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    letter-spacing: 0.01em;
+    transition: background 0.2s, transform 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .form-submit:hover { background: var(--blue); }
+  .form-submit:active { transform: scale(0.99); }
+  .form-submit .submit-arrow { transition: transform 0.2s; }
+  .form-submit:hover .submit-arrow { transform: translateX(4px); }
+
+  .form-disclaimer {
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--text-light);
+    text-align: center;
+    line-height: 1.55;
+  }
+
+  /* Form success state */
+  .form-success {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 40px 20px;
+    gap: 16px;
+  }
+  .form-success.visible { display: flex; }
+  .success-icon {
+    width: 64px;
+    height: 64px;
+    background: rgba(27,45,91,0.06);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    color: var(--gold);
+  }
+  .form-success h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .form-success p {
+    font-size: 14px;
+    color: var(--text-mid);
+    line-height: 1.6;
+    max-width: 300px;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--navy-deep);
+    padding: 52px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .footer-logo .brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.08em;
+  }
+  .footer-logo .sub {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    margin-top: 4px;
+  }
+
+  .footer-right {
+    text-align: right;
+  }
+  .footer-right a {
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    display: block;
+    line-height: 1.9;
+    transition: color 0.2s;
+  }
+  .footer-right a:hover { color: rgba(255,255,255,0.7); }
+  .footer-right .copyright {
+    font-size: 12px;
+    color: rgba(255,255,255,0.22);
+    margin-top: 8px;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 960px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+
+    .two-col-header { grid-template-columns: 1fr; gap: 24px; }
+    .cta-inner { grid-template-columns: 1fr; gap: 48px; }
+    .sprint-grid { grid-template-columns: 1fr 1fr; }
+    .svc-card.wide { grid-column: span 3; }
+  }
+
+  @media (max-width: 768px) {
+    section { padding: 72px 5%; }
+
+    .hero { padding: 100px 5% 64px; }
+    .hero-stats { flex-direction: column; gap: 0; }
+    .stat-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.09); padding: 20px 0; margin: 0; }
+    .stat-item:last-child { border-bottom: none; }
+
+    .pain-cards { grid-template-columns: 1fr; }
+    .services-grid { grid-template-columns: 1fr; }
+    .svc-card.wide { grid-column: span 1; grid-template-columns: 1fr; }
+    .sprint-grid { grid-template-columns: 1fr; }
+    .partners { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .partner-card { padding: 40px 32px; }
+    .cta-form-wrap { padding: 36px 28px; }
+
+    footer { flex-direction: column; gap: 28px; text-align: center; }
+    .footer-right { text-align: center; }
+  }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 38px; }
+    .hero-ctas { flex-direction: column; align-items: flex-start; }
+    .btn-primary { width: 100%; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav id="nav">
+  <a href="#inicio" class="logo">
+    <div class="logo-mark">Ω</div>
+    <div class="logo-text">
+      <span class="brand">OMNIA</span>
+      <span class="sub">Transformation Partners</span>
+    </div>
+  </a>
+
+  <ul class="nav-links">
+    <li><a href="#dolores">Diagnóstico</a></li>
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#como-trabajamos">Cómo trabajamos</a></li>
+    <li><a href="#equipo">El equipo</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <a href="#contacto" class="nav-cta">Solicita tu diagnóstico</a>
+    <button class="hamburger" id="hamburger" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#dolores"        onclick="closeMobile()">¿Te suena familiar?</a>
+  <a href="#servicios"      onclick="closeMobile()">Servicios</a>
+  <a href="#como-trabajamos" onclick="closeMobile()">Cómo trabajamos</a>
+  <a href="#equipo"         onclick="closeMobile()">El equipo</a>
+  <a href="#contacto" class="mobile-cta" onclick="closeMobile()">Solicita tu diagnóstico →</a>
+</div>
+
+<!-- ─── HERO ─── -->
+<section class="hero" id="inicio">
+  <div class="hero-noise"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-dot"></span>
+      Consultoría boutique · México &amp; LatAm
+    </div>
+
+    <h1>Tu empresa crece.<br><em>Tu operación no<br>está lista para eso.</em></h1>
+
+    <p class="hero-sub">
+      Alineamos estrategia, procesos y tecnología para que cada área de tu negocio funcione como un sistema — no como islas. En sprints concretos, con entregables reales desde la primera semana.
+    </p>
+
+    <div class="hero-ctas">
+      <a href="#contacto" class="btn-primary">Solicita tu diagnóstico inicial</a>
+      <a href="#como-trabajamos" class="btn-ghost">Ver cómo trabajamos <span class="arr">→</span></a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="num">10</div>
+        <div class="label">Semanas · sprint de entrada</div>
+      </div>
+      <div class="stat-item">
+        <div class="num">4</div>
+        <div class="label">Entregables definidos desde el día 1</div>
+      </div>
+      <div class="stat-item">
+        <div class="num">2</div>
+        <div class="label">Socios senior. Sin intermediarios.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PAIN POINTS ─── -->
+<section id="dolores">
+  <div class="two-col-header reveal">
+    <div>
+      <div class="section-eyebrow">¿Te suena familiar?</div>
+      <h2>Los dolores que<br>traen a nuestros<br><em>clientes con nosotros</em></h2>
+    </div>
+    <div>
+      <p class="section-intro">No hace falta que encajes en todos. Con uno solo es suficiente para que valga la pena hablar.</p>
+    </div>
+  </div>
+
+  <div class="pain-cards">
+    <div class="pain-card reveal reveal-delay-1">
+      <div class="pain-num">01</div>
+      <h3>Crecen las operaciones,<br>no la estructura</h3>
+      <p>Todo depende de dos o tres personas clave. Cuando escala el volumen, el sistema se rompe. Ya no puedes crecer más sin re-construir primero.</p>
+    </div>
+    <div class="pain-card reveal reveal-delay-2">
+      <div class="pain-num">02</div>
+      <h3>La estrategia existe en slides,<br>no en el día a día</h3>
+      <p>Definieron objetivos, contrataron consultores, presentaron a directivos. Pero seis meses después, nada cambió en la operación real del negocio.</p>
+    </div>
+    <div class="pain-card reveal reveal-delay-3">
+      <div class="pain-num">03</div>
+      <h3>Tienen un CRM (o tecnología)<br>que nadie usa</h3>
+      <p>Compraron Zoho, HubSpot o Salesforce. Está instalado. Hay licencias pagadas. Pero el equipo sigue en Excel y WhatsApp porque nadie lo configuró de verdad.</p>
+    </div>
+    <div class="pain-card reveal reveal-delay-4">
+      <div class="pain-num">04</div>
+      <h3>Saben qué cambiar.<br>No tienen quién lo haga</h3>
+      <p>El dueño o el CEO ve exactamente los problemas. El equipo interno está en modo operativo al 100%. Nadie tiene el ancho de banda para liderar la transformación.</p>
+    </div>
+  </div>
+  <div class="pain-quote reveal">
+    <blockquote>"No vendemos diagnósticos para guardar en un cajón. <strong>Entramos, ejecutamos y nos medimos por resultados</strong> — no por horas entregadas."</blockquote>
+  </div>
+</section>
+
+<!-- ─── SERVICES ─── -->
+<section id="servicios">
+  <div class="two-col-header reveal">
+    <div>
+      <div class="section-eyebrow">Servicios</div>
+      <h2>Lo que<br><em>hacemos</em></h2>
+    </div>
+    <div>
+      <p class="section-intro">Tres grandes áreas de trabajo. Pueden ir juntas o por separado, según dónde esté el mayor cuello de botella de tu empresa.</p>
+    </div>
+  </div>
+
+  <div class="services-grid reveal">
+    <div class="svc-card">
+      <span class="svc-icon">◎</span>
+      <h3>Diagnóstico Estratégico</h3>
+      <p>Entramos al negocio, hacemos las preguntas incómodas y te entregamos un mapa claro de dónde estás hoy y qué falta para llegar a donde quieres ir. Sin presentaciones genéricas, sin marcos copiados de Harvard. Diagnóstico hecho a medida, con hallazgos específicos y un plan de acción priorizado.</p>
+      <span class="svc-duration">3–4 semanas</span>
+    </div>
+
+    <div class="svc-card">
+      <span class="svc-icon">⊕</span>
+      <h3>Transformación Operacional</h3>
+      <p>Rediseñamos los procesos que hoy están frenando tu crecimiento. Desde flujos de atención al cliente hasta operaciones internas críticas. Todo lo que necesita estructura para escalar sin quebrarse. Incluye mapeo As-Is vs. To-Be e implementación con el equipo.</p>
+      <span class="svc-duration">6–10 semanas</span>
+    </div>
+
+    <div class="svc-card">
+      <span class="svc-icon">⊞</span>
+      <h3>Activación de CRM y Tecnología</h3>
+      <p>Configuramos, migramos datos y activamos el CRM o plataforma tecnológica que ya tienes — Zoho, HubSpot, Salesforce. Entrenamos al equipo y lo dejamos funcionando en el día a día. No como prueba piloto. Como herramienta real que el equipo realmente usa.</p>
+      <span class="svc-duration">6–8 semanas</span>
+    </div>
+
+    <div class="svc-card wide">
+      <div class="svc-card-left">
+        <span class="svc-icon">◈</span>
+        <h3>Sprint de Implementación</h3>
+        <span class="svc-duration">Para quienes ya saben qué necesitan</span>
+      </div>
+      <p>Engagement estructurado de 8–10 semanas con 4 entregables definidos desde el día uno. Entramos con agenda clara, checkpoints semanales y accountability total. La opción para empresas que ya identificaron el problema y quieren moverse rápido sin perder el control del proceso. Los entregables están comprometidos desde la firma — si no los cumplimos, renegociamos el alcance, no el resultado.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HOW WE WORK ─── -->
+<section id="como-trabajamos">
+  <div class="two-col-header reveal">
+    <div>
+      <div class="section-eyebrow">Modelo de trabajo</div>
+      <h2>Cómo<br><em>trabajamos</em></h2>
+    </div>
+    <div>
+      <p class="section-intro">Antes de hacer cualquier propuesta, hacemos tarea. Llegamos a la primera reunión con información de tu empresa, tu mercado y tus competidores. No para impresionar — para no perder el tiempo de nadie.</p>
+    </div>
+  </div>
+
+  <div class="sprint-grid reveal">
+    <div class="sprint-step">
+      <div class="step-num">01</div>
+      <div class="step-week">Semana 1–2</div>
+      <h3>Diagnóstico previo</h3>
+      <p>Analizamos tu empresa antes del primer meeting. Identificamos los 3 mayores puntos de fricción operativa o estratégica. Llegamos con información, no con preguntas genéricas.</p>
+    </div>
+    <div class="sprint-step">
+      <div class="step-num">02</div>
+      <div class="step-week">Semana 3–4</div>
+      <h3>Mapa de brechas</h3>
+      <p>Entregamos un diagnóstico escrito con hallazgos, prioridades y propuesta de trabajo concreto — scope, timeline y entregables definidos. El cliente decide si avanza.</p>
+    </div>
+    <div class="sprint-step">
+      <div class="step-num">03</div>
+      <div class="step-week">Semanas 5–9</div>
+      <h3>Implementación en sprint</h3>
+      <p>Ejecutamos con tu equipo. Checkpoints semanales. Entregables tangibles. No hay lienzo estratégico que no aterrice en algo concreto y medible.</p>
+    </div>
+    <div class="sprint-step">
+      <div class="step-num">04</div>
+      <div class="step-week">Semana 10</div>
+      <h3>Cierre y transferencia</h3>
+      <p>Documentación completa, dashboards de seguimiento y plan de continuidad. Tu equipo puede operar lo que construimos sin depender de nosotros.</p>
+    </div>
+  </div>
+
+  <div class="how-callout reveal">
+    <div class="callout-icon">⚡</div>
+    <p>Los proyectos arrancan con un <strong>sprint de entrada de 10 semanas</strong>. Dura lo que tiene que durar, no más. Los entregables están comprometidos desde la firma — si no los cumplimos, renegociamos el alcance, no el resultado.</p>
+  </div>
+</section>
+
+<!-- ─── TEAM ─── -->
+<section id="equipo">
+  <div class="team-header reveal">
+    <div class="section-eyebrow">Los socios</div>
+    <h2>Dos personas.<br>Un solo punto<br><em>de contacto.</em></h2>
+    <p class="section-intro">En Omnia no hay equipos de analistas juniors ni cuentas manejadas por coordinadores. Trabajas directamente con quienes tienen experiencia.</p>
+  </div>
+
+  <div class="partners">
+    <div class="partner-card reveal">
+      <div class="partner-avatar">AL</div>
+      <div class="partner-role">Socio · Estrategia &amp; Desarrollo de Negocio</div>
+      <h3>Aldo</h3>
+      <p class="partner-title">Lead Partner — Estrategia, Diagnóstico &amp; Crecimiento</p>
+      <p>Especialista en diagnóstico empresarial, estructuración de estrategias de crecimiento e inteligencia de mercado. Ha analizado y acompañado empresas en sectores de salud, proptech y servicios en México y LatAm. Ve el negocio completo, identifica las brechas más costosas y diseña el camino más directo al resultado. Es la cara de entrada, el arquitecto del engagement y quien define qué se resuelve primero y por qué.</p>
+      <div class="partner-tags">
+        <span class="tag">Diagnóstico estratégico</span>
+        <span class="tag">Inteligencia de mercado</span>
+        <span class="tag">Desarrollo de negocio</span>
+        <span class="tag">LatAm · México</span>
+      </div>
+    </div>
+
+    <div class="partner-card gold-top reveal reveal-delay-2">
+      <div class="partner-avatar gold">ER</div>
+      <div class="partner-role">Socio · Operaciones &amp; Implementación</div>
+      <h3>Eric</h3>
+      <p class="partner-title">Lead Partner — Operaciones, Procesos &amp; Tecnología</p>
+      <p>Formación médica que migró a la consultoría de procesos y sistemas operativos. Especializado en diseñar e implementar estructuras operativas en empresas de servicios complejos, con profundidad particular en el sector salud. Es quien entra al terreno, mapea cómo funciona realmente el negocio, detecta las ineficiencias que nadie quiere nombrar y construye los sistemas que lo hacen escalar. Lidera la implementación técnica de CRM y la transformación operacional.</p>
+      <div class="partner-tags">
+        <span class="tag">Operaciones &amp; procesos</span>
+        <span class="tag">CRM &amp; tecnología</span>
+        <span class="tag">Sector salud</span>
+        <span class="tag">Implementación</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA / LEAD CAPTURE ─── -->
+<section id="contacto">
+  <div class="hero-noise"></div>
+  <div class="cta-inner">
+    <!-- Left: Copy + Trust -->
+    <div class="cta-copy reveal">
+      <div class="section-eyebrow">Primer paso</div>
+      <h2>¿Es este<br>el momento<br><em>adecuado?</em></h2>
+      <p>Si reconociste alguno de los dolores de arriba, probablemente sí. El diagnóstico inicial no te compromete a nada — es para ver si tenemos fit y si podemos ayudarte de verdad.</p>
+      <div class="trust-list">
+        <div class="trust-item">
+          <div class="trust-check">✓</div>
+          <span>Respuesta en menos de 24 horas hábiles</span>
+        </div>
+        <div class="trust-item">
+          <div class="trust-check">✓</div>
+          <span>Primera conversación sin costo ni compromiso</span>
+        </div>
+        <div class="trust-item">
+          <div class="trust-check">✓</div>
+          <span>Hablas directamente con los socios, no con un equipo de ventas</span>
+        </div>
+        <div class="trust-item">
+          <div class="trust-check">✓</div>
+          <span>Si no somos el fit correcto, te decimos a quién acudir</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Form -->
+    <div class="cta-form-wrap reveal reveal-delay-2">
+      <!-- Form -->
+      <div id="theForm">
+        <h3>Solicita tu diagnóstico</h3>
+        <p class="form-sub">Cuéntanos brevemente en qué está tu empresa. Con eso preparamos una conversación que valga la pena.</p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nombre completo</label>
+            <input type="text" id="fname" placeholder="Tu nombre" required>
+          </div>
+          <div class="form-group">
+            <label>Empresa</label>
+            <input type="text" id="fcompany" placeholder="Nombre de tu empresa" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>¿En qué industria opera tu empresa?</label>
+          <select id="findustry" required>
+            <option value="">Selecciona una opción…</option>
+            <option>Salud / Clínicas</option>
+            <option>Retail / Comercio</option>
+            <option>Servicios profesionales</option>
+            <option>Tecnología / SaaS</option>
+            <option>Real estate / Proptech</option>
+            <option>Manufactura / Industrial</option>
+            <option>Otro</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>¿Cuál es el mayor reto que enfrenta tu empresa ahora mismo?</label>
+          <textarea id="fchallenge" placeholder="Sin presentaciones, sin filtros. ¿Qué está pasando y qué no está funcionando?" required></textarea>
+        </div>
+
+        <button class="form-submit" id="submitBtn" type="button" onclick="handleSubmit()">
+          Enviar — solicitar diagnóstico <span class="submit-arrow">→</span>
+        </button>
+        <p class="form-disclaimer">Tu información es confidencial. Lo lee directamente Aldo o Eric — no un equipo de ventas.</p>
+      </div>
+
+      <!-- Success State -->
+      <div class="form-success" id="formSuccess">
+        <div class="success-icon">✓</div>
+        <h4>Mensaje recibido</h4>
+        <p>Aldo o Eric te responden en menos de 24 horas hábiles. Sin intermediarios, sin pitch de ventas.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-logo">
+    <div class="brand">OMNIA</div>
+    <div class="sub">Transformation Partners</div>
+  </div>
+  <div class="footer-right">
+    <a href="mailto:contacto@omniapartners.mx">contacto@omniapartners.mx</a>
+    <a href="#inicio">México &amp; LatAm · Consultoría Boutique</a>
+    <div class="copyright">© 2025 Omnia Transformation Partners. Todos los derechos reservados.</div>
+  </div>
+</footer>
+
+<!-- ─── JS ─── -->
+<script>
+  /* ── Nav scroll shadow ── */
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  /* ── Hamburger / Mobile Menu ── */
+  const hamburger   = document.getElementById('hamburger');
+  const mobileMenu  = document.getElementById('mobileMenu');
+
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+
+  function closeMobile() {
+    hamburger.classList.remove('open');
+    mobileMenu.classList.remove('open');
+  }
+
+  /* ── Scroll Reveal ── */
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  revealEls.forEach(el => observer.observe(el));
+
+  /* ── Form Submit ── */
+  function handleSubmit() {
+    const name      = document.getElementById('fname').value.trim();
+    const company   = document.getElementById('fcompany').value.trim();
+    const industry  = document.getElementById('findustry').value;
+    const challenge = document.getElementById('fchallenge').value.trim();
+
+    if (!name || !company || !industry || !challenge) {
+      // Simple validation shake
+      const btn = document.getElementById('submitBtn');
+      btn.style.background = '#c0392b';
+      btn.textContent = 'Completa todos los campos';
+      setTimeout(() => {
+        btn.style.background = '';
+        btn.innerHTML = 'Enviar — solicitar diagnóstico <span class="submit-arrow">→</span>';
+      }, 2000);
+      return;
+    }
+
+    // Hide form, show success
+    document.getElementById('theForm').style.display = 'none';
+    document.getElementById('formSuccess').classList.add('visible');
+  }
+</script>
+
+</body>
+</html>
