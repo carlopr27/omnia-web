@@ -580,37 +580,62 @@ footer { background:var(--navy-deep); padding:48px 5%; display:flex; align-items
 </footer>
 
 <script>
-const nav = document.getElementById('nav');
-window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>20));
+// Nav shadow on scroll
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',function(){nav.classList.toggle('scrolled',window.scrollY>20);});
 
-const burger=document.getElementById('hamburger'),menu=document.getElementById('mobileMenu');
-burger.addEventListener('click',()=>{burger.classList.toggle('open');menu.classList.toggle('open');});
+// Hamburger
+const burger=document.getElementById('hamburger');
+const menu=document.getElementById('mobileMenu');
+burger.addEventListener('click',function(){burger.classList.toggle('open');menu.classList.toggle('open');});
 function closeMobile(){burger.classList.remove('open');menu.classList.remove('open');}
 
-const revEls=document.querySelectorAll('.reveal');
-new IntersectionObserver((entries)=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');}}),{threshold:.1}).observe=function(el){IntersectionObserver.prototype.observe.call(this,el);};
-const io=new IntersectionObserver((entries)=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');}}),{threshold:.1});
-revEls.forEach(el=>io.observe(el));
+// Reveal on scroll — with hard fallback so content is ALWAYS visible
+var revEls=document.querySelectorAll('.reveal');
+// Hard fallback: show everything after 1s no matter what
+setTimeout(function(){revEls.forEach(function(el){el.classList.add('visible');});},1000);
+// Progressive enhancement: smooth reveal
+try {
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible');});
+  },{threshold:0.08});
+  revEls.forEach(function(el){io.observe(el);});
+} catch(err){
+  revEls.forEach(function(el){el.classList.add('visible');});
+}
 
+// WhatsApp form submit
 function handleSubmit(){
-  const name=document.getElementById('fname').value.trim();
-  const company=document.getElementById('fcompany').value.trim();
-  const industry=document.getElementById('findustry').value;
-  const challenge=document.getElementById('fchallenge').value.trim();
+  var name=document.getElementById('fname').value.trim();
+  var company=document.getElementById('fcompany').value.trim();
+  var industry=document.getElementById('findustry').value;
+  var challenge=document.getElementById('fchallenge').value.trim();
   if(!name||!company||!industry||!challenge){
-    const btn=document.getElementById('submitBtn');
-    btn.style.background='#c0392b';btn.textContent='Completa todos los campos';
-    setTimeout(()=>{btn.style.background='';btn.innerHTML='Enviar — solicitar diagnóstico <span class="fa">→</span>';},2000);
+    var btn=document.getElementById('submitBtn');
+    btn.style.background='#c0392b';
+    btn.textContent='Completa todos los campos';
+    setTimeout(function(){
+      btn.style.background='';
+      btn.textContent='Enviar — solicitar diagnóstico →';
+    },2000);
     return;
   }
-  const msg=[
-    '🔔 *Nuevo lead — Omnia Transformation Partners*','',
-    '*Nombre:* '+name,'*Empresa:* '+company,'*Industria:* '+industry,'',
-    '*¿Cuál es su mayor reto?*',challenge,'',
-    '_Enviado desde home.omniaex.com_'
-  ].join('
-');
-  window.open('https://wa.me/525514745072?text='+encodeURIComponent(msg),'_blank');
+  var nl='%0A';
+  var waMsg=
+    '%F0%9F%94%94+*Nuevo+lead+%E2%80%94+Omnia+Transformation+Partners*'+nl+nl+
+    '*Nombre:*+'+encodeURIComponent(name)+nl+
+    '*Empresa:*+'+encodeURIComponent(company)+nl+
+    '*Industria:*+'+encodeURIComponent(industry)+nl+nl+
+    '*%C2%BFCu%C3%A1l+es+su+mayor+reto%3F*'+nl+
+    encodeURIComponent(challenge)+nl+nl+
+    '_Enviado+desde+home.omniaex.com_';
+  var a=document.createElement('a');
+  a.href='https://wa.me/525514745072?text='+waMsg;
+  a.target='_blank';
+  a.rel='noopener noreferrer';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
   document.getElementById('theForm').style.display='none';
   document.getElementById('formSuccess').classList.add('visible');
 }
