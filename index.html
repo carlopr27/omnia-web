@@ -3,641 +3,734 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Omnia Transformation Partners — Consultoría boutique que alinea estrategia, procesos y tecnología para empresas en México. Sprints concretos, entregables reales desde la primera semana.">
-<title>Omnia Transformation Partners — Consultoría Boutique · México</title>
+<meta name="description" content="Omnia Transformation Partners — Consultoría boutique en México. Estrategia, procesos y tecnología en sprints concretos.">
+<title>Omnia Transformation Partners</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --navy:      #1B2D5B;
-  --navy-deep: #0D1A38;
-  --navy-mid:  #152347;
-  --blue:      #2B5DA6;
-  --gold:      #B89B45;
-  --gold-light:#D4B85A;
-  --off-white: #F7F6F2;
-  --light-bg:  #EEF3FB;
-  --white:     #FFFFFF;
-  --text-dark: #0D1B2A;
-  --text-mid:  #4A5568;
-  --text-light:#8A9AB8;
-  --border:    rgba(27,45,91,0.10);
-  --border-w:  rgba(255,255,255,0.09);
-  --radius:    10px;
-  --radius-sm: 6px;
+  --navy:#1B2D5B; --navy-deep:#0D1A38; --blue:#2B5DA6;
+  --gold:#B89B45; --gold-l:#D4B85A;
+  --off:#F7F6F2; --lbg:#EEF3FB; --white:#FFFFFF;
+  --td:#0D1B2A; --tm:#4A5568; --tl:#8A9AB8;
+  --br:rgba(27,45,91,.10); --bw:rgba(255,255,255,.09);
+  --r:10px; --rs:6px;
 }
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior:smooth; }
-body { font-family:'DM Sans',sans-serif; color:var(--text-dark); background:var(--white); -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;color:var(--td);background:var(--white);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
-/* ── ANIMATIONS ── */
-@keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
-@keyframes pulseDot { 0%,100%{opacity:1} 50%{opacity:.35} }
-@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-.reveal { opacity:0; transform:translateY(18px); transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1); }
-.reveal.visible { opacity:1; transform:translateY(0); }
-.d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s} .d4{transition-delay:.4s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes dot{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .65s cubic-bezier(.22,1,.36,1),transform .65s cubic-bezier(.22,1,.36,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
 
-/* ── NAV ── */
-nav {
-  position:fixed; top:0; left:0; right:0; z-index:200;
-  background:rgba(255,255,255,.97); backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border);
-  padding:0 5%; height:68px;
-  display:flex; align-items:center; justify-content:space-between;
-  transition:box-shadow .3s;
-}
-nav.scrolled { box-shadow:0 2px 24px rgba(13,26,56,.09); }
-
-.logo { display:flex; align-items:center; text-decoration:none; }
-.logo img { height:42px; width:auto; display:block; }
-
-.nav-links { display:flex; align-items:center; gap:30px; list-style:none; }
-.nav-links a { font-size:13px; font-weight:500; color:var(--text-mid); text-decoration:none; letter-spacing:.02em; transition:color .2s; }
-.nav-links a:hover { color:var(--navy); }
-
-.nav-cta { background:var(--navy); color:var(--white); padding:10px 20px; border-radius:var(--radius-sm); font-size:13px; font-weight:500; text-decoration:none; letter-spacing:.02em; transition:background .2s; white-space:nowrap; }
-.nav-cta:hover { background:var(--blue); }
-
-.hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
-.hamburger span { display:block; width:22px; height:2px; background:var(--navy); border-radius:2px; transition:all .3s; }
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--br);padding:0 5%;height:68px;display:flex;align-items:center;justify-content:space-between;transition:box-shadow .3s}
+nav.scrolled{box-shadow:0 2px 24px rgba(13,26,56,.09)}
+.logo{display:flex;align-items:center;text-decoration:none}
+.logo img{height:40px;width:auto}
+.nav-links{display:flex;align-items:center;gap:28px;list-style:none}
+.nav-links a{font-size:13px;font-weight:500;color:var(--tm);text-decoration:none;letter-spacing:.02em;transition:color .2s}
+.nav-links a:hover{color:var(--navy)}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-cta{background:var(--navy);color:var(--white);padding:10px 18px;border-radius:var(--rs);font-size:13px;font-weight:500;text-decoration:none;letter-spacing:.02em;transition:background .2s;white-space:nowrap}
+.nav-cta:hover{background:var(--blue)}
+.lang-toggle{display:flex;align-items:center;background:var(--off);border-radius:var(--rs);padding:3px;gap:2px}
+.lang-btn{background:none;border:none;padding:5px 10px;font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--tl);cursor:pointer;border-radius:4px;transition:all .2s;font-family:'DM Sans',sans-serif}
+.lang-btn.active{background:var(--navy);color:var(--white)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.hamburger span{display:block;width:22px;height:2px;background:var(--navy);border-radius:2px;transition:all .3s}
 .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
 .hamburger.open span:nth-child(2){opacity:0}
 .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-.mobile-menu { display:none; position:fixed; top:68px; left:0; right:0; background:var(--white); border-bottom:1px solid var(--border); padding:24px 5%; z-index:199; flex-direction:column; gap:16px; box-shadow:0 8px 32px rgba(13,26,56,.1); }
+.mobile-menu{display:none;position:fixed;top:68px;left:0;right:0;background:var(--white);border-bottom:1px solid var(--br);padding:20px 5%;z-index:199;flex-direction:column;gap:14px;box-shadow:0 8px 32px rgba(13,26,56,.1)}
 .mobile-menu.open{display:flex}
-.mobile-menu a { font-size:15px; font-weight:500; color:var(--text-dark); text-decoration:none; padding:8px 0; border-bottom:1px solid var(--border); }
-.mobile-menu .m-cta { background:var(--navy); color:var(--white); text-align:center; border-radius:var(--radius-sm); padding:14px; font-weight:600; border:none; }
+.mobile-menu a{font-size:15px;font-weight:500;color:var(--td);text-decoration:none;padding:8px 0;border-bottom:1px solid var(--br)}
+.mob-cta{background:var(--navy);color:var(--white)!important;text-align:center;border-radius:var(--rs);padding:14px!important;font-weight:600!important;border:none;border-bottom:none!important}
 
-/* ── HERO ── */
-.hero {
-  background:var(--navy); min-height:100svh;
-  display:flex; align-items:center;
-  padding:120px 5% 80px; position:relative; overflow:hidden;
-}
-.hero::before { content:''; position:absolute; top:-10%; right:-8%; width:60%; height:130%; background:radial-gradient(ellipse at center,rgba(43,93,166,.35) 0%,transparent 68%); pointer-events:none; }
-.hero::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--gold) 0%,rgba(184,155,69,.25) 60%,transparent 100%); }
-.hero-grid { position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px); background-size:64px 64px; pointer-events:none; }
+/* HERO — calc so ticker fits on 14" screen */
+.hero{background:var(--navy);min-height:calc(100svh - 44px);display:flex;align-items:center;padding:100px 5% 56px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-10%;right:-8%;width:60%;height:130%;background:radial-gradient(ellipse at center,rgba(43,93,166,.35) 0%,transparent 68%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold) 0%,rgba(184,155,69,.2) 60%,transparent 100%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:64px 64px;pointer-events:none}
+.hero-inner{max-width:800px;position:relative;z-index:1;animation:fadeUp .9s cubic-bezier(.22,1,.36,1) both}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;background:rgba(184,155,69,.12);border:1px solid rgba(184,155,69,.3);border-radius:100px;padding:7px 16px;margin-bottom:26px;font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--gold-l);font-weight:600}
+.edot{width:5px;height:5px;background:var(--gold);border-radius:50%;animation:dot 2s ease-in-out infinite;flex-shrink:0}
+h1{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5vw,64px);font-weight:600;line-height:1.06;color:var(--white);letter-spacing:-.015em;margin-bottom:22px}
+h1 em{font-style:italic;color:var(--gold-l)}
+.hero-sub{font-size:16.5px;line-height:1.7;color:rgba(255,255,255,.65);max-width:560px;margin-bottom:40px;font-weight:300}
+.hero-ctas{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:56px}
+.btn-gold{background:var(--gold);color:var(--navy-deep);padding:13px 30px;border-radius:var(--rs);font-size:14px;font-weight:600;text-decoration:none;letter-spacing:.02em;border:none;cursor:pointer;display:inline-block;transition:background .2s,transform .15s}
+.btn-gold:hover{background:var(--gold-l);transform:translateY(-1px)}
+.btn-ghost{color:rgba(255,255,255,.68);font-size:14px;font-weight:500;text-decoration:none;display:inline-flex;align-items:center;gap:8px;padding:13px 0;transition:color .2s}
+.btn-ghost:hover{color:var(--white)}
+.btn-ghost .arr{transition:transform .2s}
+.btn-ghost:hover .arr{transform:translateX(5px)}
+.hero-stats{display:flex;border-top:1px solid var(--bw)}
+.stat{padding:22px 36px 0 0;margin-top:22px;margin-right:36px;border-right:1px solid var(--bw)}
+.stat:last-child{border-right:none;margin-right:0;padding-right:0}
+.stat .num{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;color:var(--gold-l);line-height:1;margin-bottom:4px}
+.stat .lbl{font-size:11.5px;color:rgba(255,255,255,.4);letter-spacing:.05em;text-transform:uppercase;font-weight:500;max-width:130px;line-height:1.4}
 
-.hero-inner { max-width:800px; position:relative; z-index:1; animation:fadeUp .9s cubic-bezier(.22,1,.36,1) both; }
+/* TICKER */
+.ticker-wrap{background:var(--navy);height:44px;overflow:hidden;border-top:1px solid rgba(255,255,255,.05);display:flex;align-items:center}
+.ticker-track{display:flex;width:max-content;animation:ticker 30s linear infinite}
+.tick{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.38);font-weight:500;padding:0 28px;white-space:nowrap}
+.tick span{color:var(--gold);margin-right:28px}
 
-.hero-eyebrow { display:inline-flex; align-items:center; gap:10px; background:rgba(184,155,69,.12); border:1px solid rgba(184,155,69,.3); border-radius:100px; padding:7px 16px; margin-bottom:30px; font-size:11px; letter-spacing:.13em; text-transform:uppercase; color:var(--gold-light); font-weight:600; }
-.e-dot { width:5px; height:5px; background:var(--gold); border-radius:50%; animation:pulseDot 2s ease-in-out infinite; }
+/* SECTIONS */
+section{padding:92px 5%}
+.pill{display:inline-block;background:rgba(27,45,91,.07);border-radius:100px;padding:7px 18px;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);font-weight:600;margin-bottom:16px}
+.pill.wp{background:rgba(255,255,255,.1);color:rgba(255,255,255,.65)}
+.pill.gp{background:rgba(184,155,69,.12);color:var(--gold)}
+h2{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,3.5vw,47px);font-weight:600;line-height:1.1;letter-spacing:-.012em;color:var(--navy);margin-bottom:16px}
+h2 em{font-style:italic;color:var(--blue)}
+h2.lw{color:var(--white)}
+h2.lw em{color:var(--gold-l)}
+.ssub{font-size:16px;line-height:1.72;color:var(--tm);font-weight:300}
+.ssub.lw{color:rgba(255,255,255,.58)}
+.two-hdr{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:end;margin-bottom:52px}
 
-h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(40px,5.5vw,66px); font-weight:600; line-height:1.06; color:var(--white); letter-spacing:-.015em; margin-bottom:24px; }
-h1 em { font-style:italic; color:var(--gold-light); }
+/* PAIN */
+.pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(27,45,91,.07);border:1px solid rgba(27,45,91,.07);border-radius:var(--r);overflow:hidden}
+.pain-item{background:var(--white);padding:38px 34px;transition:background .25s}
+.pain-item:hover{background:var(--off)}
+.pain-meta{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.pain-num{font-size:12px;font-weight:700;color:var(--tl);letter-spacing:.06em;font-family:'Cormorant Garamond',serif}
+.pain-tag{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--blue);background:var(--lbg);padding:4px 12px;border-radius:100px}
+.pain-item h3{font-size:16.5px;font-weight:600;color:var(--navy);margin-bottom:9px;line-height:1.35}
+.pain-item p{font-size:13.5px;line-height:1.68;color:var(--tm)}
+.pain-quote{margin-top:2px;background:var(--navy);padding:28px 38px;border-left:3px solid var(--gold);grid-column:span 2}
+.pain-quote blockquote{font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;color:rgba(255,255,255,.78);line-height:1.55}
+.pain-quote blockquote strong{color:var(--gold-l);font-style:normal}
 
-.hero-sub { font-size:17px; line-height:1.72; color:rgba(255,255,255,.65); max-width:560px; margin-bottom:44px; font-weight:300; }
+/* SECTORS */
+.sec-inner{display:grid;grid-template-columns:1fr 1fr;gap:68px;align-items:center}
+.sec-tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.sec-tag{font-size:13px;font-weight:500;color:var(--navy);background:var(--white);border:1.5px solid var(--br);border-radius:100px;padding:8px 18px}
+.res-card{background:var(--white);border-radius:var(--r);padding:38px;border:1px solid var(--br);position:relative;overflow:hidden}
+.res-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold-l))}
+.res-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:14px}
+.res-card blockquote{font-family:'Cormorant Garamond',serif;font-size:21px;font-style:italic;color:var(--navy);line-height:1.55;margin-bottom:18px}
+.res-source{font-size:11.5px;color:var(--tl);letter-spacing:.04em}
 
-.hero-ctas { display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:68px; }
-.btn-gold { background:var(--gold); color:var(--navy-deep); padding:14px 32px; border-radius:var(--radius-sm); font-size:14px; font-weight:600; text-decoration:none; letter-spacing:.02em; border:none; cursor:pointer; display:inline-block; transition:background .2s,transform .15s; }
-.btn-gold:hover { background:var(--gold-light); transform:translateY(-1px); }
-.btn-ghost { color:rgba(255,255,255,.68); font-size:14px; font-weight:500; text-decoration:none; display:inline-flex; align-items:center; gap:8px; padding:14px 0; transition:color .2s; }
-.btn-ghost:hover { color:var(--white); }
-.btn-ghost .arr { transition:transform .2s; }
-.btn-ghost:hover .arr { transform:translateX(5px); }
+/* SERVICES */
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.svc-card{background:var(--off);border-radius:var(--r);padding:34px 30px;border:1px solid var(--br);transition:background .25s,transform .2s}
+.svc-card:hover{background:var(--navy);transform:translateY(-3px)}
+.svc-card:hover h3,.svc-card:hover p{color:var(--white)}
+.svc-card:hover .svc-icon{color:var(--gold-l)}
+.svc-card:hover .svc-dur{border-color:rgba(255,255,255,.18);color:rgba(255,255,255,.4)}
+.svc-icon{font-size:22px;color:var(--gold);margin-bottom:18px;display:block;transition:color .25s}
+.svc-card h3{font-size:16.5px;font-weight:600;color:var(--navy);margin-bottom:10px;line-height:1.3;transition:color .25s}
+.svc-card p{font-size:13px;line-height:1.68;color:var(--tm);margin-bottom:18px;transition:color .25s}
+.svc-dur{display:inline-block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--tl);border:1px solid var(--br);padding:4px 12px;border-radius:100px;font-weight:500;transition:all .25s}
+.svc-wide{grid-column:span 3;display:grid;grid-template-columns:1fr 2fr;gap:44px;align-items:center}
+.svc-wide p{margin-bottom:0}
 
-.hero-stats { display:flex; border-top:1px solid rgba(255,255,255,.09); padding-top:0; }
-.stat { padding:26px 40px 0 0; margin-top:26px; margin-right:40px; border-right:1px solid rgba(255,255,255,.09); }
-.stat:last-child { border-right:none; margin-right:0; padding-right:0; }
-.stat .num { font-family:'Cormorant Garamond',serif; font-size:36px; font-weight:700; color:var(--gold-light); line-height:1; margin-bottom:5px; }
-.stat .lbl { font-size:12px; color:rgba(255,255,255,.42); letter-spacing:.05em; text-transform:uppercase; font-weight:500; max-width:130px; line-height:1.4; }
+/* HOW */
+.sprint-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bw);margin-top:56px}
+.sprint-step{background:var(--navy);padding:34px 26px;transition:background .25s}
+.sprint-step:hover{background:rgba(43,93,166,.28)}
+.sn{font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:700;color:rgba(255,255,255,.06);line-height:1;margin-bottom:14px}
+.sw{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-l);font-weight:600;margin-bottom:8px}
+.sprint-step h3{font-size:15.5px;font-weight:600;color:var(--white);margin-bottom:8px;line-height:1.3}
+.sprint-step p{font-size:13px;line-height:1.62;color:rgba(255,255,255,.46)}
+.how-callout{margin-top:40px;display:flex;align-items:flex-start;gap:14px;padding:22px 30px;background:rgba(184,155,69,.09);border:1px solid rgba(184,155,69,.22);border-radius:var(--r)}
+.how-callout p{font-size:14.5px;color:rgba(255,255,255,.7);line-height:1.65}
+.how-callout strong{color:var(--gold-l)}
 
-/* ── SECTION BASE ── */
-section { padding:96px 5%; }
-.container { max-width:1100px; margin:0 auto; }
+/* TEAM */
+.team-hdr{text-align:center;max-width:500px;margin:0 auto 56px}
+.partners{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:960px;margin:0 auto}
+.p-card{background:var(--white);border-radius:var(--r);padding:44px 40px;border:1px solid var(--br);position:relative;overflow:hidden}
+.p-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy),var(--blue))}
+.p-card.gt::before{background:linear-gradient(90deg,var(--gold),var(--gold-l))}
+.p-av{width:58px;height:58px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--white);margin-bottom:22px}
+.p-av.gd{background:var(--gold);color:var(--navy-deep)}
+.p-role{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);font-weight:600;margin-bottom:6px}
+.gt .p-role{color:var(--gold)}
+.p-card h3{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:600;color:var(--navy);margin-bottom:4px}
+.p-title{font-size:13.5px;color:var(--tm);font-weight:500;margin-bottom:20px}
+.p-card p{font-size:13.5px;line-height:1.7;color:var(--tm);margin-bottom:26px}
+.p-tags{display:flex;flex-wrap:wrap;gap:7px}
+.ptag{font-size:11px;padding:4px 12px;border-radius:100px;font-weight:500;background:var(--lbg);color:var(--navy)}
 
-/* Pill eyebrow (Speedboat style) */
-.pill { display:inline-block; background:rgba(27,45,91,.07); border-radius:100px; padding:7px 18px; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--navy); font-weight:600; margin-bottom:16px; }
-.pill.gold { background:rgba(184,155,69,.12); color:var(--gold); }
-.pill.white-pill { background:rgba(255,255,255,.1); color:rgba(255,255,255,.7); }
+/* CTA FORM */
+.cta-inner{display:grid;grid-template-columns:1fr 1fr;gap:76px;align-items:start;position:relative;z-index:1}
+.cta-copy .ssub{color:rgba(255,255,255,.6);margin-bottom:32px}
+.trust-list{display:flex;flex-direction:column;gap:12px}
+.trust-item{display:flex;align-items:center;gap:12px;font-size:13.5px;color:rgba(255,255,255,.6)}
+.tck{width:22px;height:22px;background:rgba(184,155,69,.18);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gold-l);flex-shrink:0}
+.form-wrap{background:var(--white);border-radius:var(--r);padding:40px 36px;position:relative}
+.form-wrap::before{content:'';position:absolute;top:0;left:36px;right:36px;height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-l));border-radius:0 0 2px 2px}
+.form-wrap h3{font-family:'Cormorant Garamond',serif;font-size:25px;font-weight:600;color:var(--navy);margin-bottom:5px;margin-top:6px}
+.fsub{font-size:13px;color:var(--tm);margin-bottom:24px;line-height:1.55}
+.fg{margin-bottom:13px}
+.fg label{display:block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--tm);margin-bottom:5px}
+.fg input,.fg textarea,.fg select{width:100%;padding:10px 12px;border:1.5px solid var(--br);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--td);background:var(--off);outline:none;transition:border-color .2s;resize:vertical;appearance:none}
+.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--navy);background:var(--white)}
+.fg textarea{min-height:86px}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fbtn{width:100%;background:var(--navy);color:var(--white);padding:13px;border:none;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:14.5px;font-weight:600;cursor:pointer;margin-top:6px;letter-spacing:.01em;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.fbtn:hover{background:var(--blue)}
+.fbtn .fa{transition:transform .2s}
+.fbtn:hover .fa{transform:translateX(4px)}
+.fdisc{margin-top:12px;font-size:11px;color:var(--tl);text-align:center;line-height:1.5}
+.fsuccess{display:none;flex-direction:column;align-items:center;text-align:center;padding:36px 16px;gap:14px}
+.fsuccess.visible{display:flex}
+.sico{width:56px;height:56px;background:rgba(27,45,91,.06);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--gold)}
+.fsuccess h4{font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;color:var(--navy)}
+.fsuccess p{font-size:13px;color:var(--tm);line-height:1.6;max-width:270px}
 
-h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(30px,3.6vw,48px); font-weight:600; line-height:1.1; letter-spacing:-.012em; color:var(--navy); margin-bottom:18px; }
-h2 em { font-style:italic; color:var(--blue); }
-h2.light { color:var(--white); }
-h2.light em { color:var(--gold-light); }
-.section-sub { font-size:16.5px; line-height:1.72; color:var(--text-mid); font-weight:300; }
-.section-sub.light { color:rgba(255,255,255,.6); }
+/* FOOTER */
+footer{background:var(--navy-deep);padding:44px 5%;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,.06)}
+.flogo .brand{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--white);letter-spacing:.08em}
+.flogo .sub{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.28);margin-top:3px}
+.fright{text-align:right}
+.fright a{font-size:13px;color:rgba(255,255,255,.35);text-decoration:none;display:block;line-height:1.9;transition:color .2s}
+.fright a:hover{color:rgba(255,255,255,.65)}
+.copy{font-size:11px;color:rgba(255,255,255,.2);margin-top:5px}
 
-.two-col-hdr { display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:end; margin-bottom:56px; }
-
-/* ── MARQUEE TICKER ── */
-.ticker-wrap { background:var(--navy); padding:14px 0; overflow:hidden; border-top:1px solid rgba(255,255,255,.05); }
-.ticker-track { display:flex; width:max-content; animation:marquee 28s linear infinite; }
-.ticker-item { font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.4); font-weight:500; padding:0 32px; white-space:nowrap; }
-.ticker-item span { color:var(--gold); margin-right:32px; }
-
-/* ── PAIN POINTS ── */
-#dolores { background:var(--white); }
-.pain-grid { display:grid; grid-template-columns:1fr 1fr; gap:2px; background:rgba(27,45,91,.07); border:1px solid rgba(27,45,91,.07); border-radius:var(--radius); overflow:hidden; }
-.pain-item { background:var(--white); padding:40px 36px; transition:background .25s; }
-.pain-item:hover { background:var(--off-white); }
-.pain-meta { display:flex; align-items:center; gap:12px; margin-bottom:18px; }
-.pain-num { font-family:'Cormorant Garamond',serif; font-size:13px; font-weight:700; color:var(--text-light); letter-spacing:.05em; }
-.pain-tag { font-size:11px; letter-spacing:.08em; text-transform:uppercase; font-weight:600; color:var(--blue); background:var(--light-bg); padding:4px 12px; border-radius:100px; }
-.pain-item h3 { font-size:17px; font-weight:600; color:var(--navy); margin-bottom:10px; line-height:1.35; }
-.pain-item p { font-size:14px; line-height:1.7; color:var(--text-mid); }
-.pain-quote-bar { margin-top:2px; background:var(--navy); padding:30px 40px; border-left:3px solid var(--gold); grid-column:span 2; }
-.pain-quote-bar blockquote { font-family:'Cormorant Garamond',serif; font-size:21px; font-style:italic; color:rgba(255,255,255,.78); line-height:1.55; font-weight:500; }
-.pain-quote-bar blockquote strong { color:var(--gold-light); font-style:normal; }
-
-/* ── SECTORES ── */
-#sectores { background:var(--off-white); }
-.sectores-inner { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:center; }
-.sector-tags { display:flex; flex-wrap:wrap; gap:10px; margin-top:28px; }
-.sector-tag { font-size:13px; font-weight:500; color:var(--navy); background:var(--white); border:1.5px solid var(--border); border-radius:100px; padding:8px 18px; }
-.resultado-card { background:var(--white); border-radius:var(--radius); padding:40px; border:1px solid var(--border); position:relative; overflow:hidden; }
-.resultado-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--gold),var(--gold-light)); }
-.resultado-card .r-label { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); font-weight:600; margin-bottom:16px; }
-.resultado-card blockquote { font-family:'Cormorant Garamond',serif; font-size:22px; font-style:italic; color:var(--navy); line-height:1.55; font-weight:500; margin-bottom:20px; }
-.resultado-card .r-source { font-size:12px; color:var(--text-light); letter-spacing:.04em; }
-
-/* ── SERVICES ── */
-#servicios { background:var(--white); }
-.svc-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
-.svc-card { background:var(--off-white); border-radius:var(--radius); padding:36px 32px; border:1px solid var(--border); transition:background .25s,border-color .25s,transform .2s; cursor:default; }
-.svc-card:hover { background:var(--navy); border-color:var(--navy); transform:translateY(-3px); }
-.svc-card:hover h3,.svc-card:hover p { color:var(--white); }
-.svc-card:hover .svc-icon { color:var(--gold-light); }
-.svc-card:hover .svc-dur { border-color:rgba(255,255,255,.18); color:rgba(255,255,255,.45); }
-.svc-icon { font-size:22px; color:var(--gold); margin-bottom:20px; display:block; transition:color .25s; }
-.svc-card h3 { font-size:17px; font-weight:600; color:var(--navy); margin-bottom:11px; line-height:1.3; transition:color .25s; }
-.svc-card p { font-size:13.5px; line-height:1.7; color:var(--text-mid); margin-bottom:20px; transition:color .25s; }
-.svc-dur { display:inline-block; font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--text-light); border:1px solid var(--border); padding:4px 12px; border-radius:100px; font-weight:500; transition:all .25s; }
-.svc-card.wide { grid-column:span 3; display:grid; grid-template-columns:1fr 2fr; gap:48px; align-items:center; }
-.svc-card.wide p { margin-bottom:0; }
-
-/* ── HOW WE WORK ── */
-#como-trabajamos { background:var(--navy); }
-.sprint-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:rgba(255,255,255,.08); margin-top:60px; }
-.sprint-step { background:var(--navy); padding:36px 28px; transition:background .25s; }
-.sprint-step:hover { background:rgba(43,93,166,.28); }
-.step-n { font-family:'Cormorant Garamond',serif; font-size:48px; font-weight:700; color:rgba(255,255,255,.06); line-height:1; margin-bottom:16px; }
-.step-week { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-light); font-weight:600; margin-bottom:9px; }
-.sprint-step h3 { font-size:16px; font-weight:600; color:var(--white); margin-bottom:9px; line-height:1.3; }
-.sprint-step p { font-size:13px; line-height:1.65; color:rgba(255,255,255,.48); }
-.how-callout { margin-top:44px; display:flex; align-items:flex-start; gap:16px; padding:24px 32px; background:rgba(184,155,69,.09); border:1px solid rgba(184,155,69,.22); border-radius:var(--radius); }
-.how-callout p { font-size:15px; color:rgba(255,255,255,.72); line-height:1.65; }
-.how-callout strong { color:var(--gold-light); }
-
-/* ── TEAM ── */
-#equipo { background:var(--off-white); }
-.team-hdr { text-align:center; max-width:520px; margin:0 auto 60px; }
-.team-hdr .section-sub { margin-top:14px; }
-.partners { display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:960px; margin:0 auto; }
-.partner-card { background:var(--white); border-radius:var(--radius); padding:48px 44px; border:1px solid var(--border); position:relative; overflow:hidden; }
-.partner-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--navy),var(--blue)); }
-.partner-card.gold-top::before { background:linear-gradient(90deg,var(--gold),var(--gold-light)); }
-.p-avatar { width:60px; height:60px; border-radius:50%; background:var(--navy); display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:700; color:var(--white); margin-bottom:24px; }
-.p-avatar.gold { background:var(--gold); color:var(--navy-deep); }
-.p-role { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--blue); font-weight:600; margin-bottom:7px; }
-.gold-top .p-role { color:var(--gold); }
-.partner-card h3 { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:600; color:var(--navy); margin-bottom:5px; }
-.p-title { font-size:14px; color:var(--text-mid); font-weight:500; margin-bottom:22px; }
-.partner-card p { font-size:14px; line-height:1.72; color:var(--text-mid); margin-bottom:28px; }
-.p-tags { display:flex; flex-wrap:wrap; gap:8px; }
-.p-tag { font-size:11.5px; padding:5px 13px; border-radius:100px; font-weight:500; background:var(--light-bg); color:var(--navy); }
-
-/* ── CTA / FORM ── */
-#contacto { background:var(--navy-deep); position:relative; overflow:hidden; }
-#contacto::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 72% 50%,rgba(43,93,166,.32) 0%,transparent 65%); pointer-events:none; }
-.cta-inner { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; position:relative; z-index:1; }
-.cta-copy .section-sub { color:rgba(255,255,255,.6); margin-bottom:36px; }
-.trust-list { display:flex; flex-direction:column; gap:13px; }
-.trust-item { display:flex; align-items:center; gap:12px; font-size:14px; color:rgba(255,255,255,.6); }
-.t-check { width:22px; height:22px; background:rgba(184,155,69,.18); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--gold-light); flex-shrink:0; }
-.form-wrap { background:var(--white); border-radius:var(--radius); padding:44px 40px; position:relative; }
-.form-wrap::before { content:''; position:absolute; top:0; left:40px; right:40px; height:2px; background:linear-gradient(90deg,var(--gold),var(--gold-light)); border-radius:0 0 2px 2px; }
-.form-wrap h3 { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:600; color:var(--navy); margin-bottom:6px; margin-top:8px; }
-.form-sub { font-size:13.5px; color:var(--text-mid); margin-bottom:28px; line-height:1.55; }
-.form-group { margin-bottom:14px; }
-.form-group label { display:block; font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--text-mid); margin-bottom:6px; }
-.form-group input,.form-group textarea,.form-group select { width:100%; padding:11px 13px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text-dark); background:var(--off-white); outline:none; transition:border-color .2s,background .2s; resize:vertical; appearance:none; }
-.form-group input:focus,.form-group textarea:focus,.form-group select:focus { border-color:var(--navy); background:var(--white); }
-.form-group textarea { min-height:90px; }
-.form-2col { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-.form-btn { width:100%; background:var(--navy); color:var(--white); padding:14px; border:none; border-radius:var(--radius-sm); font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; cursor:pointer; margin-top:8px; letter-spacing:.01em; transition:background .2s; display:flex; align-items:center; justify-content:center; gap:8px; }
-.form-btn:hover { background:var(--blue); }
-.form-btn .fa { transition:transform .2s; }
-.form-btn:hover .fa { transform:translateX(4px); }
-.form-disc { margin-top:13px; font-size:11.5px; color:var(--text-light); text-align:center; line-height:1.5; }
-.form-success { display:none; flex-direction:column; align-items:center; text-align:center; padding:36px 16px; gap:14px; }
-.form-success.visible { display:flex; }
-.s-icon { width:60px; height:60px; background:rgba(27,45,91,.06); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; color:var(--gold); }
-.form-success h4 { font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:600; color:var(--navy); }
-.form-success p { font-size:13.5px; color:var(--text-mid); line-height:1.6; max-width:280px; }
-
-/* ── FOOTER ── */
-footer { background:var(--navy-deep); padding:48px 5%; display:flex; align-items:center; justify-content:space-between; border-top:1px solid rgba(255,255,255,.06); }
-.footer-logo .brand { font-family:'Cormorant Garamond',serif; font-size:19px; font-weight:700; color:var(--white); letter-spacing:.08em; }
-.footer-logo .sub { font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.28); margin-top:3px; }
-.footer-right a { font-size:13px; color:rgba(255,255,255,.38); text-decoration:none; display:block; line-height:1.95; transition:color .2s; }
-.footer-right a:hover { color:rgba(255,255,255,.68); }
-.footer-right .copy { font-size:11.5px; color:rgba(255,255,255,.2); margin-top:6px; }
-
-/* ── RESPONSIVE ── */
-@media(max-width:960px) {
-  .nav-links{display:none} .hamburger{display:flex}
-  .two-col-hdr{grid-template-columns:1fr;gap:20px}
-  .cta-inner{grid-template-columns:1fr;gap:44px}
+/* RESPONSIVE */
+@media(max-width:960px){
+  .nav-links{display:none}.hamburger{display:flex}
+  .two-hdr{grid-template-columns:1fr;gap:18px}
+  .cta-inner{grid-template-columns:1fr;gap:40px}
   .sprint-grid{grid-template-columns:1fr 1fr}
-  .svc-card.wide{grid-column:span 3}
-  .sectores-inner{grid-template-columns:1fr;gap:44px}
+  .svc-wide{grid-column:span 3}
+  .sec-inner{grid-template-columns:1fr;gap:40px}
 }
-@media(max-width:768px) {
-  section{padding:68px 5%}
-  .hero{padding:96px 5% 60px}
-  .hero-stats{flex-direction:column;gap:0}
-  .stat{border-right:none;border-bottom:1px solid rgba(255,255,255,.09);padding:18px 0;margin:0}
+@media(max-width:768px){
+  section{padding:64px 5%}
+  .hero{padding:88px 5% 48px}
+  .hero-stats{flex-direction:column}
+  .stat{border-right:none;border-bottom:1px solid var(--bw);padding:18px 0;margin:0}
   .stat:last-child{border-bottom:none}
   .pain-grid{grid-template-columns:1fr}
-  .pain-quote-bar{grid-column:span 1}
+  .pain-quote{grid-column:span 1}
   .svc-grid{grid-template-columns:1fr}
-  .svc-card.wide{grid-column:span 1;grid-template-columns:1fr}
+  .svc-wide{grid-column:span 1;grid-template-columns:1fr}
   .sprint-grid{grid-template-columns:1fr}
   .partners{grid-template-columns:1fr}
-  .partner-card{padding:38px 30px}
-  .form-2col{grid-template-columns:1fr}
-  .form-wrap{padding:34px 26px}
-  footer{flex-direction:column;gap:24px;text-align:center}
+  .p-card{padding:36px 28px}
+  .form-wrap{padding:32px 24px}
+  .fg2{grid-template-columns:1fr}
+  footer{flex-direction:column;gap:22px;text-align:center}
+  .fright{text-align:center}
 }
-@media(max-width:480px) {
-  h1{font-size:36px}
+@media(max-width:480px){
+  h1{font-size:35px}
   .hero-ctas{flex-direction:column;align-items:flex-start}
   .btn-gold{width:100%;text-align:center}
+  .lang-toggle{display:none}
 }
 </style>
 </head>
 <body>
 
-<!-- ── NAV ── -->
 <nav id="nav">
   <a href="#inicio" class="logo">
     <img src="data:image/jpeg;base64,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" alt="Omnia Transformation Partners">
   </a>
   <ul class="nav-links">
-    <li><a href="#dolores">Diagnóstico</a></li>
-    <li><a href="#servicios">Servicios</a></li>
-    <li><a href="#como-trabajamos">Cómo trabajamos</a></li>
-    <li><a href="#equipo">El equipo</a></li>
+    <li><a href="#dolores" data-i18n="nav.diag">Diagn&#243;stico</a></li>
+    <li><a href="#servicios" data-i18n="nav.svc">Servicios</a></li>
+    <li><a href="#como-trabajamos" data-i18n="nav.how">C&#243;mo trabajamos</a></li>
+    <li><a href="#equipo" data-i18n="nav.team">El equipo</a></li>
   </ul>
-  <div style="display:flex;align-items:center;gap:20px">
-    <a href="#contacto" class="nav-cta">Solicita tu diagnóstico</a>
-    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btnES" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+    </div>
+    <a href="#contacto" class="nav-cta" data-i18n="nav.cta">Solicita tu diagn&#243;stico</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
+
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#dolores" onclick="closeMobile()">¿Te suena familiar?</a>
-  <a href="#servicios" onclick="closeMobile()">Servicios</a>
-  <a href="#como-trabajamos" onclick="closeMobile()">Cómo trabajamos</a>
-  <a href="#equipo" onclick="closeMobile()">El equipo</a>
-  <a href="#contacto" class="m-cta" onclick="closeMobile()">Solicita tu diagnóstico →</a>
+  <a href="#dolores" onclick="closeMobile()" data-i18n="nav.diag">Diagn&#243;stico</a>
+  <a href="#servicios" onclick="closeMobile()" data-i18n="nav.svc">Servicios</a>
+  <a href="#como-trabajamos" onclick="closeMobile()" data-i18n="nav.how">C&#243;mo trabajamos</a>
+  <a href="#equipo" onclick="closeMobile()" data-i18n="nav.team">El equipo</a>
+  <a href="#contacto" class="mob-cta" onclick="closeMobile()" data-i18n="nav.mob">Solicita tu diagn&#243;stico &#8594;</a>
 </div>
 
-<!-- ── HERO ── -->
+<!-- HERO -->
 <section class="hero" id="inicio">
   <div class="hero-grid"></div>
   <div class="hero-inner">
-    <div class="hero-eyebrow"><span class="e-dot"></span>Consultoría boutique · México</div>
-    <h1>Tu empresa crece.<br><em>Tu operación no<br>está lista para eso.</em></h1>
-    <p class="hero-sub">Alineamos estrategia, procesos y tecnología para que cada área de tu negocio funcione como un sistema — no como islas independientes. En sprints concretos, con entregables reales desde la primera semana.</p>
+    <div class="hero-eyebrow"><span class="edot"></span><span data-i18n="hero.eyebrow">Consultor&#237;a boutique &#183; M&#233;xico</span></div>
+    <h1 data-i18n="hero.h1">Tu empresa crece.<br><em>Tu operaci&#243;n no<br>est&#225; lista para eso.</em></h1>
+    <p class="hero-sub" data-i18n="hero.sub">Alineamos estrategia, procesos y tecnolog&#237;a para que cada &#225;rea de tu negocio funcione como un sistema &#8212; no como islas independientes. En sprints concretos, con entregables reales desde la primera semana.</p>
     <div class="hero-ctas">
-      <a href="#contacto" class="btn-gold">Solicita tu diagnóstico inicial</a>
-      <a href="#como-trabajamos" class="btn-ghost">Ver cómo trabajamos <span class="arr">→</span></a>
+      <a href="#contacto" class="btn-gold" data-i18n="hero.cta1">Solicita tu diagn&#243;stico inicial</a>
+      <a href="#como-trabajamos" class="btn-ghost"><span data-i18n="hero.cta2">Ver c&#243;mo trabajamos</span> <span class="arr">&#8594;</span></a>
     </div>
     <div class="hero-stats">
-      <div class="stat"><div class="num">10</div><div class="lbl">Semanas · sprint de entrada</div></div>
-      <div class="stat"><div class="num">4</div><div class="lbl">Entregables definidos desde el día 1</div></div>
-      <div class="stat"><div class="num">2</div><div class="lbl">Socios senior. Sin intermediarios.</div></div>
+      <div class="stat"><div class="num">10</div><div class="lbl" data-i18n="hero.s1">Semanas &#183; sprint de entrada</div></div>
+      <div class="stat"><div class="num">4</div><div class="lbl" data-i18n="hero.s2">Entregables definidos desde el d&#237;a 1</div></div>
+      <div class="stat"><div class="num">2</div><div class="lbl" data-i18n="hero.s3">Socios senior. Sin intermediarios.</div></div>
     </div>
   </div>
 </section>
 
-<!-- ── TICKER ── -->
+<!-- TICKER -->
 <div class="ticker-wrap">
-  <div class="ticker-track">
-    <span class="ticker-item"><span>·</span>Solo México</span>
-    <span class="ticker-item"><span>·</span>PyMEs &amp; empresas medianas</span>
-    <span class="ticker-item"><span>·</span>Consultoría senior directa</span>
-    <span class="ticker-item"><span>·</span>Sin analistas junior</span>
-    <span class="ticker-item"><span>·</span>Sprints de 10 semanas</span>
-    <span class="ticker-item"><span>·</span>Entregables comprometidos desde la firma</span>
-    <span class="ticker-item"><span>·</span>Estrategia + ejecución</span>
-    <span class="ticker-item"><span>·</span>Solo México</span>
-    <span class="ticker-item"><span>·</span>PyMEs &amp; empresas medianas</span>
-    <span class="ticker-item"><span>·</span>Consultoría senior directa</span>
-    <span class="ticker-item"><span>·</span>Sin analistas junior</span>
-    <span class="ticker-item"><span>·</span>Sprints de 10 semanas</span>
-    <span class="ticker-item"><span>·</span>Entregables comprometidos desde la firma</span>
-    <span class="ticker-item"><span>·</span>Estrategia + ejecución</span>
+  <div class="ticker-track" id="tickerTrack">
+    <span class="tick"><span>&#183;</span><span data-i18n="tick.1">Solo M&#233;xico</span></span>
+    <span class="tick"><span>&#183;</span><span data-i18n="tick.2">PyMEs &amp; empresas medianas</span></span>
+    <span class="tick"><span>&#183;</span><span data-i18n="tick.3">Consultor&#237;a senior directa</span></span>
+    <span class="tick"><span>&#183;</span><span data-i18n="tick.4">Sin analistas junior</span></span>
+    <span class="tick"><span>&#183;</span><span data-i18n="tick.5">Sprints de 10 semanas</span></span>
+    <span class="tick"><span>&#183;</span><span data-i18n="tick.6">Entregables comprometidos desde la firma</span></span>
+    <span class="tick"><span>&#183;</span><span data-i18n="tick.7">Estrategia + ejecuci&#243;n</span></span>
+    <span class="tick"><span>&#183;</span><span data-i18n="tick.1">Solo M&#233;xico</span></span>
+    <span class="tick"><span>&#183;</span><span data-i18n="tick.2">PyMEs &amp; empresas medianas</span></span>
+    <span class="tick"><span>&#183;</span><span data-i18n="tick.3">Consultor&#237;a senior directa</span></span>
+    <span class="tick"><span>&#183;</span><span data-i18n="tick.4">Sin analistas junior</span></span>
+    <span class="tick"><span>&#183;</span><span data-i18n="tick.5">Sprints de 10 semanas</span></span>
+    <span class="tick"><span>&#183;</span><span data-i18n="tick.6">Entregables comprometidos desde la firma</span></span>
+    <span class="tick"><span>&#183;</span><span data-i18n="tick.7">Estrategia + ejecuci&#243;n</span></span>
   </div>
 </div>
 
-<!-- ── PAIN POINTS ── -->
+<!-- PAIN POINTS -->
 <section id="dolores">
-  <div class="two-col-hdr reveal">
+  <div class="two-hdr reveal">
     <div>
-      <div class="pill">¿Te suena familiar?</div>
-      <h2>Los dolores que traen<br>a nuestros <em>clientes con nosotros</em></h2>
+      <div class="pill" data-i18n="pain.pill">&#191;Te suena familiar?</div>
+      <h2 data-i18n="pain.h2">Los dolores que traen a nuestros <em>clientes con nosotros</em></h2>
     </div>
-    <div>
-      <p class="section-sub">No hace falta que encajes en todos. Con uno solo es suficiente para que valga la pena hablar.</p>
-    </div>
+    <div><p class="ssub" data-i18n="pain.sub">No hace falta que encajes en todos. Con uno solo es suficiente para que valga la pena hablar.</p></div>
   </div>
   <div class="pain-grid reveal">
     <div class="pain-item">
-      <div class="pain-meta"><span class="pain-num">01</span><span class="pain-tag">Estancamiento</span></div>
-      <h3>Crecen las operaciones, no la estructura</h3>
-      <p>Todo depende de dos o tres personas clave. Cuando escala el volumen, el sistema se rompe y ya no puedes crecer más sin reconstruir primero.</p>
+      <div class="pain-meta"><span class="pain-num">01</span><span class="pain-tag" data-i18n="p1.tag">Estancamiento</span></div>
+      <h3 data-i18n="p1.h3">Crecen las operaciones, no la estructura</h3>
+      <p data-i18n="p1.p">Todo depende de dos o tres personas clave. Cuando escala el volumen, el sistema se rompe y ya no puedes crecer sin reconstruir primero.</p>
     </div>
     <div class="pain-item">
-      <div class="pain-meta"><span class="pain-num">02</span><span class="pain-tag">Estrategia</span></div>
-      <h3>La estrategia existe en slides, no en el día a día</h3>
-      <p>Definieron objetivos, contrataron consultores, presentaron a directivos. Seis meses después, nada cambió en la operación real.</p>
+      <div class="pain-meta"><span class="pain-num">02</span><span class="pain-tag" data-i18n="p2.tag">Estrategia</span></div>
+      <h3 data-i18n="p2.h3">La estrategia existe en slides, no en el d&#237;a a d&#237;a</h3>
+      <p data-i18n="p2.p">Definieron objetivos, contrataron consultores, presentaron a directivos. Seis meses despu&#233;s, nada cambi&#243; en la operaci&#243;n real.</p>
     </div>
     <div class="pain-item">
-      <div class="pain-meta"><span class="pain-num">03</span><span class="pain-tag">Tecnología</span></div>
-      <h3>Tienen un CRM que nadie usa</h3>
-      <p>Compraron Zoho, HubSpot o Salesforce. Hay licencias pagadas. Pero el equipo sigue en Excel y WhatsApp porque nadie lo configuró de verdad.</p>
+      <div class="pain-meta"><span class="pain-num">03</span><span class="pain-tag" data-i18n="p3.tag">Tecnolog&#237;a</span></div>
+      <h3 data-i18n="p3.h3">Tienen un CRM que nadie usa</h3>
+      <p data-i18n="p3.p">Compraron Zoho, HubSpot o Salesforce. Hay licencias pagadas. Pero el equipo sigue en Excel y WhatsApp porque nadie lo configur&#243; de verdad.</p>
     </div>
     <div class="pain-item">
-      <div class="pain-meta"><span class="pain-num">04</span><span class="pain-tag">Ejecución</span></div>
-      <h3>Saben qué cambiar. No tienen quién lo haga</h3>
-      <p>El dueño ve exactamente los problemas. El equipo está en modo operativo al 100%. Nadie tiene ancho de banda para liderar la transformación.</p>
+      <div class="pain-meta"><span class="pain-num">04</span><span class="pain-tag" data-i18n="p4.tag">Ejecuci&#243;n</span></div>
+      <h3 data-i18n="p4.h3">Saben qu&#233; cambiar. No tienen qui&#233;n lo haga</h3>
+      <p data-i18n="p4.p">El due&#241;o ve exactamente los problemas. El equipo est&#225; en modo operativo al 100%. Nadie tiene ancho de banda para liderar la transformaci&#243;n.</p>
     </div>
-    <div class="pain-quote-bar">
-      <blockquote>"No vendemos diagnósticos para guardar en un cajón. <strong>Entramos, ejecutamos y nos medimos por resultados</strong> — no por horas entregadas."</blockquote>
+    <div class="pain-quote">
+      <blockquote data-i18n="pain.quote">"No vendemos diagn&#243;sticos para guardar en un caj&#243;n. <strong>Entramos, ejecutamos y nos medimos por resultados</strong> &#8212; no por horas entregadas."</blockquote>
     </div>
   </div>
 </section>
 
-<!-- ── SECTORES + RESULTADO ── -->
-<section id="sectores" style="background:var(--off-white)">
-  <div class="sectores-inner reveal">
+<!-- SECTORES -->
+<section id="sectores" style="background:var(--off)">
+  <div class="sec-inner reveal">
     <div>
-      <div class="pill">Dónde operamos</div>
-      <h2>Sectores donde<br><em>hemos trabajado</em></h2>
-      <p class="section-sub" style="margin-top:14px">Sin comprometer la confidencialidad de ningún cliente — trabajamos en industrias donde la operación interna es crítica para el crecimiento.</p>
-      <div class="sector-tags">
-        <span class="sector-tag">Salud &amp; Clínicas</span>
-        <span class="sector-tag">Servicios Profesionales</span>
-        <span class="sector-tag">Retail</span>
-        <span class="sector-tag">Proptech</span>
-        <span class="sector-tag">Manufactura</span>
-        <span class="sector-tag">Educación</span>
+      <div class="pill" data-i18n="sec.pill">D&#243;nde operamos</div>
+      <h2 data-i18n="sec.h2">Sectores donde <em>hemos trabajado</em></h2>
+      <p class="ssub" style="margin-top:12px" data-i18n="sec.sub">Sin comprometer la confidencialidad de ning&#250;n cliente &#8212; trabajamos en industrias donde la operaci&#243;n interna es cr&#237;tica para el crecimiento.</p>
+      <div class="sec-tags">
+        <span class="sec-tag" data-i18n="st1">Salud &amp; Cl&#237;nicas</span>
+        <span class="sec-tag" data-i18n="st2">Servicios Profesionales</span>
+        <span class="sec-tag" data-i18n="st3">Retail</span>
+        <span class="sec-tag" data-i18n="st4">Proptech</span>
+        <span class="sec-tag" data-i18n="st5">Manufactura</span>
+        <span class="sec-tag" data-i18n="st6">Educaci&#243;n</span>
       </div>
     </div>
-    <div class="resultado-card reveal d2">
-      <div class="r-label">Resultado real · Caso anonimizado</div>
-      <blockquote>"Una empresa de servicios en CDMX redujo su ciclo de venta de 45 a 18 días en su primer sprint con nosotros."</blockquote>
-      <div class="r-source">Empresa de servicios profesionales · Ciudad de México · Sprint 10 semanas</div>
+    <div class="res-card reveal d2">
+      <div class="res-label" data-i18n="res.label">Resultado real &#183; Caso anonimizado</div>
+      <blockquote data-i18n="res.quote">"Una empresa de servicios en CDMX redujo su ciclo de venta de 45 a 18 d&#237;as en su primer sprint con nosotros."</blockquote>
+      <div class="res-source" data-i18n="res.src">Empresa de servicios profesionales &#183; Ciudad de M&#233;xico &#183; Sprint 10 semanas</div>
     </div>
   </div>
 </section>
 
-<!-- ── SERVICES ── -->
+<!-- SERVICES -->
 <section id="servicios">
-  <div class="two-col-hdr reveal">
+  <div class="two-hdr reveal">
     <div>
-      <div class="pill">Servicios</div>
-      <h2>Lo que <em>hacemos</em></h2>
+      <div class="pill" data-i18n="svc.pill">Servicios</div>
+      <h2 data-i18n="svc.h2">Lo que <em>hacemos</em></h2>
     </div>
-    <div>
-      <p class="section-sub">Tres grandes áreas. Pueden ir juntas o por separado, según dónde esté el mayor cuello de botella.</p>
-    </div>
+    <div><p class="ssub" data-i18n="svc.sub">Tres grandes &#225;reas. Pueden ir juntas o por separado, seg&#250;n d&#243;nde est&#233; el mayor cuello de botella.</p></div>
   </div>
   <div class="svc-grid reveal">
     <div class="svc-card">
-      <span class="svc-icon">◎</span>
-      <h3>Diagnóstico Estratégico</h3>
-      <p>Entramos al negocio, hacemos las preguntas incómodas y te entregamos un mapa claro de dónde estás y qué falta para llegar a donde quieres ir. Sin marcos genéricos — diagnóstico a medida con plan de acción priorizado.</p>
-      <span class="svc-dur">3–4 semanas</span>
+      <span class="svc-icon">&#9678;</span>
+      <h3 data-i18n="s1.h3">Diagn&#243;stico Estrat&#233;gico</h3>
+      <p data-i18n="s1.p">Entramos al negocio, hacemos las preguntas inc&#243;modas y entregamos un mapa claro de d&#243;nde est&#225;s y qu&#233; falta para llegar a donde quieres ir. Sin marcos gen&#233;ricos &#8212; diagn&#243;stico a medida con plan de acci&#243;n priorizado.</p>
+      <span class="svc-dur" data-i18n="s1.dur">3&#8211;4 semanas</span>
     </div>
     <div class="svc-card">
-      <span class="svc-icon">⊕</span>
-      <h3>Transformación Operacional</h3>
-      <p>Rediseñamos los procesos que hoy frenan tu crecimiento — desde flujos de atención al cliente hasta operaciones internas críticas. Mapeo As-Is vs. To-Be e implementación real con tu equipo.</p>
-      <span class="svc-dur">6–10 semanas</span>
+      <span class="svc-icon">&#8853;</span>
+      <h3 data-i18n="s2.h3">Transformaci&#243;n Operacional</h3>
+      <p data-i18n="s2.p">Redise&#241;amos los procesos que hoy frenan tu crecimiento. Desde flujos de atenci&#243;n al cliente hasta operaciones internas cr&#237;ticas. Mapeo As-Is vs. To-Be e implementaci&#243;n real con tu equipo.</p>
+      <span class="svc-dur" data-i18n="s2.dur">6&#8211;10 semanas</span>
     </div>
     <div class="svc-card">
-      <span class="svc-icon">⊞</span>
-      <h3>Activación de CRM y Tecnología</h3>
-      <p>Configuramos, migramos y activamos el CRM o plataforma que ya tienes — Zoho, HubSpot, Salesforce. Lo dejamos funcionando en el día a día, no como prueba piloto, sino como herramienta real.</p>
-      <span class="svc-dur">6–8 semanas</span>
+      <span class="svc-icon">&#8862;</span>
+      <h3 data-i18n="s3.h3">Activaci&#243;n de CRM y Tecnolog&#237;a</h3>
+      <p data-i18n="s3.p">Configuramos, migramos y activamos el CRM o plataforma que ya tienes &#8212; Zoho, HubSpot, Salesforce. Lo dejamos funcionando en el d&#237;a a d&#237;a, no como prueba piloto.</p>
+      <span class="svc-dur" data-i18n="s3.dur">6&#8211;8 semanas</span>
     </div>
-    <div class="svc-card wide">
+    <div class="svc-card svc-wide">
       <div>
-        <span class="svc-icon">◈</span>
-        <h3>Sprint de Implementación</h3>
-        <span class="svc-dur">Para quienes ya saben qué necesitan</span>
+        <span class="svc-icon">&#9672;</span>
+        <h3 data-i18n="s4.h3">Sprint de Implementaci&#243;n</h3>
+        <span class="svc-dur" data-i18n="s4.dur">Para quienes ya saben qu&#233; necesitan</span>
       </div>
-      <p>Engagement estructurado de 8–10 semanas con 4 entregables definidos desde el día uno. Checkpoints semanales, accountability total. La opción para empresas que ya identificaron el problema y quieren moverse rápido sin perder el control del proceso. Si no cumplimos los entregables, renegociamos el alcance — no el resultado.</p>
+      <p data-i18n="s4.p">Engagement estructurado de 8&#8211;10 semanas con 4 entregables definidos desde el d&#237;a uno. Checkpoints semanales, accountability total. Si no cumplimos los entregables, renegociamos el alcance &#8212; no el resultado.</p>
     </div>
   </div>
 </section>
 
-<!-- ── HOW WE WORK ── -->
-<section id="como-trabajamos">
-  <div class="two-col-hdr reveal">
+<!-- HOW WE WORK -->
+<section id="como-trabajamos" style="background:var(--navy)">
+  <div class="two-hdr reveal">
     <div>
-      <div class="pill white-pill">Modelo de trabajo</div>
-      <h2 class="light">Cómo <em>trabajamos</em></h2>
+      <div class="pill wp" data-i18n="how.pill">Modelo de trabajo</div>
+      <h2 class="lw" data-i18n="how.h2">C&#243;mo <em>trabajamos</em></h2>
     </div>
-    <div>
-      <p class="section-sub light">Antes de hacer cualquier propuesta, hacemos tarea. Llegamos a la primera reunión con información de tu empresa, tu mercado y tus competidores. No para impresionar — para no perder el tiempo de nadie.</p>
-    </div>
+    <div><p class="ssub lw" data-i18n="how.sub">Antes de hacer cualquier propuesta, hacemos tarea. Llegamos a la primera reuni&#243;n con informaci&#243;n de tu empresa, tu mercado y tus competidores. No para impresionar &#8212; para no perder el tiempo de nadie.</p></div>
   </div>
   <div class="sprint-grid reveal">
     <div class="sprint-step">
-      <div class="step-n">01</div>
-      <div class="step-week">Semana 1–2</div>
-      <h3>Diagnóstico previo</h3>
-      <p>Analizamos tu empresa antes del primer meeting. Llegamos con información, no con preguntas genéricas.</p>
+      <div class="sn">01</div><div class="sw" data-i18n="w1.wk">Semana 1&#8211;2</div>
+      <h3 data-i18n="w1.h3">Diagn&#243;stico previo</h3>
+      <p data-i18n="w1.p">Analizamos tu empresa antes del primer meeting. Llegamos con informaci&#243;n, no con preguntas gen&#233;ricas.</p>
     </div>
     <div class="sprint-step">
-      <div class="step-n">02</div>
-      <div class="step-week">Semana 3–4</div>
-      <h3>Mapa de brechas</h3>
-      <p>Diagnóstico escrito con hallazgos, prioridades y propuesta concreta — scope, timeline y entregables definidos.</p>
+      <div class="sn">02</div><div class="sw" data-i18n="w2.wk">Semana 3&#8211;4</div>
+      <h3 data-i18n="w2.h3">Mapa de brechas</h3>
+      <p data-i18n="w2.p">Diagn&#243;stico escrito con hallazgos, prioridades y propuesta concreta &#8212; scope, timeline y entregables definidos.</p>
     </div>
     <div class="sprint-step">
-      <div class="step-n">03</div>
-      <div class="step-week">Semanas 5–9</div>
-      <h3>Implementación en sprint</h3>
-      <p>Ejecutamos con tu equipo. Checkpoints semanales. Entregables tangibles que aterrizan en algo concreto y medible.</p>
+      <div class="sn">03</div><div class="sw" data-i18n="w3.wk">Semanas 5&#8211;9</div>
+      <h3 data-i18n="w3.h3">Implementaci&#243;n en sprint</h3>
+      <p data-i18n="w3.p">Ejecutamos con tu equipo. Checkpoints semanales. Entregables tangibles que aterrizan en algo concreto y medible.</p>
     </div>
     <div class="sprint-step">
-      <div class="step-n">04</div>
-      <div class="step-week">Semana 10</div>
-      <h3>Cierre y transferencia</h3>
-      <p>Documentación completa, dashboards de seguimiento y plan de continuidad. Tu equipo puede operar sin depender de nosotros.</p>
+      <div class="sn">04</div><div class="sw" data-i18n="w4.wk">Semana 10</div>
+      <h3 data-i18n="w4.h3">Cierre y transferencia</h3>
+      <p data-i18n="w4.p">Documentaci&#243;n completa, dashboards de seguimiento y plan de continuidad. Tu equipo puede operar sin depender de nosotros.</p>
     </div>
   </div>
   <div class="how-callout reveal">
-    <div style="font-size:18px;flex-shrink:0;margin-top:2px">⚡</div>
-    <p>Los proyectos arrancan con un <strong>sprint de entrada de 10 semanas</strong>. Los entregables están comprometidos desde la firma — si no los cumplimos, renegociamos el alcance, no el resultado.</p>
+    <div style="font-size:18px;flex-shrink:0;margin-top:2px">&#9889;</div>
+    <p data-i18n="how.callout">Los proyectos arrancan con un <strong>sprint de entrada de 10 semanas</strong>. Los entregables est&#225;n comprometidos desde la firma &#8212; si no los cumplimos, renegociamos el alcance, no el resultado.</p>
   </div>
 </section>
 
-<!-- ── TEAM ── -->
-<section id="equipo" style="background:var(--off-white)">
+<!-- TEAM -->
+<section id="equipo" style="background:var(--off)">
   <div class="team-hdr reveal">
-    <div class="pill">Los socios</div>
-    <h2>Dos personas.<br><em>Un solo punto de contacto.</em></h2>
-    <p class="section-sub">En Omnia no hay equipos de analistas juniors ni cuentas manejadas por coordinadores. Trabajas directamente con quienes tienen experiencia.</p>
+    <div class="pill" data-i18n="team.pill">Los socios</div>
+    <h2 data-i18n="team.h2">Dos personas.<br><em>Un solo punto de contacto.</em></h2>
+    <p class="ssub" style="margin-top:14px" data-i18n="team.sub">En Omnia no hay equipos de analistas juniors ni cuentas manejadas por coordinadores. Trabajas directamente con quienes tienen experiencia.</p>
   </div>
   <div class="partners">
-    <div class="partner-card reveal">
-      <div class="p-avatar">AL</div>
-      <div class="p-role">Socio · Estrategia &amp; Desarrollo de Negocio</div>
+    <div class="p-card reveal">
+      <div class="p-av">AL</div>
+      <div class="p-role" data-i18n="aldo.role">Socio &#183; Estrategia &amp; Desarrollo de Negocio</div>
       <h3>Aldo</h3>
-      <p class="p-title">Lead Partner — Estrategia, Diagnóstico &amp; Crecimiento</p>
-      <p>Especialista en diagnóstico empresarial, estructuración de estrategias de crecimiento e inteligencia de mercado. Ha analizado y acompañado empresas en sectores de salud, proptech y servicios profesionales en México. Ve el negocio completo, identifica las brechas más costosas y diseña el camino más directo al resultado. Arquitecto del engagement y quien define qué se resuelve primero y por qué.</p>
+      <p class="p-title" data-i18n="aldo.title">Lead Partner &#8212; Estrategia, Diagn&#243;stico &amp; Crecimiento</p>
+      <p data-i18n="aldo.p">Especialista en diagn&#243;stico empresarial, estructuraci&#243;n de estrategias de crecimiento e inteligencia de mercado. Ha analizado y acompa&#241;ado empresas en sectores de salud, proptech y servicios profesionales en M&#233;xico. Arquitecto del engagement y quien define qu&#233; se resuelve primero y por qu&#233;.</p>
       <div class="p-tags">
-        <span class="p-tag">Diagnóstico estratégico</span>
-        <span class="p-tag">Inteligencia de mercado</span>
-        <span class="p-tag">Desarrollo de negocio</span>
-        <span class="p-tag">México</span>
+        <span class="ptag" data-i18n="at1">Diagn&#243;stico estrat&#233;gico</span>
+        <span class="ptag" data-i18n="at2">Inteligencia de mercado</span>
+        <span class="ptag" data-i18n="at3">Desarrollo de negocio</span>
+        <span class="ptag">M&#233;xico</span>
       </div>
     </div>
-    <div class="partner-card gold-top reveal d2">
-      <div class="p-avatar gold">ER</div>
-      <div class="p-role">Socio · Operaciones &amp; Implementación</div>
+    <div class="p-card gt reveal d2">
+      <div class="p-av gd">ER</div>
+      <div class="p-role" data-i18n="eric.role">Socio &#183; Operaciones &amp; Implementaci&#243;n</div>
       <h3>Eric</h3>
-      <p class="p-title">Lead Partner — Operaciones, Procesos &amp; Tecnología</p>
-      <p>Formación médica que migró a la consultoría de procesos y sistemas operativos. Especializado en diseñar e implementar estructuras operativas en empresas de servicios complejos, con profundidad en el sector salud. Es quien entra al terreno, mapea cómo funciona realmente el negocio y construye los sistemas que lo hacen escalar. Lidera la implementación técnica de CRM y la transformación operacional.</p>
+      <p class="p-title" data-i18n="eric.title">Lead Partner &#8212; Operaciones, Procesos &amp; Tecnolog&#237;a</p>
+      <p data-i18n="eric.p">Formaci&#243;n m&#233;dica que migr&#243; a la consultor&#237;a de procesos y sistemas operativos. Especializado en dise&#241;ar e implementar estructuras operativas en empresas de servicios complejos, con profundidad en el sector salud. Lidera la implementaci&#243;n t&#233;cnica de CRM y la transformaci&#243;n operacional.</p>
       <div class="p-tags">
-        <span class="p-tag">Operaciones &amp; procesos</span>
-        <span class="p-tag">CRM &amp; tecnología</span>
-        <span class="p-tag">Sector salud</span>
-        <span class="p-tag">Implementación</span>
+        <span class="ptag" data-i18n="et1">Operaciones &amp; procesos</span>
+        <span class="ptag" data-i18n="et2">CRM &amp; tecnolog&#237;a</span>
+        <span class="ptag" data-i18n="et3">Sector salud</span>
+        <span class="ptag" data-i18n="et4">Implementaci&#243;n</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── CTA / FORM ── -->
-<section id="contacto">
+<!-- CTA / FORM -->
+<section id="contacto" style="background:var(--navy-deep);position:relative;overflow:hidden">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 72% 50%,rgba(43,93,166,.3) 0%,transparent 65%);pointer-events:none"></div>
   <div class="cta-inner">
     <div class="cta-copy reveal">
-      <div class="pill gold">Primer paso</div>
-      <h2 class="light">¿Es este el momento <em>adecuado?</em></h2>
-      <p class="section-sub">Si reconociste alguno de los dolores de arriba, probablemente sí. El diagnóstico inicial no te compromete a nada — es para ver si tenemos fit y si podemos ayudarte de verdad.</p>
+      <div class="pill gp" data-i18n="cta.pill">Primer paso</div>
+      <h2 class="lw" data-i18n="cta.h2">&#191;Es este el momento <em>adecuado?</em></h2>
+      <p class="ssub" data-i18n="cta.sub">Si reconociste alguno de los dolores de arriba, probablemente s&#237;. El diagn&#243;stico inicial no te compromete a nada &#8212; es para ver si tenemos fit y si podemos ayudarte de verdad.</p>
       <div class="trust-list">
-        <div class="trust-item"><div class="t-check">✓</div><span>Respuesta en menos de 24 horas hábiles</span></div>
-        <div class="trust-item"><div class="t-check">✓</div><span>Primera conversación sin costo ni compromiso</span></div>
-        <div class="trust-item"><div class="t-check">✓</div><span>Hablas directamente con los socios — no con un equipo de ventas</span></div>
-        <div class="trust-item"><div class="t-check">✓</div><span>Si no somos el fit correcto, te decimos a quién acudir</span></div>
+        <div class="trust-item"><div class="tck">&#10003;</div><span data-i18n="tr1">Respuesta en menos de 24 horas h&#225;biles</span></div>
+        <div class="trust-item"><div class="tck">&#10003;</div><span data-i18n="tr2">Primera conversaci&#243;n sin costo ni compromiso</span></div>
+        <div class="trust-item"><div class="tck">&#10003;</div><span data-i18n="tr3">Hablas directamente con los socios &#8212; no con un equipo de ventas</span></div>
+        <div class="trust-item"><div class="tck">&#10003;</div><span data-i18n="tr4">Si no somos el fit correcto, te decimos a qui&#233;n acudir</span></div>
       </div>
     </div>
     <div class="form-wrap reveal d2">
       <div id="theForm">
-        <h3>Solicita tu diagnóstico</h3>
-        <p class="form-sub">Cuéntanos brevemente en qué está tu empresa. Con eso preparamos una conversación que valga la pena.</p>
-        <div class="form-2col">
-          <div class="form-group"><label>Nombre completo</label><input type="text" id="fname" placeholder="Tu nombre" required></div>
-          <div class="form-group"><label>Empresa</label><input type="text" id="fcompany" placeholder="Nombre de tu empresa" required></div>
+        <h3 data-i18n="form.h3">Solicita tu diagn&#243;stico</h3>
+        <p class="fsub" data-i18n="form.sub">Cu&#233;ntanos brevemente en qu&#233; est&#225; tu empresa. Con eso preparamos una conversaci&#243;n que valga la pena.</p>
+        <div class="fg2">
+          <div class="fg"><label data-i18n="form.lname">Nombre completo</label><input type="text" id="fname" data-i18n-ph="form.ph.name" placeholder="Tu nombre"></div>
+          <div class="fg"><label data-i18n="form.lco">Empresa</label><input type="text" id="fcompany" data-i18n-ph="form.ph.co" placeholder="Nombre de tu empresa"></div>
         </div>
-        <div class="form-group">
-          <label>Industria</label>
-          <select id="findustry" required>
-            <option value="">Selecciona una opción…</option>
-            <option>Salud / Clínicas</option>
-            <option>Retail / Comercio</option>
-            <option>Servicios profesionales</option>
-            <option>Tecnología / SaaS</option>
-            <option>Real estate / Proptech</option>
-            <option>Manufactura / Industrial</option>
-            <option>Educación</option>
-            <option>Otro</option>
+        <div class="fg">
+          <label data-i18n="form.lind">Industria</label>
+          <select id="findustry">
+            <option value="" data-i18n="form.sel">Selecciona una opci&#243;n&#8230;</option>
+            <option data-i18n="ind1">Salud / Cl&#237;nicas</option>
+            <option data-i18n="ind2">Retail / Comercio</option>
+            <option data-i18n="ind3">Servicios profesionales</option>
+            <option data-i18n="ind4">Tecnolog&#237;a / SaaS</option>
+            <option data-i18n="ind5">Real estate / Proptech</option>
+            <option data-i18n="ind6">Manufactura / Industrial</option>
+            <option data-i18n="ind7">Educaci&#243;n</option>
+            <option data-i18n="ind8">Otro</option>
           </select>
         </div>
-        <div class="form-group"><label>¿Cuál es el mayor reto que enfrenta tu empresa ahora mismo?</label><textarea id="fchallenge" placeholder="Sin presentaciones, sin filtros. ¿Qué está pasando y qué no está funcionando?" required></textarea></div>
-        <button class="form-btn" id="submitBtn" type="button" onclick="handleSubmit()">Enviar — solicitar diagnóstico <span class="fa">→</span></button>
-        <p class="form-disc">Al enviar se abrirá WhatsApp con tu mensaje listo. Lo reciben directamente Aldo o Eric.</p>
+        <div class="fg"><label data-i18n="form.lch">&#191;Cu&#225;l es el mayor reto que enfrenta tu empresa ahora mismo?</label><textarea id="fchallenge" data-i18n-ph="form.ph.ch" placeholder="Sin presentaciones, sin filtros. &#191;Qu&#233; est&#225; pasando y qu&#233; no est&#225; funcionando?"></textarea></div>
+        <button class="fbtn" id="submitBtn" type="button" onclick="handleSubmit()"><span data-i18n="form.btn">Enviar &#8212; solicitar diagn&#243;stico</span> <span class="fa">&#8594;</span></button>
+        <p class="fdisc" data-i18n="form.disc">Al enviar se abrir&#225; WhatsApp con tu mensaje listo. Lo reciben directamente Aldo o Eric.</p>
       </div>
-      <div class="form-success" id="formSuccess">
-        <div class="s-icon">✓</div>
-        <h4>¡Mensaje enviado!</h4>
-        <p>Se abrió WhatsApp con tu información. Aldo o Eric te responden en menos de 24 horas hábiles.</p>
+      <div class="fsuccess" id="formSuccess">
+        <div class="sico">&#10003;</div>
+        <h4 data-i18n="ok.h4">&#161;Mensaje enviado!</h4>
+        <p data-i18n="ok.p">Se abri&#243; WhatsApp con tu informaci&#243;n. Aldo o Eric te responden en menos de 24 horas h&#225;biles.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── FOOTER ── -->
 <footer>
-  <div class="footer-logo">
-    <div class="brand">ØMNIA</div>
-    <div class="sub">Transformation Partners</div>
+  <div class="flogo">
+    <div class="brand">&#216;MNIA</div>
+    <div class="sub" data-i18n="foot.sub">Transformation Partners</div>
   </div>
-  <div class="footer-right" style="text-align:right">
+  <div class="fright">
     <a href="mailto:hola@omniaex.com">hola@omniaex.com</a>
-    <a href="#inicio">México · Consultoría Boutique</a>
-    <div class="copy">© 2025 Omnia Transformation Partners. Todos los derechos reservados.</div>
+    <a href="#inicio" data-i18n="foot.link">M&#233;xico &#183; Consultor&#237;a Boutique</a>
+    <div class="copy" data-i18n="foot.copy">&#169; 2025 Omnia Transformation Partners. Todos los derechos reservados.</div>
   </div>
 </footer>
 
 <script>
-// Nav shadow on scroll
-const nav=document.getElementById('nav');
-window.addEventListener('scroll',function(){nav.classList.toggle('scrolled',window.scrollY>20);});
+var LANG = "es";
 
-// Hamburger
-const burger=document.getElementById('hamburger');
-const menu=document.getElementById('mobileMenu');
-burger.addEventListener('click',function(){burger.classList.toggle('open');menu.classList.toggle('open');});
-function closeMobile(){burger.classList.remove('open');menu.classList.remove('open');}
+var T = {
+  es: {
+    "nav.diag":"Diagnóstico","nav.svc":"Servicios","nav.how":"Cómo trabajamos","nav.team":"El equipo",
+    "nav.cta":"Solicita tu diagnóstico","nav.mob":"Solicita tu diagnóstico →",
+    "hero.eyebrow":"Consultoría boutique · México",
+    "hero.h1":"Tu empresa crece.<br><em>Tu operación no<br>está lista para eso.</em>",
+    "hero.sub":"Alineamos estrategia, procesos y tecnología para que cada área de tu negocio funcione como un sistema — no como islas independientes. En sprints concretos, con entregables reales desde la primera semana.",
+    "hero.cta1":"Solicita tu diagnóstico inicial","hero.cta2":"Ver cómo trabajamos",
+    "hero.s1":"Semanas · sprint de entrada","hero.s2":"Entregables definidos desde el día 1","hero.s3":"Socios senior. Sin intermediarios.",
+    "tick.1":"Solo México","tick.2":"PyMEs & empresas medianas","tick.3":"Consultoría senior directa",
+    "tick.4":"Sin analistas junior","tick.5":"Sprints de 10 semanas","tick.6":"Entregables comprometidos desde la firma","tick.7":"Estrategia + ejecución",
+    "pain.pill":"¿Te suena familiar?","pain.h2":"Los dolores que traen a nuestros <em>clientes con nosotros</em>",
+    "pain.sub":"No hace falta que encajes en todos. Con uno solo es suficiente para que valga la pena hablar.",
+    "p1.tag":"Estancamiento","p1.h3":"Crecen las operaciones, no la estructura",
+    "p1.p":"Todo depende de dos o tres personas clave. Cuando escala el volumen, el sistema se rompe y ya no puedes crecer sin reconstruir primero.",
+    "p2.tag":"Estrategia","p2.h3":"La estrategia existe en slides, no en el día a día",
+    "p2.p":"Definieron objetivos, contrataron consultores, presentaron a directivos. Seis meses después, nada cambió en la operación real.",
+    "p3.tag":"Tecnología","p3.h3":"Tienen un CRM que nadie usa",
+    "p3.p":"Compraron Zoho, HubSpot o Salesforce. Hay licencias pagadas. Pero el equipo sigue en Excel y WhatsApp porque nadie lo configuró de verdad.",
+    "p4.tag":"Ejecución","p4.h3":"Saben qué cambiar. No tienen quién lo haga",
+    "p4.p":"El dueño ve exactamente los problemas. El equipo está en modo operativo al 100%. Nadie tiene ancho de banda para liderar la transformación.",
+    "pain.quote":"“No vendemos diagnósticos para guardar en un cajón. <strong>Entramos, ejecutamos y nos medimos por resultados</strong> — no por horas entregadas.”",
+    "sec.pill":"Dónde operamos","sec.h2":"Sectores donde <em>hemos trabajado</em>",
+    "sec.sub":"Sin comprometer la confidencialidad de ningún cliente — trabajamos en industrias donde la operación interna es crítica para el crecimiento.",
+    "st1":"Salud & Clínicas","st2":"Servicios Profesionales","st3":"Retail","st4":"Proptech","st5":"Manufactura","st6":"Educación",
+    "res.label":"Resultado real · Caso anonimizado",
+    "res.quote":"“Una empresa de servicios en CDMX redujo su ciclo de venta de 45 a 18 días en su primer sprint con nosotros.”",
+    "res.src":"Empresa de servicios profesionales · Ciudad de México · Sprint 10 semanas",
+    "svc.pill":"Servicios","svc.h2":"Lo que <em>hacemos</em>","svc.sub":"Tres grandes áreas. Pueden ir juntas o por separado, según dónde esté el mayor cuello de botella.",
+    "s1.h3":"Diagnóstico Estratégico","s1.p":"Entramos al negocio, hacemos las preguntas incómodas y entregamos un mapa claro de dónde estás y qué falta para llegar a donde quieres ir. Sin marcos genéricos — diagnóstico a medida con plan de acción priorizado.","s1.dur":"3–4 semanas",
+    "s2.h3":"Transformación Operacional","s2.p":"Rediseñamos los procesos que hoy frenan tu crecimiento. Desde flujos de atención al cliente hasta operaciones internas críticas. Mapeo As-Is vs. To-Be e implementación real con tu equipo.","s2.dur":"6–10 semanas",
+    "s3.h3":"Activación de CRM y Tecnología","s3.p":"Configuramos, migramos y activamos el CRM o plataforma que ya tienes — Zoho, HubSpot, Salesforce. Lo dejamos funcionando en el día a día, no como prueba piloto.","s3.dur":"6–8 semanas",
+    "s4.h3":"Sprint de Implementación","s4.p":"Engagement estructurado de 8–10 semanas con 4 entregables definidos desde el día uno. Checkpoints semanales, accountability total. Si no cumplimos los entregables, renegociamos el alcance — no el resultado.","s4.dur":"Para quienes ya saben qué necesitan",
+    "how.pill":"Modelo de trabajo","how.h2":"Cómo <em>trabajamos</em>",
+    "how.sub":"Antes de hacer cualquier propuesta, hacemos tarea. Llegamos a la primera reunión con información de tu empresa, tu mercado y tus competidores. No para impresionar — para no perder el tiempo de nadie.",
+    "w1.wk":"Semana 1–2","w1.h3":"Diagnóstico previo","w1.p":"Analizamos tu empresa antes del primer meeting. Llegamos con información, no con preguntas genéricas.",
+    "w2.wk":"Semana 3–4","w2.h3":"Mapa de brechas","w2.p":"Diagnóstico escrito con hallazgos, prioridades y propuesta concreta — scope, timeline y entregables definidos.",
+    "w3.wk":"Semanas 5–9","w3.h3":"Implementación en sprint","w3.p":"Ejecutamos con tu equipo. Checkpoints semanales. Entregables tangibles que aterrizan en algo concreto y medible.",
+    "w4.wk":"Semana 10","w4.h3":"Cierre y transferencia","w4.p":"Documentación completa, dashboards de seguimiento y plan de continuidad. Tu equipo puede operar sin depender de nosotros.",
+    "how.callout":"Los proyectos arrancan con un <strong>sprint de entrada de 10 semanas</strong>. Los entregables están comprometidos desde la firma — si no los cumplimos, renegociamos el alcance, no el resultado.",
+    "team.pill":"Los socios","team.h2":"Dos personas.<br><em>Un solo punto de contacto.</em>",
+    "team.sub":"En Omnia no hay equipos de analistas juniors ni cuentas manejadas por coordinadores. Trabajas directamente con quienes tienen experiencia.",
+    "aldo.role":"Socio · Estrategia & Desarrollo de Negocio","aldo.title":"Lead Partner — Estrategia, Diagnóstico & Crecimiento",
+    "aldo.p":"Especialista en diagnóstico empresarial, estructuración de estrategias de crecimiento e inteligencia de mercado. Ha analizado y acompañado empresas en sectores de salud, proptech y servicios profesionales en México. Arquitecto del engagement y quien define qué se resuelve primero y por qué.",
+    "at1":"Diagnóstico estratégico","at2":"Inteligencia de mercado","at3":"Desarrollo de negocio",
+    "eric.role":"Socio · Operaciones & Implementación","eric.title":"Lead Partner — Operaciones, Procesos & Tecnología",
+    "eric.p":"Formación médica que migró a la consultoría de procesos y sistemas operativos. Especializado en diseñar e implementar estructuras operativas en empresas de servicios complejos, con profundidad en el sector salud. Lidera la implementación técnica de CRM y la transformación operacional.",
+    "et1":"Operaciones & procesos","et2":"CRM & tecnología","et3":"Sector salud","et4":"Implementación",
+    "cta.pill":"Primer paso","cta.h2":"¿Es este el momento <em>adecuado?</em>",
+    "cta.sub":"Si reconociste alguno de los dolores de arriba, probablemente sí. El diagnóstico inicial no te compromete a nada — es para ver si tenemos fit y si podemos ayudarte de verdad.",
+    "tr1":"Respuesta en menos de 24 horas hábiles","tr2":"Primera conversación sin costo ni compromiso",
+    "tr3":"Hablas directamente con los socios — no con un equipo de ventas","tr4":"Si no somos el fit correcto, te decimos a quién acudir",
+    "form.h3":"Solicita tu diagnóstico","form.sub":"Cuéntanos brevemente en qué está tu empresa. Con eso preparamos una conversación que valga la pena.",
+    "form.lname":"Nombre completo","form.lco":"Empresa","form.lind":"Industria","form.lch":"¿Cuál es el mayor reto que enfrenta tu empresa ahora mismo?",
+    "form.sel":"Selecciona una opción…","form.ph.name":"Tu nombre","form.ph.co":"Nombre de tu empresa","form.ph.ch":"Sin presentaciones, sin filtros. ¿Qué está pasando y qué no está funcionando?",
+    "ind1":"Salud / Clínicas","ind2":"Retail / Comercio","ind3":"Servicios profesionales","ind4":"Tecnología / SaaS","ind5":"Real estate / Proptech","ind6":"Manufactura / Industrial","ind7":"Educación","ind8":"Otro",
+    "form.btn":"Enviar — solicitar diagnóstico","form.disc":"Al enviar se abrirá WhatsApp con tu mensaje listo. Lo reciben directamente Aldo o Eric.",
+    "ok.h4":"¡Mensaje enviado!","ok.p":"Se abrió WhatsApp con tu información. Aldo o Eric te responden en menos de 24 horas hábiles.",
+    "foot.sub":"Transformation Partners","foot.link":"México · Consultoría Boutique","foot.copy":"© 2025 Omnia Transformation Partners. Todos los derechos reservados."
+  },
+  en: {
+    "nav.diag":"Assessment","nav.svc":"Services","nav.how":"How we work","nav.team":"The team",
+    "nav.cta":"Request an assessment","nav.mob":"Request an assessment →",
+    "hero.eyebrow":"Boutique consulting · Mexico",
+    "hero.h1":"Your company grows.<br><em>Your operations aren’t<br>ready for that.</em>",
+    "hero.sub":"We align strategy, processes, and technology so every area of your business works as a system — not as independent silos. In concrete sprints, with real deliverables from day one.",
+    "hero.cta1":"Request your initial assessment","hero.cta2":"See how we work",
+    "hero.s1":"Weeks · entry sprint","hero.s2":"Deliverables defined from day 1","hero.s3":"Senior partners. No intermediaries.",
+    "tick.1":"Mexico Only","tick.2":"SMEs & mid-sized companies","tick.3":"Senior consulting direct",
+    "tick.4":"No junior analysts","tick.5":"10-week sprints","tick.6":"Deliverables committed at signing","tick.7":"Strategy + execution",
+    "pain.pill":"Does this sound familiar?","pain.h2":"The pain points that bring our <em>clients to us</em>",
+    "pain.sub":"You don’t need to relate to all of them. Just one is enough to make a conversation worthwhile.",
+    "p1.tag":"Stagnation","p1.h3":"Operations grow, but structure doesn’t",
+    "p1.p":"Everything depends on two or three key people. When volume scales, the system breaks and you can’t grow without rebuilding first.",
+    "p2.tag":"Strategy","p2.h3":"Strategy lives in slides, not in daily operations",
+    "p2.p":"They set goals, hired consultants, presented to leadership. Six months later, nothing changed in actual operations.",
+    "p3.tag":"Technology","p3.h3":"They have a CRM no one uses",
+    "p3.p":"They bought Zoho, HubSpot, or Salesforce. Licenses are being paid. But the team still runs on Excel and WhatsApp because no one truly configured it.",
+    "p4.tag":"Execution","p4.h3":"They know what to change. They have no one to do it",
+    "p4.p":"The owner sees the problems clearly. The team is 100% in operational mode. No one has the bandwidth to lead the transformation.",
+    "pain.quote":"“We don’t sell diagnoses to be filed away in a drawer. <strong>We come in, execute, and measure ourselves by results</strong> — not by hours billed.”",
+    "sec.pill":"Where we operate","sec.h2":"Sectors where <em>we’ve worked</em>",
+    "sec.sub":"Without compromising any client’s confidentiality — we work in industries where internal operations are critical to growth.",
+    "st1":"Healthcare & Clinics","st2":"Professional Services","st3":"Retail","st4":"Proptech","st5":"Manufacturing","st6":"Education",
+    "res.label":"Real result · Anonymized case",
+    "res.quote":"“A professional services firm in Mexico City reduced its sales cycle from 45 to 18 days in their first sprint with us.”",
+    "res.src":"Professional services company · Mexico City · 10-week sprint",
+    "svc.pill":"Services","svc.h2":"What <em>we do</em>","svc.sub":"Three core areas. They can be combined or standalone, depending on where your biggest bottleneck is.",
+    "s1.h3":"Strategic Assessment","s1.p":"We enter the business, ask the uncomfortable questions, and deliver a clear map of where you are and what it takes to get where you want to go. No generic frameworks — a custom diagnosis with a prioritized action plan.","s1.dur":"3–4 weeks",
+    "s2.h3":"Operational Transformation","s2.p":"We redesign the processes that are holding your growth back. From customer-facing flows to critical internal operations. As-Is vs. To-Be mapping and real implementation with your team.","s2.dur":"6–10 weeks",
+    "s3.h3":"CRM & Technology Activation","s3.p":"We configure, migrate, and activate the CRM or platform you already have — Zoho, HubSpot, Salesforce. We leave it running in day-to-day operations, not as a pilot — as a real tool your team actually uses.","s3.dur":"6–8 weeks",
+    "s4.h3":"Implementation Sprint","s4.p":"A structured 8–10 week engagement with 4 deliverables defined from day one. Weekly checkpoints, full accountability. If we don’t meet the deliverables, we renegotiate scope — not the result.","s4.dur":"For those who already know what they need",
+    "how.pill":"How we work","how.h2":"How <em>we work</em>",
+    "how.sub":"Before making any proposal, we do our homework. We arrive at the first meeting with information about your company, your market, and your competitors. Not to impress — to avoid wasting anyone’s time.",
+    "w1.wk":"Week 1–2","w1.h3":"Prior assessment","w1.p":"We analyze your company before the first meeting. We arrive with information, not generic questions.",
+    "w2.wk":"Week 3–4","w2.h3":"Gap mapping","w2.p":"A written diagnosis with findings, priorities, and a concrete work proposal — scope, timeline, and defined deliverables.",
+    "w3.wk":"Weeks 5–9","w3.h3":"Sprint implementation","w3.p":"We execute alongside your team. Weekly checkpoints. Tangible deliverables that translate into something concrete and measurable.",
+    "w4.wk":"Week 10","w4.h3":"Closure & handover","w4.p":"Full documentation, tracking dashboards, and a continuity plan. Your team can operate what we built without depending on us.",
+    "how.callout":"Projects kick off with a <strong>10-week entry sprint</strong>. Deliverables are committed at signing — if we don’t meet them, we renegotiate scope, not the result.",
+    "team.pill":"The partners","team.h2":"Two people.<br><em>One single point of contact.</em>",
+    "team.sub":"At Omnia there are no junior analyst teams or accounts managed by coordinators. You work directly with the experienced people.",
+    "aldo.role":"Partner · Strategy & Business Development","aldo.title":"Lead Partner — Strategy, Assessment & Growth",
+    "aldo.p":"Specialist in business diagnostics, growth strategy design, and market intelligence. Has analyzed and supported companies in healthcare, proptech, and professional services sectors in Mexico. Engagement architect and the one who defines what gets solved first and why.",
+    "at1":"Strategic assessment","at2":"Market intelligence","at3":"Business development",
+    "eric.role":"Partner · Operations & Implementation","eric.title":"Lead Partner — Operations, Processes & Technology",
+    "eric.p":"Medical background that transitioned into process consulting and operational systems. Specialized in designing and implementing operational structures in complex service businesses, with deep expertise in healthcare. Leads CRM technical implementation and operational transformation.",
+    "et1":"Operations & processes","et2":"CRM & technology","et3":"Healthcare sector","et4":"Implementation",
+    "cta.pill":"First step","cta.h2":"Is this the <em>right moment?</em>",
+    "cta.sub":"If you recognized any of the pain points above, probably yes. The initial assessment doesn’t commit you to anything — it’s to see if there’s a fit and if we can truly help.",
+    "tr1":"Response within 24 business hours","tr2":"First conversation at no cost or commitment",
+    "tr3":"You speak directly with the partners — not a sales team","tr4":"If we’re not the right fit, we’ll tell you who is",
+    "form.h3":"Request your assessment","form.sub":"Tell us briefly where your company stands. That’s enough for us to prepare a conversation worth having.",
+    "form.lname":"Full name","form.lco":"Company","form.lind":"Industry","form.lch":"What is the biggest challenge your company faces right now?",
+    "form.sel":"Select an option…","form.ph.name":"Your name","form.ph.co":"Company name","form.ph.ch":"No presentations, no filters. What’s happening and what’s not working?",
+    "ind1":"Healthcare / Clinics","ind2":"Retail / Commerce","ind3":"Professional services","ind4":"Technology / SaaS","ind5":"Real estate / Proptech","ind6":"Manufacturing / Industrial","ind7":"Education","ind8":"Other",
+    "form.btn":"Send — request assessment","form.disc":"Sending will open WhatsApp with your message ready. Aldo or Eric receive it directly.",
+    "ok.h4":"Message sent!","ok.p":"WhatsApp opened with your information. Aldo or Eric will respond within 24 business hours.",
+    "foot.sub":"Transformation Partners","foot.link":"Mexico · Boutique Consulting","foot.copy":"© 2025 Omnia Transformation Partners. All rights reserved."
+  }
+};
 
-// Reveal on scroll — with hard fallback so content is ALWAYS visible
-var revEls=document.querySelectorAll('.reveal');
-// Hard fallback: show everything after 1s no matter what
-setTimeout(function(){revEls.forEach(function(el){el.classList.add('visible');});},1000);
-// Progressive enhancement: smooth reveal
-try {
-  var io=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible');});
-  },{threshold:0.08});
-  revEls.forEach(function(el){io.observe(el);});
-} catch(err){
-  revEls.forEach(function(el){el.classList.add('visible');});
+function setLang(lang) {
+  LANG = lang;
+  document.getElementById("btnES").classList.toggle("active", lang === "es");
+  document.getElementById("btnEN").classList.toggle("active", lang === "en");
+  document.querySelectorAll("[data-i18n]").forEach(function(el) {
+    var key = el.getAttribute("data-i18n");
+    if (T[lang] && T[lang][key] !== undefined) {
+      el.innerHTML = T[lang][key];
+    }
+  });
+  document.querySelectorAll("[data-i18n-ph]").forEach(function(el) {
+    var key = el.getAttribute("data-i18n-ph");
+    if (T[lang] && T[lang][key] !== undefined) {
+      el.placeholder = T[lang][key];
+    }
+  });
+  document.querySelectorAll("html")[0].lang = lang;
 }
 
-// WhatsApp form submit
-function handleSubmit(){
-  var name=document.getElementById('fname').value.trim();
-  var company=document.getElementById('fcompany').value.trim();
-  var industry=document.getElementById('findustry').value;
-  var challenge=document.getElementById('fchallenge').value.trim();
-  if(!name||!company||!industry||!challenge){
-    var btn=document.getElementById('submitBtn');
-    btn.style.background='#c0392b';
-    btn.textContent='Completa todos los campos';
-    setTimeout(function(){
-      btn.style.background='';
-      btn.textContent='Enviar — solicitar diagnóstico →';
-    },2000);
+var nav = document.getElementById("nav");
+window.addEventListener("scroll", function() { nav.classList.toggle("scrolled", window.scrollY > 20); });
+
+var burger = document.getElementById("hamburger");
+var menu = document.getElementById("mobileMenu");
+burger.addEventListener("click", function() { burger.classList.toggle("open"); menu.classList.toggle("open"); });
+function closeMobile() { burger.classList.remove("open"); menu.classList.remove("open"); }
+
+var revEls = document.querySelectorAll(".reveal");
+setTimeout(function() { revEls.forEach(function(el) { el.classList.add("visible"); }); }, 900);
+try {
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add("visible"); });
+  }, { threshold: 0.08 });
+  revEls.forEach(function(el) { io.observe(el); });
+} catch(e) {
+  revEls.forEach(function(el) { el.classList.add("visible"); });
+}
+
+function handleSubmit() {
+  var name = document.getElementById("fname").value.trim();
+  var company = document.getElementById("fcompany").value.trim();
+  var industry = document.getElementById("findustry").value;
+  var challenge = document.getElementById("fchallenge").value.trim();
+  if (!name || !company || !industry || !challenge) {
+    var btn = document.getElementById("submitBtn");
+    btn.style.background = "#c0392b";
+    btn.querySelector("[data-i18n]").textContent = LANG === "es" ? "Completa todos los campos" : "Please fill all fields";
+    setTimeout(function() {
+      btn.style.background = "";
+      btn.querySelector("[data-i18n]").innerHTML = T[LANG]["form.btn"];
+    }, 2000);
     return;
   }
-  var nl='%0A';
-  var waMsg=
-    '%F0%9F%94%94+*Nuevo+lead+%E2%80%94+Omnia+Transformation+Partners*'+nl+nl+
-    '*Nombre:*+'+encodeURIComponent(name)+nl+
-    '*Empresa:*+'+encodeURIComponent(company)+nl+
-    '*Industria:*+'+encodeURIComponent(industry)+nl+nl+
-    '*%C2%BFCu%C3%A1l+es+su+mayor+reto%3F*'+nl+
-    encodeURIComponent(challenge)+nl+nl+
-    '_Enviado+desde+home.omniaex.com_';
-  var a=document.createElement('a');
-  a.href='https://wa.me/525514745072?text='+waMsg;
-  a.target='_blank';
-  a.rel='noopener noreferrer';
+  var isEN = (LANG === "en");
+  var nl = "%0A";
+  var bell = "%F0%9F%94%94+";
+  var header = isEN ? bell + "*New+lead+%E2%80%94+Omnia+Transformation+Partners*" : bell + "*Nuevo+lead+%E2%80%94+Omnia+Transformation+Partners*";
+  var lname = isEN ? "*Name:*+" : "*Nombre:*+";
+  var lco = isEN ? "*Company:*+" : "*Empresa:*+";
+  var lind = isEN ? "*Industry:*+" : "*Industria:*+";
+  var lch = isEN ? "*Main+challenge:*" : "*Mayor+reto:*";
+  var lsrc = isEN ? "_Sent+from+home.omniaex.com_" : "_Enviado+desde+home.omniaex.com_";
+  var msg = header + nl + nl + lname + encodeURIComponent(name) + nl + lco + encodeURIComponent(company) + nl + lind + encodeURIComponent(industry) + nl + nl + lch + nl + encodeURIComponent(challenge) + nl + nl + lsrc;
+  var a = document.createElement("a");
+  a.href = "https://wa.me/525514745072?text=" + msg;
+  a.target = "_blank";
+  a.rel = "noopener noreferrer";
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  document.getElementById('theForm').style.display='none';
-  document.getElementById('formSuccess').classList.add('visible');
+  document.getElementById("theForm").style.display = "none";
+  document.getElementById("formSuccess").classList.add("visible");
 }
 </script>
 </body>
