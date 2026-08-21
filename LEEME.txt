@@ -1,0 +1,14 @@
+SEGLE Pedidos Distribuidores - prototipo configurable
+
+MODO LOCAL
+1. Abre index.html con Chrome o Edge.
+2. Sin URL de Apps Script funciona como demostración y permite descargar CSV/XLS.
+
+MODO CONECTADO
+1. Despliega primero el Apps Script.
+2. Abre config.js con un editor de texto.
+3. Pega entre comillas la URL que termina en /exec.
+4. Guarda config.js y sube index.html + config.js juntos a tu hosting.
+5. Entra con DIST-DEMO y el PIN configurado.
+
+El servidor vuelve a validar catálogo, promociones, stock y PIN. Nunca coloques contraseñas dentro de config.js.
