@@ -6,181 +6,158 @@
   <title>SEGLE | Buen Fin 2026</title>
 
   <style>
-    :root {
-      --bg:#f7f7f5;
-      --card:#fff;
-      --text:#1d1d1f;
-      --muted:#6b6b70;
-      --line:#e3e3e6;
-      --dark:#111;
-      --green:#147d45;
+    :root{
+      --bg:#f7f7f5;--card:#fff;--text:#1d1d1f;--muted:#6b6b70;
+      --line:#e3e3e6;--dark:#111;--green:#147d45;
+      --success:#f3f8f5;--success-line:#d7eadf;
+      --error:#fff3f1;--error-line:#efd2cc;
     }
 
     *{box-sizing:border-box}
 
     body{
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
+      margin:0;background:var(--bg);color:var(--text);
       font-family:Arial,Helvetica,sans-serif;
     }
 
     .page{
-      width:min(100%,560px);
-      margin:auto;
-      padding:20px 16px 44px;
+      width:min(100%,980px);margin:0 auto;padding:18px 18px 44px;
     }
 
     .brand{
-      text-align:center;
-      font-weight:800;
-      letter-spacing:2.4px;
-      margin-top:4px;
+      text-align:center;font-weight:800;letter-spacing:2.4px;margin-top:3px;
     }
 
     .campaign{
-      text-align:center;
-      color:var(--muted);
-      font-size:12px;
-      margin:6px 0 18px;
+      text-align:center;color:var(--muted);font-size:12px;margin:5px 0 14px;
     }
 
     .doctor{
-      text-align:center;
-      font-size:14px;
-      margin-bottom:14px;
+      text-align:center;font-size:14px;margin-bottom:13px;min-height:18px;
     }
 
     .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:18px;
-      box-shadow:0 8px 26px rgba(0,0,0,.04);
+      background:var(--card);border:1px solid var(--line);border-radius:18px;
+      padding:16px;box-shadow:0 8px 26px rgba(0,0,0,.04);
     }
 
     .tabs{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:8px;
-      margin-bottom:20px;
+      display:grid;grid-template-columns:1fr 1fr;gap:8px;
+      max-width:430px;margin:0 auto 16px;
     }
 
     .tab{
-      min-height:44px;
-      border:1px solid var(--line);
-      border-radius:11px;
-      background:#fff;
-      font-weight:700;
-      cursor:pointer;
+      min-height:42px;border:1px solid var(--line);border-radius:11px;
+      background:#fff;font-weight:700;cursor:pointer;
     }
 
     .tab.active{
-      background:var(--dark);
-      border-color:var(--dark);
-      color:#fff;
+      background:var(--dark);border-color:var(--dark);color:#fff;
     }
 
-    h1{font-size:22px;margin:0 0 7px}
+    .workspace{
+      display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+      gap:16px;align-items:start;
+    }
+
+    .panel{min-width:0}
+
+    .form-panel{
+      max-width:430px;width:100%;justify-self:end;
+    }
+
+    .result-column{
+      min-height:380px;border-left:1px solid var(--line);padding-left:16px;
+    }
+
+    h1{font-size:20px;margin:0 0 6px}
 
     .intro{
-      margin:0 0 18px;
-      color:var(--muted);
-      font-size:14px;
-      line-height:1.5;
+      margin:0 0 14px;color:var(--muted);font-size:13px;line-height:1.45;
     }
 
     label{
-      display:block;
-      margin:14px 0 7px;
-      font-size:13px;
-      font-weight:700;
+      display:block;margin:11px 0 6px;font-size:12px;font-weight:700;
     }
 
     input{
-      width:100%;
-      min-height:48px;
-      padding:0 13px;
-      border:1px solid #d2d2d6;
-      border-radius:11px;
-      background:#fff;
-      font-size:16px;
+      width:100%;height:43px;padding:0 12px;border:1px solid #d2d2d6;
+      border-radius:10px;background:#fff;font-size:15px;
     }
 
     button.primary{
-      width:100%;
-      min-height:50px;
-      margin-top:18px;
-      border:0;
-      border-radius:12px;
-      background:var(--dark);
-      color:#fff;
-      font-weight:800;
-      font-size:15px;
-      cursor:pointer;
+      width:100%;min-height:46px;margin-top:15px;border:0;border-radius:11px;
+      background:var(--dark);color:#fff;font-weight:800;font-size:14px;cursor:pointer;
     }
 
     button.secondary{
-      width:100%;
-      min-height:48px;
-      margin-top:10px;
-      border:1px solid var(--line);
-      border-radius:12px;
-      background:#fff;
-      font-weight:700;
-      cursor:pointer;
+      width:100%;min-height:44px;margin-top:9px;border:1px solid var(--line);
+      border-radius:11px;background:#fff;font-weight:700;cursor:pointer;
     }
 
     button.green{background:var(--green)}
-    button:disabled{opacity:.5;cursor:default}
+    button:disabled{opacity:.55;cursor:default}
     .hidden{display:none!important}
 
+    .placeholder{
+      display:flex;min-height:330px;border:1px dashed #d7d7da;border-radius:14px;
+      align-items:center;justify-content:center;text-align:center;padding:24px;
+      color:var(--muted);background:#fafafa;font-size:13px;line-height:1.5;
+    }
+
     .result{
-      margin-top:18px;
-      padding:17px;
-      border:1px solid #d7eadf;
-      border-radius:14px;
-      background:#f3f8f5;
+      padding:16px;border:1px solid var(--success-line);border-radius:14px;
+      background:var(--success);
     }
 
     .result.error{
-      border-color:#efd2cc;
-      background:#fff3f1;
+      border-color:var(--error-line);background:var(--error);
     }
 
-    .result h2{
-      margin:0 0 11px;
-      font-size:18px;
-    }
+    .result h2{margin:0 0 10px;font-size:18px}
 
     .kv{
-      display:grid;
-      grid-template-columns:1fr auto;
-      gap:12px;
-      padding:9px 0;
-      border-bottom:1px solid rgba(0,0,0,.06);
-      font-size:14px;
+      display:grid;grid-template-columns:1fr auto;gap:12px;padding:8px 0;
+      border-bottom:1px solid rgba(0,0,0,.06);font-size:13px;
+    }
+
+    .coupon-label{
+      margin-top:17px;text-align:center;color:var(--muted);font-size:10px;
+      letter-spacing:.8px;text-transform:uppercase;
     }
 
     .coupon{
-      margin:18px 0 5px;
-      text-align:center;
-      font-size:29px;
-      font-weight:900;
-      letter-spacing:2px;
+      margin:5px 0 8px;text-align:center;font-size:27px;font-weight:900;
+      letter-spacing:1.7px;word-break:break-word;
     }
 
-    .small{
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.45;
+    .small{color:var(--muted);font-size:11px;line-height:1.45}
+
+    .status{display:inline-flex;align-items:center;margin-left:5px}
+    .dot{width:7px;height:7px;border-radius:50%;background:#c7c7cc}
+    .dot.ok{background:var(--green)}
+
+    .spinner{
+      width:25px;height:25px;margin:0 auto 12px;border:3px solid #dedede;
+      border-top-color:#333;border-radius:50%;animation:spin .8s linear infinite;
     }
+
+    @keyframes spin{to{transform:rotate(360deg)}}
 
     .footer{
-      margin-top:14px;
-      text-align:center;
-      font-size:11px;
-      color:var(--muted);
+      margin-top:12px;text-align:center;font-size:10px;color:var(--muted);
+    }
+
+    @media(max-width:720px){
+      .page{width:min(100%,560px);padding:18px 15px 40px}
+      .workspace{grid-template-columns:1fr}
+      .form-panel{max-width:none}
+      .result-column{
+        min-height:0;border-left:0;border-top:1px solid var(--line);
+        padding-left:0;padding-top:14px;
+      }
+      .placeholder{display:none}
+      .card{padding:16px}
     }
   </style>
 </head>
@@ -191,100 +168,108 @@
   <div class="brand">SEGLE</div>
   <div class="campaign">PROMOCIÓN BUEN FIN 2026</div>
 
-  <div id="loading" class="card">
-    Cargando...
+  <div class="doctor">
+    Punto de venta:
+    <strong id="doctorName">Validando...</strong>
+    <span class="status"><span id="doctorDot" class="dot"></span></span>
   </div>
 
-  <div id="invalid" class="card hidden">
+  <section id="invalid" class="card hidden">
     <h1>Enlace no válido</h1>
     <p class="intro" id="invalidText"></p>
-  </div>
-
-  <section id="app" class="hidden">
-    <div class="doctor">
-      Punto de venta:
-      <strong id="doctorName"></strong>
-    </div>
-
-    <div class="card">
-
-      <div class="tabs">
-        <button id="saleTab" class="tab active" onclick="showMode('sale')">
-          Registrar BF
-        </button>
-
-        <button id="redeemTab" class="tab" onclick="showMode('redeem')">
-          Redimir 2027
-        </button>
-      </div>
-
-      <section id="saleSection">
-        <h1>Registrar compra</h1>
-
-        <p class="intro">
-          Compra mínima <strong id="minPurchase"></strong>.
-          Entrega <strong id="giftName"></strong>
-          y genera <strong id="couponValue"></strong>
-          para enero 2027.
-        </p>
-
-        <label>Cliente</label>
-        <input id="clientName" placeholder="Nombre del cliente">
-
-        <label>Ticket / folio</label>
-        <input id="ticket" placeholder="Ej. A1458">
-
-        <label>Monto de compra</label>
-        <input id="amount" type="number" inputmode="decimal" step="0.01" placeholder="2000">
-
-        <label>Correo <span class="small">(opcional)</span></label>
-        <input id="email" type="email" placeholder="cliente@correo.com">
-
-        <button id="registerBtn" class="primary" onclick="registerSale()">
-          GENERAR BENEFICIO
-        </button>
-
-        <div id="saleResult"></div>
-      </section>
-
-
-      <section id="redeemSection" class="hidden">
-        <h1>Redimir beneficio</h1>
-
-        <p class="intro">
-          El código debe regresar con el mismo médico que lo generó.
-        </p>
-
-        <label>Código</label>
-        <input id="couponCode" placeholder="S27-XXXXXX">
-
-        <label>
-          Monto nueva compra
-          <span class="small">(opcional)</span>
-        </label>
-
-        <input
-          id="redemptionAmount"
-          type="number"
-          inputmode="decimal"
-          step="0.01"
-        >
-
-        <button id="lookupBtn" class="primary" onclick="lookupCoupon()">
-          VALIDAR CÓDIGO
-        </button>
-
-        <div id="redeemResult"></div>
-      </section>
-
-    </div>
-
-    <div class="footer">
-      Uso exclusivo para puntos autorizados SEGLE.
-    </div>
   </section>
 
-  <!-- Solo recibe el POST. Ya NO depende de postMessage. -->
+  <section id="app" class="card">
+
+    <div class="tabs">
+      <button id="saleTab" class="tab active" onclick="showMode('sale')">
+        Registrar BF
+      </button>
+
+      <button id="redeemTab" class="tab" onclick="showMode('redeem')">
+        Redimir 2027
+      </button>
+    </div>
+
+    <section id="saleSection">
+      <div class="workspace">
+
+        <div class="panel form-panel">
+          <h1>Registrar compra</h1>
+
+          <p class="intro">
+            Compra mínima <strong id="minPurchase"></strong>.
+            Entrega <strong id="giftName"></strong>
+            y genera <strong id="couponValue"></strong> para enero 2027.
+          </p>
+
+          <label>Cliente</label>
+          <input id="clientName" autocomplete="name" placeholder="Nombre del cliente">
+
+          <label>Ticket / folio</label>
+          <input id="ticket" autocomplete="off" placeholder="Ej. A1458">
+
+          <label>Monto de compra</label>
+          <input id="amount" type="number" inputmode="decimal" step="0.01" placeholder="2000">
+
+          <label>Correo <span class="small">(opcional)</span></label>
+          <input id="email" type="email" autocomplete="email" placeholder="cliente@correo.com">
+
+          <button id="registerBtn" class="primary" onclick="registerSale()">
+            GENERAR BENEFICIO
+          </button>
+        </div>
+
+        <div class="panel result-column">
+          <div id="saleResult">
+            <div class="placeholder">
+              El beneficio aparecerá aquí después de registrar la compra.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <section id="redeemSection" class="hidden">
+      <div class="workspace">
+
+        <div class="panel form-panel">
+          <h1>Redimir beneficio</h1>
+
+          <p class="intro">
+            El código debe regresar con el mismo médico que lo generó.
+          </p>
+
+          <label>Código</label>
+          <input id="couponCode" autocomplete="off" placeholder="S27-XXXXXXXXXX">
+
+          <label>Monto nueva compra <span class="small">(opcional)</span></label>
+          <input id="redemptionAmount" type="number" inputmode="decimal" step="0.01">
+
+          <button id="lookupBtn" class="primary" onclick="lookupCoupon()">
+            VALIDAR CÓDIGO
+          </button>
+        </div>
+
+        <div class="panel result-column">
+          <div id="redeemResult">
+            <div class="placeholder">
+              La validación del código aparecerá aquí.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </section>
+
+  <div class="footer">
+    Uso exclusivo para puntos autorizados SEGLE.
+  </div>
+
   <iframe name="gasFrame" id="gasFrame" class="hidden"></iframe>
 
 </main>
@@ -293,16 +278,95 @@
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzqXawYUS4irl_nr13ZXUL7G4dPwu2AJlhzCRP5UI1NJtrGSlfw3YDe1pKACouXetMA/exec';
 
-const doctorId =
-  new URLSearchParams(location.search).get('d') || '';
+const DEFAULT_PROMO = {
+  minPurchase: 2000,
+  gift: 'Lip Balm SEGLE',
+  couponValue: 200,
+  validFrom: '2027-01-01',
+  validUntil: '2027-01-31',
+  requireTicket: true
+};
 
-let promo = null;
+const query = new URLSearchParams(location.search);
+
+const doctorId = query.get('d') || '';
+const doctorNameFromUrl = query.get('n') || '';
+
+let promo = { ...DEFAULT_PROMO };
 let validatedCoupon = null;
 
 
-/* ========================================================
-   JSONP
-======================================================== */
+document.addEventListener('DOMContentLoaded', initFast);
+
+
+function initFast() {
+  if (!doctorId) {
+    return invalid('Falta el doctor_id en la URL.');
+  }
+
+  renderPromo(DEFAULT_PROMO);
+
+  if (doctorNameFromUrl) {
+    document.getElementById('doctorName').textContent =
+      doctorNameFromUrl;
+  } else {
+    const cached = getDoctorLocalCache();
+
+    if (cached) {
+      document.getElementById('doctorName').textContent =
+        cached.name;
+
+      if (cached.promo) {
+        promo = cached.promo;
+        renderPromo(promo);
+      }
+    }
+  }
+
+  validateDoctorInBackground();
+}
+
+
+async function validateDoctorInBackground() {
+  try {
+    const res = await jsonp({
+      action: 'doctor',
+      doctorId
+    });
+
+    if (!res.ok) {
+      return invalid(res.message);
+    }
+
+    promo = res.promo;
+
+    document.getElementById('doctorName').textContent =
+      res.doctor.name;
+
+    document.getElementById('doctorDot').classList.add('ok');
+
+    renderPromo(promo);
+    setDoctorLocalCache(res.doctor, promo);
+
+  } catch (err) {
+    console.warn('Validación inicial tardó:', err);
+  }
+}
+
+
+function renderPromo(data) {
+  document.getElementById('minPurchase').textContent =
+    money(data.minPurchase);
+
+  document.getElementById('giftName').textContent =
+    data.gift;
+
+  document.getElementById('couponValue').textContent =
+    money(data.couponValue);
+}
+
+
+/* JSONP */
 
 function jsonp(params) {
   return new Promise((resolve, reject) => {
@@ -340,7 +404,7 @@ function jsonp(params) {
 
     script.onerror = () => {
       cleanup();
-      reject(new Error('No se pudo cargar la respuesta de Apps Script.'));
+      reject(new Error('No se pudo consultar Apps Script.'));
     };
 
     document.body.appendChild(script);
@@ -348,9 +412,7 @@ function jsonp(params) {
 }
 
 
-/* ========================================================
-   POST + POLLING
-======================================================== */
+/* POST + POLLING */
 
 async function apiPost(action, data = {}) {
   const requestId =
@@ -366,26 +428,50 @@ async function apiPost(action, data = {}) {
     ...data
   });
 
+  // Evita consultar demasiado pronto mientras el POST sigue procesando.
+  await sleep(650);
+
   const started = Date.now();
 
-  while (Date.now() - started < 15000) {
-    await sleep(350);
-
+  while (Date.now() - started < 14000) {
     const poll = await jsonp({
       action: 'result',
       requestId
     });
 
     if (!poll.ok) {
-      throw new Error(poll.message || 'Error consultando resultado.');
+      throw new Error(
+        poll.message ||
+        'Error consultando resultado.'
+      );
     }
 
     if (!poll.pending) {
       return poll.result;
     }
+
+    await sleep(500);
   }
 
-  throw new Error('Apps Script tardó demasiado en procesar la solicitud.');
+  throw new Error(
+    'Apps Script tardó demasiado en procesar la solicitud.'
+  );
+}
+
+
+function apiFireAndForget(action, data = {}) {
+  const requestId =
+    'BG' +
+    Date.now() +
+    '_' +
+    Math.random().toString(36).slice(2);
+
+  submitHiddenPost({
+    action,
+    requestId,
+    doctorId,
+    ...data
+  });
 }
 
 
@@ -418,78 +504,45 @@ function sleep(ms) {
 }
 
 
-/* ========================================================
-   INICIO
-======================================================== */
-
-document.addEventListener('DOMContentLoaded', init);
-
-async function init() {
-  if (!doctorId) {
-    return invalid('Falta el doctor_id en la URL.');
-  }
-
-  try {
-    const res = await jsonp({
-      action: 'doctor',
-      doctorId
-    });
-
-    if (!res.ok) {
-      return invalid(res.message);
-    }
-
-    promo = res.promo;
-
-    document.getElementById('doctorName').textContent =
-      res.doctor.name;
-
-    document.getElementById('minPurchase').textContent =
-      money(promo.minPurchase);
-
-    document.getElementById('giftName').textContent =
-      promo.gift;
-
-    document.getElementById('couponValue').textContent =
-      money(promo.couponValue);
-
-    document.getElementById('loading').classList.add('hidden');
-    document.getElementById('app').classList.remove('hidden');
-
-  } catch (err) {
-    invalid(err.message);
-  }
-}
-
-
-/* ========================================================
-   REGISTRO
-======================================================== */
+/* REGISTRAR */
 
 async function registerSale() {
-  clear('saleResult');
-
   const clientName = value('clientName');
   const ticket = value('ticket');
   const amount = value('amount');
   const email = value('email');
 
   if (!clientName) {
-    return error('saleResult', 'Captura el nombre del cliente.');
+    return renderSaleError('Captura el nombre del cliente.');
   }
 
   if (promo.requireTicket && !ticket) {
-    return error('saleResult', 'Captura el ticket o folio.');
+    return renderSaleError('Captura el ticket o folio.');
   }
 
-  if (!amount || Number(amount) < Number(promo.minPurchase)) {
-    return error(
-      'saleResult',
-      `La compra mínima es ${money(promo.minPurchase)}.`
+  if (
+    !amount ||
+    Number(amount) < Number(promo.minPurchase)
+  ) {
+    return renderSaleError(
+      'La compra mínima es ' +
+      money(promo.minPurchase) +
+      '.'
     );
   }
 
   busy('registerBtn', true, 'GENERANDO...');
+
+  document.getElementById('saleResult').innerHTML = `
+    <div class="placeholder">
+      <div>
+        <div class="spinner"></div>
+        Validando compra y generando beneficio...
+      </div>
+    </div>
+  `;
+
+  const started = performance.now();
 
   try {
     const res = await apiPost('register', {
@@ -499,102 +552,147 @@ async function registerSale() {
       email
     });
 
+    console.log(
+      'Registro ms:',
+      Math.round(performance.now() - started)
+    );
+
     busy('registerBtn', false, 'GENERAR BENEFICIO');
 
     if (!res.ok) {
-      return error('saleResult', res.message);
+      return renderSaleError(res.message);
     }
 
-    const emailMessage = email
-      ? (
-          res.emailSent
-            ? '<p class="small">El código también fue enviado por correo.</p>'
-            : '<p class="small">El código se generó, pero el correo no pudo enviarse.</p>'
-        )
-      : '';
+    renderSaleSuccess(res, email);
 
-    document.getElementById('saleResult').innerHTML = `
-      <div class="result">
-        <h2>✓ Beneficio generado</h2>
-
-        ${res.duplicate
-          ? '<p class="small">Esta venta ya estaba registrada; se recuperó el código original.</p>'
-          : ''}
-
-        <div class="kv">
-          <span>Entregar ahora</span>
-          <strong>${escapeHtml(res.gift)}</strong>
-        </div>
-
-        <div class="kv">
-          <span>Beneficio enero</span>
-          <strong>${money(res.couponValue)}</strong>
-        </div>
-
-        <div class="coupon">
-          ${escapeHtml(res.couponCode)}
-        </div>
-
-        <p class="small">
-          Válido del ${formatDate(res.validFrom)}
-          al ${formatDate(res.validUntil)}
-          con ${escapeHtml(res.doctorName)}.
-        </p>
-
-        ${emailMessage}
-
-        <button
-          class="secondary"
-          onclick="copyCode('${escapeJs(res.couponCode)}')"
-        >
-          COPIAR CÓDIGO
-        </button>
-
-        <button
-          class="primary"
-          onclick="newSale()"
-        >
-          NUEVO CLIENTE
-        </button>
-      </div>
-    `;
+    if (email && res.saleId) {
+      setTimeout(() => {
+        apiFireAndForget('email', {
+          saleId: res.saleId
+        });
+      }, 150);
+    }
 
   } catch (err) {
     busy('registerBtn', false, 'GENERAR BENEFICIO');
-    error('saleResult', err.message);
+    renderSaleError(err.message);
   }
 }
 
 
-/* ========================================================
-   VALIDAR / REDIMIR
-======================================================== */
+function renderSaleSuccess(res, email) {
+  document.getElementById('saleResult').innerHTML = `
+    <div class="result">
+
+      <h2>✓ Beneficio generado</h2>
+
+      ${res.duplicate
+        ? `
+          <p class="small">
+            Esta venta ya estaba registrada. Se recuperó el mismo código.
+          </p>
+        `
+        : ''
+      }
+
+      <div class="kv">
+        <span>Entregar ahora</span>
+        <strong>${escapeHtml(res.gift)}</strong>
+      </div>
+
+      <div class="kv">
+        <span>Beneficio enero</span>
+        <strong>${money(res.couponValue)}</strong>
+      </div>
+
+      <div class="coupon-label">
+        Código del cliente
+      </div>
+
+      <div class="coupon">
+        ${escapeHtml(res.couponCode)}
+      </div>
+
+      <p class="small">
+        Válido del ${formatDate(res.validFrom)}
+        al ${formatDate(res.validUntil)}
+        con ${escapeHtml(res.doctorName)}.
+      </p>
+
+      ${email
+        ? `
+          <p class="small">
+            El correo se enviará en segundo plano.
+          </p>
+        `
+        : ''
+      }
+
+      <button
+        class="secondary"
+        onclick="copyCode('${escapeJs(res.couponCode)}')"
+      >
+        COPIAR CÓDIGO
+      </button>
+
+      <button
+        class="primary"
+        onclick="newSale()"
+      >
+        NUEVO CLIENTE
+      </button>
+
+    </div>
+  `;
+}
+
+
+function renderSaleError(message) {
+  document.getElementById('saleResult').innerHTML = `
+    <div class="result error">
+      <h2>No se pudo continuar</h2>
+      <p>${escapeHtml(message)}</p>
+    </div>
+  `;
+}
+
+
+/* VALIDAR / REDIMIR */
 
 async function lookupCoupon() {
-  clear('redeemResult');
-  validatedCoupon = null;
-
   const couponCode = value('couponCode');
 
   if (!couponCode) {
-    return error('redeemResult', 'Captura el código.');
+    return renderRedeemError('Captura el código.');
   }
 
   busy('lookupBtn', true, 'VALIDANDO...');
 
+  document.getElementById('redeemResult').innerHTML = `
+    <div class="placeholder">
+      <div>
+        <div class="spinner"></div>
+        Validando código...
+      </div>
+    </div>
+  `;
+
   try {
-    const res = await apiPost('lookup', { couponCode });
+    const res = await apiPost('lookup', {
+      couponCode
+    });
 
     busy('lookupBtn', false, 'VALIDAR CÓDIGO');
 
     if (!res.ok) {
-      return error('redeemResult', res.message);
+      return renderRedeemError(res.message);
     }
 
     validatedCoupon = res.couponCode;
 
     document.getElementById('redeemResult').innerHTML = `
       <div class="result">
+
         <h2>✓ Código válido</h2>
 
         <div class="kv">
@@ -618,12 +716,13 @@ async function lookupCoupon() {
         >
           APLICAR ${money(res.couponValue)}
         </button>
+
       </div>
     `;
 
   } catch (err) {
     busy('lookupBtn', false, 'VALIDAR CÓDIGO');
-    error('redeemResult', err.message);
+    renderRedeemError(err.message);
   }
 }
 
@@ -640,13 +739,14 @@ async function redeemCoupon() {
     });
 
     if (!res.ok) {
-      return error('redeemResult', res.message);
+      return renderRedeemError(res.message);
     }
 
     validatedCoupon = null;
 
     document.getElementById('redeemResult').innerHTML = `
       <div class="result">
+
         <h2>✓ Beneficio aplicado</h2>
 
         <div class="kv">
@@ -670,18 +770,27 @@ async function redeemCoupon() {
         >
           SIGUIENTE CLIENTE
         </button>
+
       </div>
     `;
 
   } catch (err) {
-    error('redeemResult', err.message);
+    renderRedeemError(err.message);
   }
 }
 
 
-/* ========================================================
-   UX
-======================================================== */
+function renderRedeemError(message) {
+  document.getElementById('redeemResult').innerHTML = `
+    <div class="result error">
+      <h2>No se pudo continuar</h2>
+      <p>${escapeHtml(message)}</p>
+    </div>
+  `;
+}
+
+
+/* UX */
 
 function showMode(mode) {
   const sale = mode === 'sale';
@@ -705,7 +814,12 @@ function newSale() {
     document.getElementById(id).value = '';
   });
 
-  clear('saleResult');
+  document.getElementById('saleResult').innerHTML = `
+    <div class="placeholder">
+      El beneficio aparecerá aquí después de registrar la compra.
+    </div>
+  `;
+
   document.getElementById('clientName').focus();
 }
 
@@ -713,17 +827,69 @@ function newSale() {
 function newRedemption() {
   document.getElementById('couponCode').value = '';
   document.getElementById('redemptionAmount').value = '';
+
   validatedCoupon = null;
-  clear('redeemResult');
+
+  document.getElementById('redeemResult').innerHTML = `
+    <div class="placeholder">
+      La validación del código aparecerá aquí.
+    </div>
+  `;
 }
 
 
 function invalid(message) {
-  document.getElementById('loading').classList.add('hidden');
+  document.getElementById('app').classList.add('hidden');
   document.getElementById('invalidText').textContent = message;
   document.getElementById('invalid').classList.remove('hidden');
 }
 
+
+/* LOCAL CACHE */
+
+function localCacheKey() {
+  return 'SEGLE_BF_DOCTOR_' + doctorId;
+}
+
+
+function setDoctorLocalCache(doctor, promoData) {
+  try {
+    localStorage.setItem(
+      localCacheKey(),
+      JSON.stringify({
+        name: doctor.name,
+        promo: promoData,
+        savedAt: Date.now()
+      })
+    );
+  } catch (err) {}
+}
+
+
+function getDoctorLocalCache() {
+  try {
+    const raw = localStorage.getItem(localCacheKey());
+
+    if (!raw) return null;
+
+    const data = JSON.parse(raw);
+
+    if (
+      !data.savedAt ||
+      Date.now() - data.savedAt > 86400000
+    ) {
+      return null;
+    }
+
+    return data;
+
+  } catch (err) {
+    return null;
+  }
+}
+
+
+/* HELPERS */
 
 function value(id) {
   return document.getElementById(id).value.trim();
@@ -732,25 +898,11 @@ function value(id) {
 
 function busy(id, state, label) {
   const el = document.getElementById(id);
+
   if (!el) return;
 
   el.disabled = state;
   el.textContent = label;
-}
-
-
-function clear(id) {
-  document.getElementById(id).innerHTML = '';
-}
-
-
-function error(id, message) {
-  document.getElementById(id).innerHTML = `
-    <div class="result error">
-      <h2>No se pudo continuar</h2>
-      <p>${escapeHtml(message)}</p>
-    </div>
-  `;
 }
 
 
@@ -767,7 +919,7 @@ function formatDate(iso) {
   const p = String(iso).split('-');
 
   return p.length === 3
-    ? `${p[2]}/${p[1]}/${p[0]}`
+    ? p[2] + '/' + p[1] + '/' + p[0]
     : iso;
 }
 
