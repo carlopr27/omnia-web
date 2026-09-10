@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>SEGLE | Buen Fin 2026</title>
+
+  <style>
+    :root{
+      --bg:#f7f7f5;
+      --card:#fff;
+      --text:#1d1d1f;
+      --muted:#6b6b70;
+      --line:#e3e3e6;
+      --dark:#111;
+      --green:#147d45;
+      --red:#ad2d21;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Arial,Helvetica,sans-serif;
+    }
+
+    .page{
+      width:min(100%,560px);
+      margin:auto;
+      padding:20px 16px 44px;
+    }
+
+    .brand{
+      text-align:center;
+      font-weight:800;
+      letter-spacing:2.4px;
+      margin-top:4px;
+    }
+
+    .campaign{
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+      margin:6px 0 18px;
+    }
+
+    .doctor{
+      text-align:center;
+      font-size:14px;
+      margin-bottom:14px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:0 8px 26px rgba(0,0,0,.04);
+    }
+
+    .tabs{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+      margin-bottom:20px;
+    }
+
+    .tab{
+      min-height:44px;
+      border:1px solid var(--line);
+      border-radius:11px;
+      background:white;
+      font-weight:700;
+    }
+
+    .tab.active{
+      background:var(--dark);
+      border-color:var(--dark);
+      color:white;
+    }
+
+    h1{font-size:22px;margin:0 0 7px}
+
+    .intro{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    label{
+      display:block;
+      margin:14px 0 7px;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    input{
+      width:100%;
+      min-height:48px;
+      padding:0 13px;
+      border:1px solid #d2d2d6;
+      border-radius:11px;
+      background:#fff;
+      font-size:16px;
+    }
+
+    button.primary{
+      width:100%;
+      min-height:50px;
+      margin-top:18px;
+      border:0;
+      border-radius:12px;
+      background:var(--dark);
+      color:#fff;
+      font-weight:800;
+      font-size:15px;
+    }
+
+    button.secondary{
+      width:100%;
+      min-height:48px;
+      margin-top:10px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:#fff;
+      font-weight:700;
+    }
+
+    button.green{background:var(--green)}
+    button:disabled{opacity:.5}
+
+    .hidden{display:none!important}
+
+    .result{
+      margin-top:18px;
+      padding:17px;
+      border:1px solid #d7eadf;
+      border-radius:14px;
+      background:#f3f8f5;
+    }
+
+    .result.error{
+      border-color:#efd2cc;
+      background:#fff3f1;
+    }
+
+    .result h2{
+      margin:0 0 11px;
+      font-size:18px;
+    }
+
+    .kv{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:12px;
+      padding:9px 0;
+      border-bottom:1px solid rgba(0,0,0,.06);
+      font-size:14px;
+    }
+
+    .coupon{
+      margin:18px 0 5px;
+      text-align:center;
+      font-size:29px;
+      font-weight:900;
+      letter-spacing:2px;
+    }
+
+    .small{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
+
+    .footer{
+      margin-top:14px;
+      text-align:center;
+      font-size:11px;
+      color:var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+
+    <div class="brand">SEGLE</div>
+    <div class="campaign">PROMOCIÓN BUEN FIN 2026</div>
+
+    <div id="loading" class="card">
+      Cargando...
+    </div>
+
+    <div id="invalid" class="card hidden">
+      <h1>Enlace no válido</h1>
+      <p class="intro" id="invalidText">
+        No se pudo identificar al médico.
+      </p>
+    </div>
+
+    <section id="app" class="hidden">
+
+      <div class="doctor">
+        Punto de venta:
+        <strong id="doctorName"></strong>
+      </div>
+
+      <div class="card">
+
+        <div class="tabs">
+          <button id="saleTab" class="tab active" onclick="showMode('sale')">
+            Registrar BF
+          </button>
+
+          <button id="redeemTab" class="tab" onclick="showMode('redeem')">
+            Redimir 2027
+          </button>
+        </div>
+
+
+        <section id="saleSection">
+          <h1>Registrar compra</h1>
+
+          <p class="intro">
+            Compra mínima <strong id="minPurchase"></strong>.
+            Entrega <strong id="giftName"></strong>
+            y genera <strong id="couponValue"></strong>
+            para enero 2027.
+          </p>
+
+          <label>Cliente</label>
+          <input id="clientName" placeholder="Nombre del cliente">
+
+          <label>Ticket / folio</label>
+          <input id="ticket" placeholder="Ej. A1458">
+
+          <label>Monto de compra</label>
+          <input id="amount" type="number" inputmode="decimal" step="0.01" placeholder="2000">
+
+          <label>Correo <span class="small">(opcional)</span></label>
+          <input id="email" type="email" placeholder="cliente@correo.com">
+
+          <button id="registerBtn" class="primary" onclick="registerSale()">
+            GENERAR BENEFICIO
+          </button>
+
+          <div id="saleResult"></div>
+        </section>
+
+
+        <section id="redeemSection" class="hidden">
+          <h1>Redimir beneficio</h1>
+
+          <p class="intro">
+            El código debe regresar con el mismo médico que lo generó.
+          </p>
+
+          <label>Código</label>
+          <input id="couponCode" placeholder="S27-XXXXXX">
+
+          <label>Monto nueva compra <span class="small">(opcional)</span></label>
+          <input id="redemptionAmount" type="number" inputmode="decimal" step="0.01">
+
+          <button id="lookupBtn" class="primary" onclick="lookupCoupon()">
+            VALIDAR CÓDIGO
+          </button>
+
+          <div id="redeemResult"></div>
+        </section>
+
+      </div>
+
+      <div class="footer">
+        Uso exclusivo para puntos autorizados SEGLE.
+      </div>
+    </section>
+
+
+    <!-- Todas las respuestas de Apps Script regresan aquí -->
+    <iframe
+      name="gasFrame"
+      id="gasFrame"
+      class="hidden"
+    ></iframe>
+
+  </main>
+
+
+<script>
+/**
+ * PEGA AQUÍ LA URL /exec DE TU WEB APP DE APPS SCRIPT
+ */
+const GAS_URL =
+  'PEGA_AQUI_LA_URL_DEL_WEB_APP_EXEC';
+
+const doctorId =
+  new URLSearchParams(location.search).get('d') || '';
+
+const pending = new Map();
+let promo = null;
+let validatedCoupon = null;
+
+
+/* ========================================================
+   COMUNICACIÓN CON APPS SCRIPT SIN CORS
+======================================================== */
+
+function api(action, data = {}) {
+  return new Promise((resolve, reject) => {
+    const requestId =
+      'R' + Date.now() + Math.random().toString(36).slice(2);
+
+    pending.set(requestId, { resolve, reject });
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = GAS_URL;
+    form.target = 'gasFrame';
+    form.style.display = 'none';
+
+    const payload = {
+      action,
+      requestId,
+      doctorId,
+      ...data
+    };
+
+    Object.entries(payload).forEach(([key, value]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = value ?? '';
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+    form.remove();
+
+    setTimeout(() => {
+      if (pending.has(requestId)) {
+        pending.delete(requestId);
+        reject(new Error('La solicitud tardó demasiado.'));
+      }
+    }, 15000);
+  });
+}
+
+
+window.addEventListener('message', event => {
+  const d = event.data;
+
+  if (!d || d.source !== 'SEGLE_BF' || !d.requestId) {
+    return;
+  }
+
+  const item = pending.get(d.requestId);
+  if (!item) return;
+
+  pending.delete(d.requestId);
+  item.resolve(d.result);
+});
+
+
+/* ========================================================
+   INICIO
+======================================================== */
+
+document.addEventListener('DOMContentLoaded', init);
+
+async function init() {
+  if (!doctorId) {
+    return invalid('Falta el doctor_id en la URL.');
+  }
+
+  if (!GAS_URL.startsWith('https://script.google.com/')) {
+    return invalid('Falta configurar la URL del Web App.');
+  }
+
+  try {
+    const res = await api('doctor');
+
+    if (!res.ok) {
+      return invalid(res.message);
+    }
+
+    promo = res.promo;
+
+    document.getElementById('doctorName').textContent =
+      res.doctor.name;
+
+    document.getElementById('minPurchase').textContent =
+      money(promo.minPurchase);
+
+    document.getElementById('giftName').textContent =
+      promo.gift;
+
+    document.getElementById('couponValue').textContent =
+      money(promo.couponValue);
+
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+
+  } catch (err) {
+    invalid(err.message);
+  }
+}
+
+
+/* ========================================================
+   REGISTRAR
+======================================================== */
+
+async function registerSale() {
+  clear('saleResult');
+
+  const clientName = value('clientName');
+  const ticket = value('ticket');
+  const amount = value('amount');
+  const email = value('email');
+
+  if (!clientName) {
+    return error('saleResult', 'Captura el nombre del cliente.');
+  }
+
+  if (promo.requireTicket && !ticket) {
+    return error('saleResult', 'Captura el ticket o folio.');
+  }
+
+  if (!amount || Number(amount) < Number(promo.minPurchase)) {
+    return error(
+      'saleResult',
+      `La compra mínima es ${money(promo.minPurchase)}.`
+    );
+  }
+
+  busy('registerBtn', true, 'GENERANDO...');
+
+  try {
+    const res = await api('register', {
+      clientName,
+      ticket,
+      amount,
+      email
+    });
+
+    busy('registerBtn', false, 'GENERAR BENEFICIO');
+
+    if (!res.ok) {
+      return error('saleResult', res.message);
+    }
+
+    document.getElementById('saleResult').innerHTML = `
+      <div class="result">
+        <h2>✓ Beneficio generado</h2>
+
+        ${res.duplicate
+          ? '<p class="small">Esta venta ya estaba registrada; se recuperó el código original.</p>'
+          : ''}
+
+        <div class="kv">
+          <span>Entregar ahora</span>
+          <strong>${escapeHtml(res.gift)}</strong>
+        </div>
+
+        <div class="kv">
+          <span>Beneficio enero</span>
+          <strong>${money(res.couponValue)}</strong>
+        </div>
+
+        <div class="coupon">
+          ${escapeHtml(res.couponCode)}
+        </div>
+
+        <p class="small">
+          Válido del ${formatDate(res.validFrom)}
+          al ${formatDate(res.validUntil)}
+          con ${escapeHtml(res.doctorName)}.
+        </p>
+
+        ${email
+          ? (res.emailSent
+              ? '<p class="small">El código también fue enviado por correo.</p>'
+              : '<p class="small">El código se generó, pero el correo no pudo enviarse.</p>')
+          : ''}
+
+        <button
+          class="secondary"
+          onclick="copyCode('${escapeJs(res.couponCode)}')"
+        >
+          COPIAR CÓDIGO
+        </button>
+
+        <button
+          class="primary"
+          onclick="newSale()"
+        >
+          NUEVO CLIENTE
+        </button>
+      </div>
+    `;
+
+  } catch (err) {
+    busy('registerBtn', false, 'GENERAR BENEFICIO');
+    error('saleResult', err.message);
+  }
+}
+
+
+/* ========================================================
+   VALIDAR / REDIMIR
+======================================================== */
+
+async function lookupCoupon() {
+  clear('redeemResult');
+  validatedCoupon = null;
+
+  const couponCode = value('couponCode');
+
+  if (!couponCode) {
+    return error('redeemResult', 'Captura el código.');
+  }
+
+  busy('lookupBtn', true, 'VALIDANDO...');
+
+  try {
+    const res = await api('lookup', { couponCode });
+
+    busy('lookupBtn', false, 'VALIDAR CÓDIGO');
+
+    if (!res.ok) {
+      return error('redeemResult', res.message);
+    }
+
+    validatedCoupon = res.couponCode;
+
+    document.getElementById('redeemResult').innerHTML = `
+      <div class="result">
+        <h2>✓ Código válido</h2>
+
+        <div class="kv">
+          <span>Cliente</span>
+          <strong>${escapeHtml(res.clientName)}</strong>
+        </div>
+
+        <div class="kv">
+          <span>Beneficio</span>
+          <strong>${money(res.couponValue)}</strong>
+        </div>
+
+        <div class="coupon">
+          ${escapeHtml(res.couponCode)}
+        </div>
+
+        <button
+          id="redeemBtn"
+          class="primary green"
+          onclick="redeemCoupon()"
+        >
+          APLICAR ${money(res.couponValue)}
+        </button>
+      </div>
+    `;
+
+  } catch (err) {
+    busy('lookupBtn', false, 'VALIDAR CÓDIGO');
+    error('redeemResult', err.message);
+  }
+}
+
+
+async function redeemCoupon() {
+  if (!validatedCoupon) return;
+
+  busy('redeemBtn', true, 'APLICANDO...');
+
+  try {
+    const res = await api('redeem', {
+      couponCode: validatedCoupon,
+      redemptionAmount: value('redemptionAmount')
+    });
+
+    if (!res.ok) {
+      return error('redeemResult', res.message);
+    }
+
+    validatedCoupon = null;
+
+    document.getElementById('redeemResult').innerHTML = `
+      <div class="result">
+        <h2>✓ Beneficio aplicado</h2>
+
+        <div class="kv">
+          <span>Cliente</span>
+          <strong>${escapeHtml(res.clientName)}</strong>
+        </div>
+
+        <div class="kv">
+          <span>Beneficio</span>
+          <strong>${money(res.couponValue)}</strong>
+        </div>
+
+        <p class="small">
+          El código ${escapeHtml(res.couponCode)}
+          quedó marcado como REDIMIDO.
+        </p>
+
+        <button
+          class="primary"
+          onclick="newRedemption()"
+        >
+          SIGUIENTE CLIENTE
+        </button>
+      </div>
+    `;
+
+  } catch (err) {
+    error('redeemResult', err.message);
+  }
+}
+
+
+/* ========================================================
+   UX
+======================================================== */
+
+function showMode(mode) {
+  const sale = mode === 'sale';
+
+  document.getElementById('saleSection')
+    .classList.toggle('hidden', !sale);
+
+  document.getElementById('redeemSection')
+    .classList.toggle('hidden', sale);
+
+  document.getElementById('saleTab')
+    .classList.toggle('active', sale);
+
+  document.getElementById('redeemTab')
+    .classList.toggle('active', !sale);
+}
+
+
+function newSale() {
+  ['clientName','ticket','amount','email'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  clear('saleResult');
+  document.getElementById('clientName').focus();
+}
+
+
+function newRedemption() {
+  document.getElementById('couponCode').value = '';
+  document.getElementById('redemptionAmount').value = '';
+  validatedCoupon = null;
+  clear('redeemResult');
+}
+
+
+function invalid(message) {
+  document.getElementById('loading').classList.add('hidden');
+  document.getElementById('invalidText').textContent = message;
+  document.getElementById('invalid').classList.remove('hidden');
+}
+
+
+function value(id) {
+  return document.getElementById(id).value.trim();
+}
+
+
+function busy(id, state, text) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.disabled = state;
+  el.textContent = text;
+}
+
+
+function clear(id) {
+  document.getElementById(id).innerHTML = '';
+}
+
+
+function error(id, message) {
+  document.getElementById(id).innerHTML = `
+    <div class="result error">
+      <h2>No se pudo continuar</h2>
+      <p>${escapeHtml(message)}</p>
+    </div>
+  `;
+}
+
+
+function money(v) {
+  return new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: 'MXN',
+    maximumFractionDigits: 0
+  }).format(Number(v || 0));
+}
+
+
+function formatDate(iso) {
+  const p = String(iso).split('-');
+  return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : iso;
+}
+
+
+async function copyCode(code) {
+  try {
+    await navigator.clipboard.writeText(code);
+  } catch {
+    prompt('Copia el código:', code);
+  }
+}
+
+
+function escapeHtml(v) {
+  return String(v ?? '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
+
+
+function escapeJs(v) {
+  return String(v ?? '')
+    .replace(/\\/g,'\\\\')
+    .replace(/'/g,"\\'");
+}
+</script>
+</body>
+</html>
