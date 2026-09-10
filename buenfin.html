@@ -308,6 +308,7 @@ let validatedCoupon = null;
 ======================================================== */
 
 function api(action, data = {}) {
+  console.log('[SEGLE BF] Enviando a Apps Script:', action, GAS_URL, 'doctor:', doctorId);
   return new Promise((resolve, reject) => {
     const requestId =
       'R' + Date.now() + Math.random().toString(36).slice(2);
@@ -342,7 +343,9 @@ function api(action, data = {}) {
     setTimeout(() => {
       if (pending.has(requestId)) {
         pending.delete(requestId);
-        reject(new Error('La solicitud tardó demasiado.'));
+        reject(new Error(
+          'Apps Script no respondió. Revisa que GAS_URL sea la URL /exec correcta y que el Web App tenga acceso público.'
+        ));
       }
     }, 15000);
   });
@@ -350,6 +353,7 @@ function api(action, data = {}) {
 
 
 window.addEventListener('message', event => {
+  console.log('[SEGLE BF] Respuesta postMessage:', event.origin, event.data);
   const d = event.data;
 
   if (!d || d.source !== 'SEGLE_BF' || !d.requestId) {
