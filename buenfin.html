@@ -6,7 +6,7 @@
   <title>SEGLE | Buen Fin 2026</title>
 
   <style>
-    :root{
+    :root {
       --bg:#f7f7f5;
       --card:#fff;
       --text:#1d1d1f;
@@ -14,10 +14,10 @@
       --line:#e3e3e6;
       --dark:#111;
       --green:#147d45;
-      --red:#ad2d21;
     }
 
     *{box-sizing:border-box}
+
     body{
       margin:0;
       background:var(--bg);
@@ -70,14 +70,15 @@
       min-height:44px;
       border:1px solid var(--line);
       border-radius:11px;
-      background:white;
+      background:#fff;
       font-weight:700;
+      cursor:pointer;
     }
 
     .tab.active{
       background:var(--dark);
       border-color:var(--dark);
-      color:white;
+      color:#fff;
     }
 
     h1{font-size:22px;margin:0 0 7px}
@@ -116,6 +117,7 @@
       color:#fff;
       font-weight:800;
       font-size:15px;
+      cursor:pointer;
     }
 
     button.secondary{
@@ -126,11 +128,11 @@
       border-radius:12px;
       background:#fff;
       font-weight:700;
+      cursor:pointer;
     }
 
     button.green{background:var(--green)}
-    button:disabled{opacity:.5}
-
+    button:disabled{opacity:.5;cursor:default}
     .hidden{display:none!important}
 
     .result{
@@ -184,188 +186,236 @@
 </head>
 
 <body>
-  <main class="page">
+<main class="page">
 
-    <div class="brand">SEGLE</div>
-    <div class="campaign">PROMOCIÓN BUEN FIN 2026</div>
+  <div class="brand">SEGLE</div>
+  <div class="campaign">PROMOCIÓN BUEN FIN 2026</div>
 
-    <div id="loading" class="card">
-      Cargando...
+  <div id="loading" class="card">
+    Cargando...
+  </div>
+
+  <div id="invalid" class="card hidden">
+    <h1>Enlace no válido</h1>
+    <p class="intro" id="invalidText"></p>
+  </div>
+
+  <section id="app" class="hidden">
+    <div class="doctor">
+      Punto de venta:
+      <strong id="doctorName"></strong>
     </div>
 
-    <div id="invalid" class="card hidden">
-      <h1>Enlace no válido</h1>
-      <p class="intro" id="invalidText">
-        No se pudo identificar al médico.
-      </p>
+    <div class="card">
+
+      <div class="tabs">
+        <button id="saleTab" class="tab active" onclick="showMode('sale')">
+          Registrar BF
+        </button>
+
+        <button id="redeemTab" class="tab" onclick="showMode('redeem')">
+          Redimir 2027
+        </button>
+      </div>
+
+      <section id="saleSection">
+        <h1>Registrar compra</h1>
+
+        <p class="intro">
+          Compra mínima <strong id="minPurchase"></strong>.
+          Entrega <strong id="giftName"></strong>
+          y genera <strong id="couponValue"></strong>
+          para enero 2027.
+        </p>
+
+        <label>Cliente</label>
+        <input id="clientName" placeholder="Nombre del cliente">
+
+        <label>Ticket / folio</label>
+        <input id="ticket" placeholder="Ej. A1458">
+
+        <label>Monto de compra</label>
+        <input id="amount" type="number" inputmode="decimal" step="0.01" placeholder="2000">
+
+        <label>Correo <span class="small">(opcional)</span></label>
+        <input id="email" type="email" placeholder="cliente@correo.com">
+
+        <button id="registerBtn" class="primary" onclick="registerSale()">
+          GENERAR BENEFICIO
+        </button>
+
+        <div id="saleResult"></div>
+      </section>
+
+
+      <section id="redeemSection" class="hidden">
+        <h1>Redimir beneficio</h1>
+
+        <p class="intro">
+          El código debe regresar con el mismo médico que lo generó.
+        </p>
+
+        <label>Código</label>
+        <input id="couponCode" placeholder="S27-XXXXXX">
+
+        <label>
+          Monto nueva compra
+          <span class="small">(opcional)</span>
+        </label>
+
+        <input
+          id="redemptionAmount"
+          type="number"
+          inputmode="decimal"
+          step="0.01"
+        >
+
+        <button id="lookupBtn" class="primary" onclick="lookupCoupon()">
+          VALIDAR CÓDIGO
+        </button>
+
+        <div id="redeemResult"></div>
+      </section>
+
     </div>
 
-    <section id="app" class="hidden">
+    <div class="footer">
+      Uso exclusivo para puntos autorizados SEGLE.
+    </div>
+  </section>
 
-      <div class="doctor">
-        Punto de venta:
-        <strong id="doctorName"></strong>
-      </div>
+  <!-- Solo recibe el POST. Ya NO depende de postMessage. -->
+  <iframe name="gasFrame" id="gasFrame" class="hidden"></iframe>
 
-      <div class="card">
-
-        <div class="tabs">
-          <button id="saleTab" class="tab active" onclick="showMode('sale')">
-            Registrar BF
-          </button>
-
-          <button id="redeemTab" class="tab" onclick="showMode('redeem')">
-            Redimir 2027
-          </button>
-        </div>
-
-
-        <section id="saleSection">
-          <h1>Registrar compra</h1>
-
-          <p class="intro">
-            Compra mínima <strong id="minPurchase"></strong>.
-            Entrega <strong id="giftName"></strong>
-            y genera <strong id="couponValue"></strong>
-            para enero 2027.
-          </p>
-
-          <label>Cliente</label>
-          <input id="clientName" placeholder="Nombre del cliente">
-
-          <label>Ticket / folio</label>
-          <input id="ticket" placeholder="Ej. A1458">
-
-          <label>Monto de compra</label>
-          <input id="amount" type="number" inputmode="decimal" step="0.01" placeholder="2000">
-
-          <label>Correo <span class="small">(opcional)</span></label>
-          <input id="email" type="email" placeholder="cliente@correo.com">
-
-          <button id="registerBtn" class="primary" onclick="registerSale()">
-            GENERAR BENEFICIO
-          </button>
-
-          <div id="saleResult"></div>
-        </section>
-
-
-        <section id="redeemSection" class="hidden">
-          <h1>Redimir beneficio</h1>
-
-          <p class="intro">
-            El código debe regresar con el mismo médico que lo generó.
-          </p>
-
-          <label>Código</label>
-          <input id="couponCode" placeholder="S27-XXXXXX">
-
-          <label>Monto nueva compra <span class="small">(opcional)</span></label>
-          <input id="redemptionAmount" type="number" inputmode="decimal" step="0.01">
-
-          <button id="lookupBtn" class="primary" onclick="lookupCoupon()">
-            VALIDAR CÓDIGO
-          </button>
-
-          <div id="redeemResult"></div>
-        </section>
-
-      </div>
-
-      <div class="footer">
-        Uso exclusivo para puntos autorizados SEGLE.
-      </div>
-    </section>
-
-
-    <!-- Todas las respuestas de Apps Script regresan aquí -->
-    <iframe
-      name="gasFrame"
-      id="gasFrame"
-      class="hidden"
-    ></iframe>
-
-  </main>
+</main>
 
 
 <script>
-/**
- * PEGA AQUÍ LA URL /exec DE TU WEB APP DE APPS SCRIPT
- */
-const GAS_URL =
-  'https://script.google.com/macros/s/AKfycbzqXawYUS4irl_nr13ZXUL7G4dPwu2AJlhzCRP5UI1NJtrGSlfw3YDe1pKACouXetMA/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzqXawYUS4irl_nr13ZXUL7G4dPwu2AJlhzCRP5UI1NJtrGSlfw3YDe1pKACouXetMA/exec';
 
 const doctorId =
   new URLSearchParams(location.search).get('d') || '';
 
-const pending = new Map();
 let promo = null;
 let validatedCoupon = null;
 
 
 /* ========================================================
-   COMUNICACIÓN CON APPS SCRIPT SIN CORS
+   JSONP
 ======================================================== */
 
-function api(action, data = {}) {
-  console.log('[SEGLE BF] Enviando a Apps Script:', action, GAS_URL, 'doctor:', doctorId);
+function jsonp(params) {
   return new Promise((resolve, reject) => {
-    const requestId =
-      'R' + Date.now() + Math.random().toString(36).slice(2);
+    const callback =
+      '__segle_' +
+      Date.now() +
+      '_' +
+      Math.random().toString(36).slice(2);
 
-    pending.set(requestId, { resolve, reject });
+    const script = document.createElement('script');
 
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = GAS_URL;
-    form.target = 'gasFrame';
-    form.style.display = 'none';
+    const timeout = setTimeout(() => {
+      cleanup();
+      reject(new Error('Apps Script no respondió.'));
+    }, 12000);
 
-    const payload = {
-      action,
-      requestId,
-      doctorId,
-      ...data
+    function cleanup() {
+      clearTimeout(timeout);
+      try { delete window[callback]; } catch (e) {}
+      script.remove();
+    }
+
+    window[callback] = data => {
+      cleanup();
+      resolve(data);
     };
 
-    Object.entries(payload).forEach(([key, value]) => {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      input.value = value ?? '';
-      form.appendChild(input);
+    const qs = new URLSearchParams({
+      ...params,
+      callback,
+      _: Date.now().toString()
     });
 
-    document.body.appendChild(form);
-    form.submit();
-    form.remove();
+    script.src = GAS_URL + '?' + qs.toString();
 
-    setTimeout(() => {
-      if (pending.has(requestId)) {
-        pending.delete(requestId);
-        reject(new Error(
-          'Apps Script no respondió. Revisa que GAS_URL sea la URL /exec correcta y que el Web App tenga acceso público.'
-        ));
-      }
-    }, 15000);
+    script.onerror = () => {
+      cleanup();
+      reject(new Error('No se pudo cargar la respuesta de Apps Script.'));
+    };
+
+    document.body.appendChild(script);
   });
 }
 
 
-window.addEventListener('message', event => {
-  console.log('[SEGLE BF] Respuesta postMessage:', event.origin, event.data);
-  const d = event.data;
+/* ========================================================
+   POST + POLLING
+======================================================== */
 
-  if (!d || d.source !== 'SEGLE_BF' || !d.requestId) {
-    return;
+async function apiPost(action, data = {}) {
+  const requestId =
+    'R' +
+    Date.now() +
+    '_' +
+    Math.random().toString(36).slice(2);
+
+  submitHiddenPost({
+    action,
+    requestId,
+    doctorId,
+    ...data
+  });
+
+  const started = Date.now();
+
+  while (Date.now() - started < 15000) {
+    await sleep(350);
+
+    const poll = await jsonp({
+      action: 'result',
+      requestId
+    });
+
+    if (!poll.ok) {
+      throw new Error(poll.message || 'Error consultando resultado.');
+    }
+
+    if (!poll.pending) {
+      return poll.result;
+    }
   }
 
-  const item = pending.get(d.requestId);
-  if (!item) return;
+  throw new Error('Apps Script tardó demasiado en procesar la solicitud.');
+}
 
-  pending.delete(d.requestId);
-  item.resolve(d.result);
-});
+
+function submitHiddenPost(payload) {
+  const form = document.createElement('form');
+
+  form.method = 'POST';
+  form.action = GAS_URL;
+  form.target = 'gasFrame';
+  form.style.display = 'none';
+
+  Object.entries(payload).forEach(([key, val]) => {
+    const input = document.createElement('input');
+
+    input.type = 'hidden';
+    input.name = key;
+    input.value = val ?? '';
+
+    form.appendChild(input);
+  });
+
+  document.body.appendChild(form);
+  form.submit();
+  form.remove();
+}
+
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 
 /* ========================================================
@@ -379,12 +429,11 @@ async function init() {
     return invalid('Falta el doctor_id en la URL.');
   }
 
-  if (!GAS_URL.startsWith('https://script.google.com/')) {
-    return invalid('Falta configurar la URL del Web App.');
-  }
-
   try {
-    const res = await api('doctor');
+    const res = await jsonp({
+      action: 'doctor',
+      doctorId
+    });
 
     if (!res.ok) {
       return invalid(res.message);
@@ -414,7 +463,7 @@ async function init() {
 
 
 /* ========================================================
-   REGISTRAR
+   REGISTRO
 ======================================================== */
 
 async function registerSale() {
@@ -443,7 +492,7 @@ async function registerSale() {
   busy('registerBtn', true, 'GENERANDO...');
 
   try {
-    const res = await api('register', {
+    const res = await apiPost('register', {
       clientName,
       ticket,
       amount,
@@ -455,6 +504,14 @@ async function registerSale() {
     if (!res.ok) {
       return error('saleResult', res.message);
     }
+
+    const emailMessage = email
+      ? (
+          res.emailSent
+            ? '<p class="small">El código también fue enviado por correo.</p>'
+            : '<p class="small">El código se generó, pero el correo no pudo enviarse.</p>'
+        )
+      : '';
 
     document.getElementById('saleResult').innerHTML = `
       <div class="result">
@@ -484,11 +541,7 @@ async function registerSale() {
           con ${escapeHtml(res.doctorName)}.
         </p>
 
-        ${email
-          ? (res.emailSent
-              ? '<p class="small">El código también fue enviado por correo.</p>'
-              : '<p class="small">El código se generó, pero el correo no pudo enviarse.</p>')
-          : ''}
+        ${emailMessage}
 
         <button
           class="secondary"
@@ -530,7 +583,7 @@ async function lookupCoupon() {
   busy('lookupBtn', true, 'VALIDANDO...');
 
   try {
-    const res = await api('lookup', { couponCode });
+    const res = await apiPost('lookup', { couponCode });
 
     busy('lookupBtn', false, 'VALIDAR CÓDIGO');
 
@@ -581,7 +634,7 @@ async function redeemCoupon() {
   busy('redeemBtn', true, 'APLICANDO...');
 
   try {
-    const res = await api('redeem', {
+    const res = await apiPost('redeem', {
       couponCode: validatedCoupon,
       redemptionAmount: value('redemptionAmount')
     });
@@ -651,6 +704,7 @@ function newSale() {
   ['clientName','ticket','amount','email'].forEach(id => {
     document.getElementById(id).value = '';
   });
+
   clear('saleResult');
   document.getElementById('clientName').focus();
 }
@@ -676,11 +730,12 @@ function value(id) {
 }
 
 
-function busy(id, state, text) {
+function busy(id, state, label) {
   const el = document.getElementById(id);
   if (!el) return;
+
   el.disabled = state;
-  el.textContent = text;
+  el.textContent = label;
 }
 
 
@@ -710,14 +765,17 @@ function money(v) {
 
 function formatDate(iso) {
   const p = String(iso).split('-');
-  return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : iso;
+
+  return p.length === 3
+    ? `${p[2]}/${p[1]}/${p[0]}`
+    : iso;
 }
 
 
 async function copyCode(code) {
   try {
     await navigator.clipboard.writeText(code);
-  } catch {
+  } catch (err) {
     prompt('Copia el código:', code);
   }
 }
@@ -739,5 +797,6 @@ function escapeJs(v) {
     .replace(/'/g,"\\'");
 }
 </script>
+
 </body>
 </html>
