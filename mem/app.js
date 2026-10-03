@@ -250,12 +250,16 @@
     try {
       const base64 = await blobToBase64(recordedBlob);
       const ext = recordedBlob.type.includes("mp4") ? "mp4" : "webm";
+      // Send the original byte length as an integrity check.
+      // The backend compares it with the decoded Base64 payload so we can
+      // distinguish a real Drive error from a truncated/corrupted upload.
       const result = await apiPost({
         action: "uploadMemory",
         question: currentQuestion,
         mimeType: recordedBlob.type || (ext === "mp4" ? "video/mp4" : "video/webm"),
         extension: ext,
         base64,
+        blobSize: recordedBlob.size,
         recordedAt: new Date().toISOString()
       });
 
