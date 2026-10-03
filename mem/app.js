@@ -76,11 +76,6 @@
     return `${m}:${s}`;
   }
 
-  function formatBytes(bytes) {
-    if (!bytes) return "0 MB";
-    return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
-  }
-
   function chooseMimeType() {
     const candidates = [
       "video/webm;codecs=vp9,opus",
@@ -172,17 +167,34 @@
   }
 
   function finishRecording() {
-    const mimeType = recorder?.mimeType || chunks[0]?.type || "video/webm";
-    recordedBlob = new Blob(chunks, { type: mimeType });
-    stopStream();
+    try {
+      const mimeType = recorder?.mimeType || chunks[0]?.type || "video/webm";
+      recordedBlob = new Blob(chunks, { type: mimeType });
 
-    if (recordedUrl) URL.revokeObjectURL(recordedUrl);
-    recordedUrl = URL.createObjectURL(recordedBlob);
-    $("recordedPreview").src = recordedUrl;
-    const seconds = Math.max(1, Math.round((Date.now() - recordingStartedAt) / 1000));
-    $("recordingDuration").textContent = `Duración ${formatDuration(seconds)}`;
-    $("recordingSize").textContent = formatBytes(recordedBlob.size);
-    showView("reviewView");
+      if (!recordedBlob.size) {
+        throw new Error("La grabación terminó sin datos de video.");
+      }
+
+      // Stop the live camera only after MediaRecorder has finished producing the file.
+      stopStream();
+
+      if (recordedUrl) URL.revokeObjectURL(recordedUrl);
+      recordedUrl = URL.createObjectURL(recordedBlob);
+
+      const preview = $("recordedPreview");
+      preview.src = recordedUrl;
+      preview.load();
+
+      const seconds = Math.max(1, Math.round((Date.now() - recordingStartedAt) / 1000));
+      $("recordingDuration").textContent = `Duración ${formatDuration(seconds)}`;
+
+      showView("reviewView");
+    } catch (err) {
+      console.error("Error al preparar la grabación:", err);
+      stopStream();
+      alert(`No se pudo preparar el video grabado. ${err.message}`);
+      goHome();
+    }
   }
 
   async function blobToBase64(blob) {
