@@ -2,148 +2,104 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#f7f3ec" />
-  <title>Memora — MVP</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#f5f0e8" />
+  <title>Memora — MVP 0.1</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="app-shell">
+  <main class="shell">
     <header class="topbar">
-      <button id="homeBtn" class="brand-button" aria-label="Ir al inicio">
-        <span class="brand-mark">M</span>
-        <span class="brand-name">Memora</span>
-      </button>
-      <button id="refreshBtn" class="icon-button" title="Actualizar memorias" aria-label="Actualizar memorias">↻</button>
+      <a class="brand" href="./">MEMORA</a>
+      <button id="refreshBtn" class="icon-btn" type="button" title="Actualizar">↻</button>
     </header>
 
     <section id="homeView" class="view active">
       <div class="hero">
-        <p class="eyebrow">TU HISTORIA, EN TU VOZ</p>
-        <h1>Guarda los recuerdos que tu familia querrá volver a escuchar.</h1>
-        <p class="hero-copy">Elige una pregunta, graba hasta 3 minutos y guarda el video en Google Drive. Después puedes agregar manualmente la transcripción y convertirla en una historia.</p>
+        <p class="eyebrow">PREGUNTA PARA RECORDAR</p>
+        <h1 id="questionText">Cargando pregunta…</h1>
+        <p class="subcopy">Graba una respuesta de hasta 3 minutos. El video incluye tu voz.</p>
+        <div class="hero-actions">
+          <button id="startCameraBtn" class="primary-btn" type="button">Grabar mi respuesta</button>
+          <button id="anotherQuestionBtn" class="secondary-btn" type="button">Otra pregunta</button>
+        </div>
       </div>
 
-      <section class="question-card">
-        <div class="question-meta">
-          <span>Pregunta de hoy</span>
-          <button id="anotherQuestionBtn" class="text-button">Otra pregunta</button>
-        </div>
-        <h2 id="questionText"></h2>
-        <button id="startCameraBtn" class="primary-button">Grabar mi respuesta</button>
+      <section class="proof-card">
+        <p class="eyebrow">MVP 0.1</p>
+        <h2>Primero validamos una sola cosa</h2>
+        <p>Que la web grabe cámara + micrófono, permita revisar el resultado y guarde el archivo real en Google Drive.</p>
       </section>
 
-      <section class="library-section">
-        <div class="section-heading">
+      <section class="latest-section">
+        <div class="section-title-row">
           <div>
-            <p class="eyebrow">BIBLIOTECA</p>
-            <h2>Tus recuerdos</h2>
+            <p class="eyebrow">ÚLTIMAS PRUEBAS</p>
+            <h2>Videos guardados</h2>
           </div>
-          <span id="memoryCount" class="memory-count"></span>
         </div>
-        <div id="libraryState" class="state-card">Todavía no hay recuerdos guardados.</div>
-        <div id="memoryGrid" class="memory-grid"></div>
+        <div id="memoryList" class="memory-list"></div>
+        <p id="emptyMemories" class="empty-copy">Todavía no hay videos guardados.</p>
       </section>
     </section>
 
     <section id="recordView" class="view">
-      <div class="record-header">
-        <button id="cancelRecordBtn" class="back-button">← Cancelar</button>
-        <span id="recordTimer" class="timer">00:00</span>
-      </div>
+      <button id="cancelRecordBtn" class="back-btn" type="button">← Volver</button>
+      <p class="eyebrow">RESPONDE ESTA PREGUNTA</p>
+      <h2 id="recordQuestionText" class="record-question"></h2>
 
-      <div class="record-question">
-        <p class="eyebrow">RESPONDE CON CALMA</p>
-        <h2 id="recordQuestionText"></h2>
-      </div>
-
-      <div class="camera-frame">
+      <div class="camera-wrap">
         <video id="cameraPreview" autoplay muted playsinline></video>
-        <div id="cameraPlaceholder" class="camera-placeholder">
-          <span>Activa cámara y micrófono para comenzar</span>
-        </div>
-        <div id="recordingBadge" class="recording-badge hidden"><span></span> Grabando</div>
+        <div id="cameraPlaceholder" class="camera-placeholder">Preparando cámara…</div>
+        <div id="recordingBadge" class="recording-badge hidden">● <span id="recordTimer">00:00</span></div>
       </div>
 
-      <div class="record-actions">
-        <button id="recordBtn" class="record-button" disabled aria-label="Comenzar grabación"><span></span></button>
-        <p id="recordHint">Preparando cámara…</p>
+      <div class="record-controls">
+        <button id="recordBtn" class="record-btn" type="button" aria-label="Comenzar o terminar grabación">
+          <span></span>
+        </button>
+        <p id="recordHint">Máximo 3 minutos</p>
       </div>
     </section>
 
     <section id="reviewView" class="view">
-      <button id="reviewBackBtn" class="back-button">← Volver a grabar</button>
-      <div class="record-question compact">
-        <p class="eyebrow">REVISA TU RESPUESTA</p>
-        <h2 id="reviewQuestionText"></h2>
-      </div>
-      <div class="camera-frame review-frame">
+      <button id="reviewBackBtn" class="back-btn" type="button">← Descartar</button>
+      <p class="eyebrow">REVISA TU RESPUESTA</p>
+      <h2 id="reviewQuestionText" class="record-question"></h2>
+
+      <div class="review-player">
         <video id="recordedPreview" controls playsinline></video>
       </div>
-      <div class="review-meta">
-        <span id="recordingDuration"></span>
-        
+      <p id="recordingDuration" class="meta-copy"></p>
+
+      <div class="stack-actions">
+        <button id="saveVideoBtn" class="primary-btn" type="button">Guardar video en Drive</button>
+        <button id="retakeBtn" class="secondary-btn" type="button">Grabar otra vez</button>
+      </div>
+    </section>
+
+    <section id="savingView" class="view centered-view">
+      <div class="spinner" aria-hidden="true"></div>
+      <h2 id="savingTitle">Guardando video…</h2>
+      <p id="savingDetail">No cierres esta página.</p>
+    </section>
+
+    <section id="successView" class="view">
+      <button id="successHomeBtn" class="back-btn" type="button">← Inicio</button>
+      <p class="eyebrow">VIDEO GUARDADO</p>
+      <h1>La grabación ya está en Google Drive.</h1>
+      <p id="successQuestion" class="success-question"></p>
+      <div class="drive-player-wrap">
+        <iframe id="drivePlayer" title="Video guardado en Google Drive" allow="autoplay"></iframe>
       </div>
       <div class="stack-actions">
-        <button id="saveVideoBtn" class="primary-button">Guardar recuerdo</button>
-        <button id="retakeBtn" class="secondary-button">Grabar de nuevo</button>
+        <a id="openDriveBtn" class="primary-btn link-btn" href="#" target="_blank" rel="noopener">Abrir archivo en Drive</a>
+        <button id="recordAnotherBtn" class="secondary-btn" type="button">Grabar otro recuerdo</button>
       </div>
     </section>
-
-    <section id="savingView" class="view saving-view">
-      <div class="loader"></div>
-      <p class="eyebrow">GUARDANDO</p>
-      <h2 id="savingTitle">Subiendo tu video a Google Drive…</h2>
-      <p id="savingDetail">No cierres esta página hasta terminar.</p>
-    </section>
-
-    <section id="memoryView" class="view">
-      <div class="memory-topline">
-        <button id="memoryBackBtn" class="back-button">← Recuerdos</button>
-        <button id="shareBtn" class="secondary-button small">Compartir</button>
-      </div>
-
-      <article class="memory-article">
-        <p id="memoryDate" class="eyebrow"></p>
-        <h1 id="memoryTitle"></h1>
-        <p id="memoryQuestion" class="memory-question"></p>
-
-        <div class="drive-player-wrap">
-          <iframe id="drivePlayer" title="Video del recuerdo" allow="autoplay" allowfullscreen></iframe>
-        </div>
-
-        <div class="tabs" role="tablist">
-          <button id="storyTab" class="tab active" data-tab="story">Historia</button>
-          <button id="transcriptTab" class="tab" data-tab="transcript">Transcripción</button>
-        </div>
-
-        <section id="storyPanel" class="text-panel active">
-          <div id="storyRead" class="read-copy empty-copy">Aún no hay una historia escrita.</div>
-          <div id="storyEdit" class="edit-box">
-            <label for="titleInput">Título del recuerdo</label>
-            <input id="titleInput" type="text" maxlength="120" placeholder="Ej. El taller de mi abuelo" />
-            <label for="storyInput">Historia</label>
-            <textarea id="storyInput" rows="12" placeholder="Pega o escribe aquí la versión narrativa final…"></textarea>
-          </div>
-        </section>
-
-        <section id="transcriptPanel" class="text-panel">
-          <div id="transcriptRead" class="read-copy empty-copy">Aún no hay una transcripción.</div>
-          <div id="transcriptEdit" class="edit-box">
-            <label for="transcriptInput">Transcripción manual</label>
-            <textarea id="transcriptInput" rows="14" placeholder="Pega aquí la transcripción verbatim…"></textarea>
-          </div>
-        </section>
-
-        <div id="editActions" class="edit-actions">
-          <button id="saveTextBtn" class="primary-button">Guardar texto</button>
-          <p id="textSaveStatus" class="inline-status"></p>
-        </div>
-      </article>
-    </section>
-
-    <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="config.js"></script>
   <script src="app.js"></script>

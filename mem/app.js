@@ -1,20 +1,26 @@
 (() => {
+  "use strict";
+
   const CONFIG = window.REMENTO_CONFIG || {};
-  const API_URL = CONFIG.API_URL || "";
+  const API_URL = String(CONFIG.API_URL || "").trim();
   const MAX_SECONDS = Number(CONFIG.MAX_RECORDING_SECONDS || 180);
 
-  // Fallback only. The normal source of questions is the Google Sheet "Questions".
+  // MVP 0.1: intentionally modest capture settings to keep a 3-minute
+  // talking-head recording small enough for the simple Apps Script/Base64 path.
+  const VIDEO_BITS_PER_SECOND = 400_000;
+  const AUDIO_BITS_PER_SECOND = 48_000;
+
   const FALLBACK_QUESTIONS = [
-    { id: "Q001", question: "¿Cuál es uno de tus primeros recuerdos de infancia?", active: true, featured: true, sortOrder: 1 },
-    { id: "Q002", question: "¿Cómo era la casa donde creciste?", active: true, featured: false, sortOrder: 2 },
-    { id: "Q003", question: "¿Qué recuerdas con más cariño de tus abuelos?", active: true, featured: false, sortOrder: 3 }
+    { id: "Q001", question: "¿Cuál es uno de tus primeros recuerdos de infancia?", featured: true },
+    { id: "Q002", question: "¿Cómo era la casa donde creciste?", featured: false },
+    { id: "Q003", question: "¿Qué recuerdas con más cariño de tus abuelos?", featured: false }
   ];
 
   const $ = (id) => document.getElementById(id);
   const views = [...document.querySelectorAll(".view")];
 
-  let currentQuestion = "";
   let questions = [...FALLBACK_QUESTIONS];
+  let currentQuestion = FALLBACK_QUESTIONS[0].question;
   let stream = null;
   let recorder = null;
   let chunks = [];
@@ -22,12 +28,9 @@
   let recordedUrl = null;
   let recordingStartedAt = 0;
   let timerId = null;
-  let currentMemory = null;
-  let memories = [];
-  let isFamilyView = false;
 
   function showView(id) {
-    views.forEach(v => v.classList.toggle("active", v.id === id));
+    views.forEach((view) => view.classList.toggle("active", view.id === id));
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -36,113 +39,161 @@
     el.textContent = message;
     el.classList.add("show");
     clearTimeout(el._timer);
-    el._timer = setTimeout(() => el.classList.remove("show"), 2600);
+    el._timer = setTimeout(() => el.classList.remove("show"), 2400);
   }
 
-  function pickQuestion(forceDifferent = false) {
-    const active = questions.filter(q => q.active !== false && String(q.question || "").trim());
-    const pool = active.length ? active : FALLBACK_QUESTIONS;
-
-    let selected;
-    if (!forceDifferent) {
-      selected = pool.find(q => q.featured) || pool[0];
-    } else {
-      const alternatives = pool.filter(q => q.question !== currentQuestion);
-      const source = alternatives.length ? alternatives : pool;
-      selected = source[Math.floor(Math.random() * source.length)];
+  function ensureApiConfigured() {
+    if (!API_URL || API_URL.includes("PASTE_YOUR")) {
+      throw new Error("Falta pegar la URL /exec de Apps Script en config.js.");
     }
+  }
 
-    currentQuestion = selected?.question || "Cuéntame un recuerdo importante para ti.";
+  async function apiGet(params) {
+    ensureApiConfigured();
+    const url = new URL(API_URL);
+    Object.entries(params).forEach(([key, value]) => url.searchParams.set(key, String(value)));
+    url.searchParams.set("_", String(Date.now()));
+    const response = await fetch(url.toString(), { cache: "no-store", redirect: "follow" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    if (!data.ok) throw new Error(data.error || "Error de Apps Script");
+    return data;
+  }
+
+  async function apiPost(payload) {
+    ensureApiConfigured();
+    // text/plain avoids an unnecessary CORS preflight. JSON remains intact,
+    // including + / = characters in standard Base64.
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload),
+      redirect: "follow"
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    if (!data.ok) throw new Error(data.error || "Error de Apps Script");
+    return data;
+  }
+
+  function formatDuration(totalSeconds) {
+    const seconds = Math.max(0, Number(totalSeconds) || 0);
+    const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
+    const ss = String(Math.floor(seconds % 60)).padStart(2, "0");
+    return `${mm}:${ss}`;
+  }
+
+  function formatBytes(bytes) {
+    const mb = Number(bytes || 0) / (1024 * 1024);
+    return `${mb.toFixed(1)} MB`;
+  }
+
+  function chooseMimeType() {
+    const candidates = [
+      "video/webm;codecs=vp8,opus",
+      "video/webm",
+      "video/mp4"
+    ];
+    return candidates.find((type) => MediaRecorder.isTypeSupported(type)) || "";
+  }
+
+  function setQuestion(question) {
+    currentQuestion = String(question || "").trim() || "Cuéntame un recuerdo importante para ti.";
     $("questionText").textContent = currentQuestion;
     $("recordQuestionText").textContent = currentQuestion;
     $("reviewQuestionText").textContent = currentQuestion;
   }
 
+  function pickQuestion(different = false) {
+    const pool = questions.length ? questions : FALLBACK_QUESTIONS;
+    let picked = pool.find((item) => item.featured) || pool[0];
+    if (different) {
+      const alternatives = pool.filter((item) => item.question !== currentQuestion);
+      const source = alternatives.length ? alternatives : pool;
+      picked = source[Math.floor(Math.random() * source.length)];
+    }
+    setQuestion(picked.question);
+  }
+
   async function loadQuestions() {
     try {
-      const result = await apiGet({ action: "listQuestions" });
-      if (Array.isArray(result.questions) && result.questions.length) {
-        questions = result.questions;
-      }
-    } catch (err) {
-      console.warn("Using fallback questions because Questions sheet could not be loaded:", err);
+      const data = await apiGet({ action: "listQuestions" });
+      if (Array.isArray(data.questions) && data.questions.length) questions = data.questions;
+    } catch (error) {
+      console.warn("Questions sheet unavailable; using local fallback.", error);
     }
     pickQuestion(false);
   }
 
-  function formatDuration(seconds) {
-    const m = Math.floor(seconds / 60).toString().padStart(2, "0");
-    const s = Math.floor(seconds % 60).toString().padStart(2, "0");
-    return `${m}:${s}`;
-  }
-
-  function chooseMimeType() {
-    const candidates = [
-      "video/webm;codecs=vp9,opus",
-      "video/webm;codecs=vp8,opus",
-      "video/webm",
-      "video/mp4"
-    ];
-    return candidates.find(type => window.MediaRecorder && MediaRecorder.isTypeSupported(type)) || "";
-  }
-
   async function openCamera() {
     if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
-      alert("Este navegador no soporta grabación desde la web. Prueba con una versión reciente de Safari o Chrome.");
+      alert("Este navegador no soporta grabación web. Usa una versión reciente de Chrome, Edge o Safari.");
       return;
     }
 
+    cleanupRecording();
     showView("recordView");
+    $("cameraPlaceholder").classList.remove("hidden");
+    $("recordHint").textContent = "Preparando cámara y micrófono…";
     $("recordBtn").disabled = true;
-    $("recordHint").textContent = "Preparando cámara…";
 
     try {
       stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: "user",
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
+          width: { ideal: 640, max: 640 },
+          height: { ideal: 360, max: 480 },
+          frameRate: { ideal: 24, max: 24 }
         },
         audio: {
           echoCancellation: true,
           noiseSuppression: true,
-          autoGainControl: true
+          autoGainControl: true,
+          channelCount: 1
         }
       });
+
       $("cameraPreview").srcObject = stream;
       $("cameraPlaceholder").classList.add("hidden");
       $("recordBtn").disabled = false;
-      $("recordHint").textContent = `Máximo ${Math.round(MAX_SECONDS / 60)} minutos`;
-    } catch (err) {
-      console.error(err);
-      $("recordHint").textContent = "No pudimos acceder a cámara o micrófono.";
-      alert("Necesitamos permiso de cámara y micrófono para grabar el recuerdo.");
+      $("recordHint").textContent = "Máximo 3 minutos";
+    } catch (error) {
+      console.error("getUserMedia failed", error);
+      alert("No se pudo abrir la cámara o el micrófono. Revisa los permisos del navegador.");
+      goHome();
     }
   }
 
   function stopStream() {
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-      stream = null;
-    }
+    if (stream) stream.getTracks().forEach((track) => track.stop());
+    stream = null;
     $("cameraPreview").srcObject = null;
   }
 
   function startRecording() {
     if (!stream) return;
+
     chunks = [];
     const mimeType = chooseMimeType();
     const options = {
-      videoBitsPerSecond: 520000,
-      audioBitsPerSecond: 64000
+      videoBitsPerSecond: VIDEO_BITS_PER_SECOND,
+      audioBitsPerSecond: AUDIO_BITS_PER_SECOND
     };
     if (mimeType) options.mimeType = mimeType;
 
-    recorder = new MediaRecorder(stream, options);
+    try {
+      recorder = new MediaRecorder(stream, options);
+    } catch (error) {
+      console.warn("Recorder options rejected, falling back to browser defaults.", error);
+      recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+    }
+
     recorder.ondataavailable = (event) => {
       if (event.data && event.data.size > 0) chunks.push(event.data);
     };
+    recorder.onerror = (event) => console.error("MediaRecorder error", event.error || event);
     recorder.onstop = finishRecording;
+
     recorder.start(1000);
     recordingStartedAt = Date.now();
     $("recordBtn").classList.add("recording");
@@ -153,31 +204,28 @@
   }
 
   function updateTimer() {
-    const seconds = Math.floor((Date.now() - recordingStartedAt) / 1000);
-    $("recordTimer").textContent = formatDuration(seconds);
-    if (seconds >= MAX_SECONDS && recorder?.state === "recording") stopRecording();
+    const elapsed = Math.floor((Date.now() - recordingStartedAt) / 1000);
+    $("recordTimer").textContent = formatDuration(elapsed);
+    if (elapsed >= MAX_SECONDS && recorder?.state === "recording") stopRecording();
   }
 
   function stopRecording() {
-    if (recorder?.state === "recording") recorder.stop();
+    if (recorder?.state !== "recording") return;
+    recorder.stop();
     clearInterval(timerId);
     timerId = null;
     $("recordBtn").classList.remove("recording");
     $("recordingBadge").classList.add("hidden");
+    $("recordHint").textContent = "Preparando vista previa…";
   }
 
   function finishRecording() {
     try {
       const mimeType = recorder?.mimeType || chunks[0]?.type || "video/webm";
       recordedBlob = new Blob(chunks, { type: mimeType });
+      if (!recordedBlob.size) throw new Error("La grabación no produjo datos.");
 
-      if (!recordedBlob.size) {
-        throw new Error("La grabación terminó sin datos de video.");
-      }
-
-      // Stop the live camera only after MediaRecorder has finished producing the file.
       stopStream();
-
       if (recordedUrl) URL.revokeObjectURL(recordedUrl);
       recordedUrl = URL.createObjectURL(recordedBlob);
 
@@ -185,280 +233,184 @@
       preview.src = recordedUrl;
       preview.load();
 
-      const seconds = Math.max(1, Math.round((Date.now() - recordingStartedAt) / 1000));
-      $("recordingDuration").textContent = `Duración ${formatDuration(seconds)}`;
+      const seconds = Math.min(MAX_SECONDS, Math.max(1, Math.round((Date.now() - recordingStartedAt) / 1000)));
+      $("recordingDuration").textContent = `Duración ${formatDuration(seconds)} · ${formatBytes(recordedBlob.size)}`;
+
+      console.info("Recording ready", {
+        bytes: recordedBlob.size,
+        type: recordedBlob.type,
+        requestedVideoBps: VIDEO_BITS_PER_SECOND,
+        requestedAudioBps: AUDIO_BITS_PER_SECOND,
+        actualVideoBps: recorder?.videoBitsPerSecond,
+        actualAudioBps: recorder?.audioBitsPerSecond
+      });
 
       showView("reviewView");
-    } catch (err) {
-      console.error("Error al preparar la grabación:", err);
+    } catch (error) {
+      console.error("finishRecording failed", error);
       stopStream();
-      alert(`No se pudo preparar el video grabado. ${err.message}`);
+      alert(`No se pudo preparar el video. ${error.message}`);
       goHome();
     }
   }
 
   async function blobToBase64(blob) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = String(reader.result || "");
-        resolve(result.includes(",") ? result.split(",")[1] : result);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  }
-
-  async function apiPost(payload) {
-    ensureApiConfigured();
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload),
-      redirect: "follow"
-    });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = await response.json();
-    if (!data.ok) throw new Error(data.error || "Error en Apps Script");
-    return data;
-  }
-
-  async function apiGet(params) {
-    ensureApiConfigured();
-    const url = new URL(API_URL);
-    Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
-    url.searchParams.set("_", Date.now().toString());
-    const response = await fetch(url.toString(), { redirect: "follow", cache: "no-store" });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const data = await response.json();
-    if (!data.ok) throw new Error(data.error || "Error en Apps Script");
-    return data;
-  }
-
-  function ensureApiConfigured() {
-    if (!API_URL || API_URL.includes("PASTE_YOUR")) {
-      throw new Error("Primero pega el URL /exec de Apps Script en config.js");
+    // Use ArrayBuffer + btoa rather than DataURL splitting. This guarantees
+    // the outgoing string contains only standard Base64 characters.
+    const buffer = await blob.arrayBuffer();
+    const bytes = new Uint8Array(buffer);
+    const sliceSize = 0x8000;
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += sliceSize) {
+      binary += String.fromCharCode(...bytes.subarray(offset, Math.min(offset + sliceSize, bytes.length)));
     }
+    return btoa(binary);
+  }
+
+  function validateBase64(base64) {
+    if (!base64 || typeof base64 !== "string") throw new Error("No se generó Base64.");
+    if (!/^[A-Za-z0-9+/]*={0,2}$/.test(base64)) throw new Error("La conversión Base64 produjo caracteres inválidos.");
+    if (base64.length % 4 !== 0) throw new Error("La conversión Base64 quedó incompleta.");
   }
 
   async function saveRecording() {
     if (!recordedBlob) return;
     showView("savingView");
-    $("savingTitle").textContent = "Subiendo tu video a Google Drive…";
-    $("savingDetail").textContent = "No cierres esta página hasta terminar.";
+    $("savingTitle").textContent = "Preparando video…";
+    $("savingDetail").textContent = "Convirtiendo la grabación para enviarla a Google Drive.";
 
     try {
       const base64 = await blobToBase64(recordedBlob);
+      validateBase64(base64);
+
+      console.info("Upload payload", {
+        rawBytes: recordedBlob.size,
+        base64Chars: base64.length,
+        estimatedBase64Bytes: new Blob([base64]).size
+      });
+
+      $("savingTitle").textContent = "Guardando en Google Drive…";
+      $("savingDetail").textContent = "No cierres esta página hasta terminar.";
+
       const ext = recordedBlob.type.includes("mp4") ? "mp4" : "webm";
-      // Send the original byte length as an integrity check.
-      // The backend compares it with the decoded Base64 payload so we can
-      // distinguish a real Drive error from a truncated/corrupted upload.
       const result = await apiPost({
-        action: "uploadMemory",
+        action: "uploadVideo",
         question: currentQuestion,
         mimeType: recordedBlob.type || (ext === "mp4" ? "video/mp4" : "video/webm"),
         extension: ext,
-        base64,
         blobSize: recordedBlob.size,
+        base64,
         recordedAt: new Date().toISOString()
       });
 
-      recordedBlob = null;
-      if (recordedUrl) URL.revokeObjectURL(recordedUrl);
-      recordedUrl = null;
-      await loadMemory(result.memory.id, false);
-      await loadLibrary();
-      toast("Recuerdo guardado en Drive");
-    } catch (err) {
-      console.error(err);
-      alert(`No se pudo guardar el video. ${err.message}`);
+      renderSuccess(result.video);
+      await loadVideos();
+      cleanupRecording();
+      toast("Video guardado en Drive");
+    } catch (error) {
+      console.error("saveRecording failed", error);
+      alert(`No se pudo guardar el video. ${error.message}`);
       showView("reviewView");
     }
   }
 
-  function makeDefaultTitle(memory) {
-    return memory.title?.trim() || "Recuerdo sin título";
+  function renderSuccess(video) {
+    $("successQuestion").textContent = video.question || currentQuestion;
+    $("drivePlayer").src = video.previewUrl || "";
+    $("openDriveBtn").href = video.driveUrl || "#";
+    showView("successView");
   }
 
-  function renderLibrary() {
-    const grid = $("memoryGrid");
-    grid.innerHTML = "";
-    $("memoryCount").textContent = memories.length ? `${memories.length} ${memories.length === 1 ? "recuerdo" : "recuerdos"}` : "";
-    $("libraryState").style.display = memories.length ? "none" : "block";
+  function renderVideos(videos) {
+    const list = $("memoryList");
+    list.innerHTML = "";
+    $("emptyMemories").style.display = videos.length ? "none" : "block";
 
-    memories.forEach(memory => {
+    videos.forEach((video) => {
       const card = document.createElement("article");
       card.className = "memory-card";
       card.innerHTML = `
-        <div class="memory-thumb"><span>▶ Video</span></div>
-        <div class="memory-card-body">
-          <h3>${escapeHtml(makeDefaultTitle(memory))}</h3>
-          <p>${escapeHtml(memory.question || "")}</p>
-          <p style="margin-top:10px">${escapeHtml(formatDate(memory.createdAt))}</p>
-        </div>`;
-      card.addEventListener("click", () => loadMemory(memory.id, false));
-      grid.appendChild(card);
+        <strong>${escapeHtml(video.question || "Recuerdo")}</strong>
+        <small>${escapeHtml(formatDate(video.createdAt))}</small><br>
+        <a href="${escapeAttribute(video.driveUrl || "#")}" target="_blank" rel="noopener">Abrir en Drive</a>
+      `;
+      list.appendChild(card);
     });
   }
 
-  async function loadLibrary() {
+  async function loadVideos() {
     try {
-      const result = await apiGet({ action: "listMemories" });
-      memories = result.memories || [];
-      renderLibrary();
-    } catch (err) {
-      console.error(err);
-      $("libraryState").style.display = "block";
-      $("libraryState").textContent = err.message;
+      const data = await apiGet({ action: "listVideos" });
+      renderVideos(Array.isArray(data.videos) ? data.videos : []);
+    } catch (error) {
+      console.warn("Could not load video list", error);
+      renderVideos([]);
     }
-  }
-
-  async function loadMemory(id, familyMode) {
-    isFamilyView = !!familyMode;
-    document.body.classList.toggle("family-view", isFamilyView);
-    showView("savingView");
-    $("savingTitle").textContent = "Abriendo recuerdo…";
-    $("savingDetail").textContent = "";
-
-    try {
-      const result = await apiGet({ action: "getMemory", id });
-      currentMemory = result.memory;
-      renderMemory(currentMemory);
-      showView("memoryView");
-    } catch (err) {
-      console.error(err);
-      alert(`No se pudo abrir el recuerdo. ${err.message}`);
-      goHome();
-    }
-  }
-
-  function renderMemory(memory) {
-    $("memoryDate").textContent = formatDate(memory.createdAt).toUpperCase();
-    $("memoryTitle").textContent = makeDefaultTitle(memory);
-    $("memoryQuestion").textContent = `“${memory.question || ""}”`;
-    $("drivePlayer").src = memory.previewUrl || "";
-
-    const story = (memory.story || "").trim();
-    const transcript = (memory.transcript || "").trim();
-    $("storyRead").textContent = story || "Aún no hay una historia escrita.";
-    $("storyRead").classList.toggle("empty-copy", !story);
-    $("transcriptRead").textContent = transcript || "Aún no hay una transcripción.";
-    $("transcriptRead").classList.toggle("empty-copy", !transcript);
-
-    $("titleInput").value = memory.title || "";
-    $("storyInput").value = memory.story || "";
-    $("transcriptInput").value = memory.transcript || "";
-    $("textSaveStatus").textContent = "";
-  }
-
-  async function saveText() {
-    if (!currentMemory) return;
-    $("saveTextBtn").disabled = true;
-    $("textSaveStatus").textContent = "Guardando…";
-    try {
-      const result = await apiPost({
-        action: "updateMemoryText",
-        id: currentMemory.id,
-        title: $("titleInput").value.trim(),
-        story: $("storyInput").value.trim(),
-        transcript: $("transcriptInput").value.trim()
-      });
-      currentMemory = result.memory;
-      renderMemory(currentMemory);
-      $("textSaveStatus").textContent = "Guardado";
-      await loadLibrary();
-    } catch (err) {
-      console.error(err);
-      $("textSaveStatus").textContent = "Error al guardar";
-      alert(err.message);
-    } finally {
-      $("saveTextBtn").disabled = false;
-    }
-  }
-
-  async function shareMemory() {
-    if (!currentMemory) return;
-    const url = new URL(window.location.href);
-    url.search = "";
-    url.searchParams.set("memory", currentMemory.id);
-    url.searchParams.set("view", "family");
-    try {
-      await navigator.clipboard.writeText(url.toString());
-      toast("Link familiar copiado");
-    } catch {
-      window.prompt("Copia este link:", url.toString());
-    }
-  }
-
-  function setTab(tab) {
-    const story = tab === "story";
-    $("storyTab").classList.toggle("active", story);
-    $("transcriptTab").classList.toggle("active", !story);
-    $("storyPanel").classList.toggle("active", story);
-    $("transcriptPanel").classList.toggle("active", !story);
   }
 
   function formatDate(value) {
-    if (!value) return "";
-    const d = new Date(value);
-    if (Number.isNaN(d.getTime())) return String(value);
-    return new Intl.DateTimeFormat("es-MX", { day:"numeric", month:"long", year:"numeric" }).format(d);
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    return new Intl.DateTimeFormat("es-MX", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }).format(date);
   }
 
   function escapeHtml(value) {
-    return String(value ?? "").replace(/[&<>'"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", "'":"&#39;", '"':"&quot;" }[c]));
+    return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[char]));
+  }
+
+  function escapeAttribute(value) {
+    return escapeHtml(value);
+  }
+
+  function cleanupRecording() {
+    clearInterval(timerId);
+    timerId = null;
+    if (recorder?.state === "recording") {
+      try { recorder.stop(); } catch (_) {}
+    }
+    recorder = null;
+    chunks = [];
+    stopStream();
+    if (recordedUrl) URL.revokeObjectURL(recordedUrl);
+    recordedUrl = null;
+    recordedBlob = null;
+    $("recordBtn").classList.remove("recording");
+    $("recordingBadge").classList.add("hidden");
+    $("recordTimer").textContent = "00:00";
   }
 
   function goHome() {
-    stopRecording();
-    stopStream();
-    document.body.classList.remove("family-view");
-    isFamilyView = false;
-    currentMemory = null;
-    const clean = new URL(window.location.href);
-    clean.search = "";
-    history.replaceState({}, "", clean.toString());
+    cleanupRecording();
     showView("homeView");
-    loadLibrary();
   }
 
   function wireEvents() {
-    $("anotherQuestionBtn").addEventListener("click", () => pickQuestion(true));
     $("startCameraBtn").addEventListener("click", openCamera);
+    $("anotherQuestionBtn").addEventListener("click", () => pickQuestion(true));
     $("cancelRecordBtn").addEventListener("click", goHome);
-    $("homeBtn").addEventListener("click", goHome);
+    $("reviewBackBtn").addEventListener("click", goHome);
+    $("retakeBtn").addEventListener("click", openCamera);
+    $("saveVideoBtn").addEventListener("click", saveRecording);
+    $("successHomeBtn").addEventListener("click", goHome);
+    $("recordAnotherBtn").addEventListener("click", openCamera);
     $("refreshBtn").addEventListener("click", async () => {
       await loadQuestions();
-      await loadLibrary();
-      toast("Preguntas y recuerdos actualizados");
+      await loadVideos();
+      toast("Actualizado");
     });
-
     $("recordBtn").addEventListener("click", () => {
       if (recorder?.state === "recording") stopRecording();
       else startRecording();
     });
-
-    $("reviewBackBtn").addEventListener("click", openCamera);
-    $("retakeBtn").addEventListener("click", openCamera);
-    $("saveVideoBtn").addEventListener("click", saveRecording);
-    $("memoryBackBtn").addEventListener("click", goHome);
-    $("shareBtn").addEventListener("click", shareMemory);
-    $("saveTextBtn").addEventListener("click", saveText);
-    $("storyTab").addEventListener("click", () => setTab("story"));
-    $("transcriptTab").addEventListener("click", () => setTab("transcript"));
   }
 
   async function init() {
     wireEvents();
-    await loadQuestions();
-    const params = new URLSearchParams(window.location.search);
-    const memoryId = params.get("memory");
-    const familyMode = params.get("view") === "family";
-    if (memoryId) await loadMemory(memoryId, familyMode);
-    else {
-      showView("homeView");
-      await loadLibrary();
-    }
+    setQuestion(currentQuestion);
+    await Promise.allSettled([loadQuestions(), loadVideos()]);
+    showView("homeView");
   }
 
   init();
