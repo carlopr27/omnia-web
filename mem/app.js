@@ -2,31 +2,15 @@
 const $ = id => document.getElementById(id);
 const cfg = window.REMENTO_CONFIG;
 const pageMode = document.body.dataset?.page || 'record';
+function memoryURL(identity, shared = true) { const url = new URL('memory.html',location.href); url.hash = new URLSearchParams({id:identity.memory_id,...(!shared && identity.token ? {token:identity.token}: {})}).toString(); return url.href; }
+function linkedIdentity() { const params = new URLSearchParams((location.hash || new URL(location.href).hash).replace(/^#/,'')); const id = params.get('id'), token = params.get('token'); if (!/^[a-f0-9-]{36}$/i.test(id || '') || (token && !/^[a-f0-9-]{36}$/i.test(token))) return null; return {memory_id:id,...(token ? {token}: {})}; }
 let questions = [], qi = 0, recorder, stream, chunks = [], blob, objectURL;
 let started = 0, duration = 0, clock, deadline, polling, pollGeneration = 0, current, draft;
 const MAX = Math.min(180, Number(cfg.MAX_RECORDING_SECONDS) || 180);
 const labels = {VIDEO_SAVED:'Video guardado. Preparando la transcripción…',TRANSCRIBING:'Video guardado. Transcribiendo tu respuesta…',READY:'Tu transcripción está lista.',ERROR:'Tu video está guardado, pero no se pudo transcribir.'};
 const storyLabels = {PENDING:'Preparando tu historia…',GENERATING:'Editando tu historia…',READY:'Tu historia está lista.',ERROR:'La transcripción está lista; no se pudo crear la historia.',SKIPPED:'No se pudo crear una historia porque no se detectó habla.',NOT_REQUESTED:'Puedes crear una historia con esta transcripción.'};
 
-// A form + iframe bridge avoids depending on cross-origin fetch/CORS in Apps Script.
-function api(action, data = {}, timeout = 90000) {
-  return new Promise((resolve, reject) => {
-    const requestId = crypto.randomUUID();
-    const frame = document.createElement('iframe'); frame.hidden = true; frame.name = 'bridge_' + requestId;
-    const form = document.createElement('form'); form.hidden = true; form.method = 'POST'; form.action = cfg.API_URL; form.target = frame.name;
-    const field = document.createElement('textarea'); field.name = 'payload';
-    field.value = JSON.stringify({action, requestId, origin: location.origin, ...data}); form.append(field);
-    const cleanup = () => { clearTimeout(timer); window.removeEventListener('message', receive); frame.remove(); form.remove(); };
-    const receive = event => {
-      if (!/^https:\/\/(?:script|[a-z0-9-]+-script)\.googleusercontent\.com$/.test(event.origin) && event.origin !== 'https://script.google.com') return;
-      const msg = event.data; if (!msg || msg.bridge !== 'memora-02a' || msg.requestId !== requestId) return;
-      if (msg.version !== '0.2B.2') { cleanup(); reject(new Error('La página y el servidor tienen versiones distintas. Actualiza Code.gs y publica una nueva versión de Apps Script antes de grabar.')); return; }
-      cleanup(); msg.ok ? resolve(msg.data) : reject(new Error(msg.error || 'Error del servidor.'));
-    };
-    const timer = setTimeout(() => { cleanup(); reject(new Error('No llegó la respuesta. Puedes consultar de nuevo o reintentar; se conservará el mismo identificador.')); }, timeout);
-    window.addEventListener('message', receive); document.body.append(frame, form); form.submit();
-  });
-}
+const api = (...args) => window.MEMORA_API(...args);
 function notice(text) { $('notice').textContent = text; }
 function selectQuestion() { $('question').textContent = questions[qi].question; }
 function stopTracks() { if (stream) stream.getTracks().forEach(t => t.stop()); stream = null; }
@@ -47,12 +31,14 @@ function resetRecording() {
   $('save').hidden = $('retake').hidden = $('stop').hidden = true; $('record').hidden = false;
   $('record').disabled = $('another').disabled = !questions.length; $('timer').textContent = '00:00 / 03:00';
   $('recordingPanel').hidden = false;
+  $('participantName').disabled = false;
 }
 $('another').onclick = () => { qi = (qi + 1) % questions.length; selectQuestion(); };
 $('record').onclick = async () => {
   // A restored memory is a viewer, never the identity of a new recording.
   beginNewCapture();
   $('record').disabled = true; $('another').disabled = true;
+  $('participantName').disabled = true;
   try {
     if (!navigator.mediaDevices || !window.MediaRecorder) throw new Error('Este navegador no permite grabar video. Abre el sitio HTTPS en Chrome o Safari actualizado.');
     stream = await navigator.mediaDevices.getUserMedia({audio:true,video:{width:{ideal:640},height:{ideal:360},frameRate:{ideal:24,max:24}}});
@@ -70,7 +56,7 @@ $('record').onclick = async () => {
     };
     recorder.onerror = () => { notice('Falló la grabación. Vuelve a intentarlo.'); stopRecording(); stopTracks(); };
     recorder.start(1000); started = performance.now();
-    draft = {memory_id:crypto.randomUUID(),token:crypto.randomUUID(),question_id:questions[qi].id};
+    draft = {memory_id:crypto.randomUUID(),token:crypto.randomUUID(),question_id:questions[qi].id,participant_name:String($('participantName').value || '').trim().slice(0,80)};
     $('record').hidden = true; $('stop').hidden = false;
     clock = setInterval(() => { const s = Math.min(MAX,Math.floor((performance.now()-started)/1000)); $('timer').textContent = `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')} / 03:00`; if (s >= MAX) stopRecording(); },250);
     deadline = setTimeout(stopRecording,MAX*1000); notice('Grabando…');
@@ -87,6 +73,7 @@ function remember() { try { localStorage.setItem('memora02a',JSON.stringify(curr
 function render(memory) {
   $('recordingPanel').hidden = true;
   $('memory').hidden = false; $('memoryQuestion').textContent = memory.question;
+  $('memoryPerson').textContent = memory.participant_name ? 'Un recuerdo de '+memory.participant_name : '';
   $('status').textContent = labels[memory.status] + (memory.error ? ' '+memory.error:'');
   if ($('driveVideo').dataset.file !== memory.drive_file_id) { $('driveVideo').src = `https://drive.google.com/file/d/${encodeURIComponent(memory.drive_file_id)}/preview`; $('driveVideo').dataset.file = memory.drive_file_id; }
   $('driveLink').href = `https://drive.google.com/file/d/${encodeURIComponent(memory.drive_file_id)}/view`;
@@ -104,12 +91,7 @@ function render(memory) {
   $('stepTranscript').textContent = memory.status === 'READY' ? '2. Transcripción original lista' : memory.status === 'ERROR' ? '2. Transcripción: necesita un reintento' : '2. Transcribiendo tu respuesta…';
   $('stepStory').textContent = stage === 'READY' ? '3. Historia editada lista' : stage === 'GENERATING' ? '3. Preparando tu historia editada…' : stage === 'ERROR' ? '3. Historia: necesita un reintento' : stage === 'SKIPPED' ? '3. Sin habla para crear la historia' : '3. Historia editada pendiente';
   if (memory.error && memory.status === 'READY') $('status').textContent += ' '+memory.error;
-  if (current && window.MEMORA_STORE) {
-    const saved = window.MEMORA_STORE.add({...current,question:memory.question,title:memory.story_title || '',status:memory.status,story_status:stage,created_at:memory.created_at || ''});
-    $('openMemory').href = window.MEMORA_STORE.url(current); $('openMemory').hidden = false;
-    $('copyMemory').hidden = false;
-    $('linkNotice').textContent = saved ? '' : 'Guarda el enlace de este recuerdo: este navegador no permite conservar la lista.';
-  }
+  if (current) { $('openMemory').href = memoryURL(current,memory.shared_mode !== false); $('openMemory').hidden = $('copyMemory').hidden = false; }
 }
 function beginPolling() {
   if (!current) return;
@@ -157,26 +139,15 @@ async function requestStory(action) {
 }
 $('createStory').onclick = () => requestStory('generateStory');
 $('retryStory').onclick = () => requestStory('retryStory');
-$('newMemory').onclick = () => { if (pageMode === 'memory') { location.href = 'index.html'; return; } beginNewCapture(); notice('Puedes responder la misma pregunta con un video nuevo.'); };
-$('copyMemory').onclick = async () => {
-  const url = window.MEMORA_STORE.url(current);
-  try { await navigator.clipboard.writeText(url); $('linkNotice').textContent = 'Enlace copiado. Quien tenga este enlace podrá abrir el texto; el video mantiene sus permisos de Drive.'; }
-  catch (_) { $('linkNotice').textContent = 'Copia el enlace con Abrir página del recuerdo → Copiar dirección del enlace.'; }
-};
+$('newMemory').onclick = () => { if (pageMode === 'memory') { location.href = 'index.html'; return; } beginNewCapture(); $('participantName').value = ''; notice('Puedes responder la misma pregunta con un video nuevo.'); };
+$('copyMemory').onclick = async () => { try { await navigator.clipboard.writeText($('openMemory').href); $('linkNotice').textContent = 'Enlace copiado.'; } catch (_) { $('linkNotice').textContent = 'Copia manualmente la dirección del enlace Abrir página del recuerdo.'; } };
 window.addEventListener('pagehide',stopTracks);
 (async () => {
   try {
     if (!/^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(cfg.API_URL)) throw new Error('Configura la URL /exec de Apps Script en config.js.');
-    window.MEMORA_STORE.migrateLegacy();
-    if (pageMode === 'memory') {
-      $('recordingPanel').hidden = true;
-      current = window.MEMORA_STORE.fromURL(location.href);
-      if (!current) throw new Error('Este enlace está incompleto. Abre un recuerdo desde Recuerdos o usa su enlace completo.');
-      $('memory').hidden = false; $('status').textContent = 'Cargando tu recuerdo…'; beginPolling(); return;
-    }
+    if (pageMode === 'memory') { $('recordingPanel').hidden = true; current = linkedIdentity(); if (!current) throw new Error('Este enlace está incompleto. Abre el recuerdo desde Recuerdos.'); $('memory').hidden = false; $('status').textContent = 'Cargando el recuerdo…'; beginPolling(); return; }
     questions = await api('questions'); if (!questions.length) throw new Error('Activa al menos una pregunta en Sheets.');
     selectQuestion(); resetRecording();
-    // Entry is ALWAYS a fresh recorder. Old capabilities live in the library, never auto-open.
     current = null;
   } catch(e) { $('pageNotice').textContent = e.message; notice(e.message); }
 })();
