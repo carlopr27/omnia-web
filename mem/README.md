@@ -1,91 +1,154 @@
-# Memora / Remento · MVP 0.2A
+# Memora / Remento · MVP 0.2B
 
-Grabar video y audio → revisar → guardar en Drive → AssemblyAI → transcripción literal en Sheets y debajo del video. GitHub Pages + Google Apps Script + Drive/Sheets. Sin LLM, prompts ni generación de historias.
+**Video → Drive → transcripción → título e historia autobiográfica → Sheets y página del recuerdo.**
 
-Este paquete reconstruye el comportamiento documentado del MVP 0.1: el ZIP antiguo del chat no estuvo disponible para comparar sus archivos. Conserva preguntas de Sheets, revisión local, Base64 con validación de bytes, 640 × 360 / 24 fps solicitados, 400 kbps de video, 48 kbps de audio y máximo 180 segundos. No es un parche sobre los archivos originales. Haz copia de tu proyecto y del Sheet antes de reemplazarlos.
+Este paquete extiende los archivos del MVP 0.2A entregado en este chat. Conserva el grabador, revisión local, Base64 validado, preguntas desde Sheets, máximo de tres minutos, polling y proceso en segundo plano. Añade AssemblyAI LLM Gateway con **`qwen3.5-4b-32k-fast`**, el modelo del ejemplo oficial que compartiste. No hay otro proveedor de IA ni cambio de hosting.
 
-## Instalación
+## Actualizar tu instalación 0.2A
 
-1. En el proyecto existente de Apps Script, abre **Configuración del proyecto → Propiedades de la secuencia de comandos** y añade:
+1. Haz una copia de tu Sheet y de Code.gs por si quieres regresar a 0.2A.
+2. Mantén el mismo proyecto de Apps Script y sus Script Properties:
 
    | Propiedad | Valor |
    | --- | --- |
-   | `ASSEMBLYAI_API_KEY` | Tu clave real de AssemblyAI. Solo aquí. |
-   | `APP_ORIGIN` | Origen exacto de GitHub Pages, por ejemplo `https://aldo.github.io` (sin ruta ni `/` final). |
-   | `SPREADSHEET_ID` | ID de tu Sheet 0.1 existente, tomado de `/spreadsheets/d/ID/edit`. |
-   | `DRIVE_FOLDER_ID` | ID de tu carpeta de videos existente, tomado de `/folders/ID`. |
+   | `APP_ORIGIN` | **`https://omniaex.com`** |
+   | `ASSEMBLYAI_API_KEY` | Tu nueva clave válida, guardada solo aquí. |
+   | `SPREADSHEET_ID` | ID del Sheet que ya usas en 0.2A. |
+   | `DRIVE_FOLDER_ID` | ID de la carpeta de videos que ya usas. |
 
-   Si quieres una instalación limpia, omite únicamente los dos IDs; `setupMvp` creará recursos nuevos. Si las propiedades de 0.1 tienen otros nombres, copia sus valores a los nombres anteriores. No pegues ninguna clave en GitHub, config.js, README ni capturas públicas.
+   No uses `https://github.com/...` ni `/mem/index.html` como APP_ORIGIN. Si tu sitio redirige a www, usa el origen exacto de la dirección final. La clave compartida anteriormente debe revocarse; no la hemos incorporado al paquete.
 
-2. Reemplaza `Code.gs` por `apps-script/Code.gs`. Activa **Mostrar archivo de manifiesto appsscript.json** en configuración y copia también el manifiesto incluido. Ejecuta `setupMvp` manualmente y autoriza Drive, Sheets, conexiones externas y el activador.
-3. `setupMvp` conserva las filas, añade columnas faltantes a **Videos**, conserva **Questions** y crea un activador de `processPending` cada minuto. Puedes ejecutarlo de nuevo sin duplicar el activador. Mira el registro de ejecución para abrir el Sheet y la carpeta. Usa la misma cuenta propietaria de ambos recursos.
-4. **Implementar → Administrar implementaciones → Editar → Nueva versión**, tipo **Aplicación web**, ejecutar como **Yo**, acceso **Cualquier persona**. También puedes crear una implementación nueva. Copia la URL terminada en `/exec`, no `/dev`. Algunas cuentas Workspace bloquean acceso anónimo; necesitarás que esté permitido para este MVP.
-5. Pega la URL en `config.js`, propiedad `API_URL`. Mantén `MAX_RECORDING_SECONDS: 180`.
-6. Sube `index.html`, `styles.css`, `app.js` y `config.js` a la raíz publicada de tu repositorio. En **Settings → Pages**, publica la rama/carpeta correspondiente y espera a que termine. Los archivos de Apps Script no necesitan publicarse en Pages. No hay dependencias ni proceso de compilación.
-7. Abre el sitio HTTPS, permite cámara y micrófono y prueba una grabación nueva de 10–20 segundos. Las grabaciones 0.1 anteriores no se envían automáticamente.
+3. Reemplaza **Code.gs** por `apps-script/Code.gs`. Mantén o copia `apps-script/appsscript.json`; los permisos son los mismos que en 0.2A.
+4. Ejecuta **setupMvp** manualmente. No borra ni reemplaza los videos, preguntas o propiedades existentes. Añade columnas de historia a **Videos**, crea **Prompts** con STORY_V1 y conserva el activador `processPending` de cada minuto. Ejecutarlo de nuevo no duplica el prompt ni el activador, ni reemplaza tus cambios de prompt.
+5. **Implementar → Administrar implementaciones → Editar → Nueva versión → Implementar**. Conserva ejecutar como Yo y acceso Cualquier persona. Si editas la misma implementación, la URL `/exec` sigue siendo la misma.
+6. En el paquete, pega **tu URL `/exec` existente** en `config.js`. No subas el archivo con el marcador `PEGA_AQUI_TU_URL_EXEC`.
+7. Sustituye en la carpeta **`mem/`** de tu repositorio `omnia-web` estos cuatro archivos: **index.html, app.js, styles.css y config.js**. Publica el commit y espera a que GitHub Pages actualice el sitio.
+8. Abre **https://omniaex.com/mem/index.html** y recarga sin caché. El encabezado debe mostrar MVP 0.2B.
+9. Graba una respuesta nueva de 15–30 segundos. Primero debe aparecer la transcripción; después, un título y una historia debajo del video.
 
-## Preguntas desde Sheets
+Los archivos de Apps Script y las pruebas no necesitan subirse a la carpeta pública. No hay instalación de paquetes ni proceso de compilación.
 
-Pestaña **Questions**, encabezados exactos: `id`, `question`, `active`, `featured`, `sortOrder`.
+## Prompt editable en Sheets
 
-Ejemplo: `Q001 | ¿Cuál es tu primer recuerdo? | TRUE | TRUE | 1`.
+La pestaña **Prompts** tiene estos campos:
 
-Solo aparecen preguntas activas. Featured va primero y después sortOrder. Otra pregunta recorre la lista. Recarga la página tras editar Sheets; no necesitas volver a desplegar. La pregunta queda bloqueada durante grabación/revisión para no asignar el video a otra pregunta.
+| Campo | Valor inicial | Qué controla |
+| --- | --- | --- |
+| `prompt_id` | `STORY_V1` | Identificador de la versión editorial |
+| `name` | Historia autobiográfica | Nombre descriptivo |
+| `active` | TRUE | Activa exactamente una fila |
+| `model` | `qwen3.5-4b-32k-fast` | Modelo que recibirá la solicitud |
+| `max_tokens` | 1800 | Presupuesto máximo de salida; admite 400–3000 |
+| `temperature` | 0.2 | Variación de la respuesta; admite 0–1 |
+| `prompt` | Texto editorial incluido | Cómo debe transformar la transcripción |
 
-## Estados y datos
+Para cambiar el estilo, edita la celda **prompt**. Mantén estas dos variables con sus espacios:
 
-- `VIDEO_SAVED`: el archivo existe en Drive y la fila se guardó en Videos.
-- `TRANSCRIBING`: AssemblyAI aceptó el trabajo; `transcript_id` ya está guardado.
-- `READY`: la transcripción literal se guardó en `transcript` y aparece debajo del video.
-- `ERROR`: fallo definitivo o solicitud de transcripción sin confirmar; se conserva el video y se muestra el error.
+```text
+{{ question }}
+{{ transcript }}
+```
 
-Videos añade `memory_id`, `question_id`, `question`, `drive_file_id`, `video_url`, `created_at`, `duration_seconds`, `byte_length`, `mime_type`, `status`, `transcript_id`, `transcript`, `error`, `access_token`, `updated_at`, `assembly_upload_url`, `last_checked_at`, `submit_started_at`. Las columnas antiguas se conservan; las filas nuevas rellenan estos encabezados. No cambies sus nombres. `access_token` permite consultar ese recuerdo; no publiques el Sheet.
+Apps Script sustituye **ambas** usando la pregunta y la transcripción guardadas. En este paquete enviamos el texto de Sheets directamente al LLM; no usamos inyección remota de transcript_id. El transcript_id sigue guardado para trazabilidad.
 
-El servidor lee el Blob de Drive, sube sus bytes mediante `POST /v2/upload`, solicita `POST /v2/transcript` y consulta `GET /v2/transcript/{id}`. Usa detección de idioma y `speech_models: ["universal-3-pro", "universal-2"]`. El front consulta Apps Script cinco segundos después de cada respuesta (sin consultas superpuestas). Un activador cada minuto permite avanzar al cerrar la página. READY puede contener texto vacío si no se detectó habla; se muestra un mensaje explícito.
+El prompt inicial pide primera persona, idioma original, párrafos naturales, conservar detalles y dudas, eliminar muletillas y evitar hechos inventados. Apunta a 150–350 palabras cuando hay suficiente material, sin expandir artificialmente una grabación breve. La salida requerida es:
 
-El último identificador y su token quedan en localStorage de ese navegador para recuperar el estado al recargar. **Grabar otro recuerdo** elimina ese acceso local, aunque el archivo y la fila siguen en Drive/Sheets. No se añade biblioteca ni enlaces familiares en esta versión.
+```json
+{"title":"Título fiel al recuerdo","story":"Historia en primera persona..."}
+```
 
-## Comunicación GitHub Pages ↔ Apps Script
+El código añade un contrato fijo de salida y de uso de la transcripción. Puedes modificar las reglas editoriales; conserva title y story. Un modelo puede equivocarse aun con estas instrucciones: revisa la historia con el video y el transcript antes de reutilizarla.
 
-Se usa POST de formulario a un iframe oculto y una respuesta `postMessage`, porque Apps Script no ofrece configuración libre de cabeceras CORS. El campo `payload` contiene JSON y Base64 estándar; la codificación normal del formulario preserva `+`, `/` y `=` y Apps Script obtiene el JSON ya decodificado. Se valida Base64 y se compara el número de bytes antes de crear el archivo. No se usa `fetch` con `no-cors` ni se interpreta una respuesta opaca como éxito.
+Si quieres probar STORY_V2, duplica la fila, cambia prompt_id y el prompt, y desactiva STORY_V1. Debe quedar exactamente una fila activa. **No necesitas desplegar nuevamente para editar Prompts.** El cambio se aplica a las historias que empiecen después o a un reintento explícito. No reescribe historias ya listas.
 
-El puente verifica origen de Google, identificador aleatorio de solicitud y APP_ORIGIN como destino de la respuesta. APP_ORIGIN no es autenticación: el endpoint sigue siendo público y se puede llamar fuera de un navegador. Este MVP es para pruebas controladas; no incluye cuentas, control de abuso ni permisos entre usuarios. La API key permanece en el servidor y nunca se devuelve al front.
+Cada intento guarda una copia del template en **prompt_snapshot**, junto con prompt_id, modelo, max_tokens y temperature. Así, editar el prompt mientras se procesa un recuerdo no cambia ese intento.
 
-## Video y permisos de Drive
+## Modelo, acceso y créditos
 
-No se publican automáticamente los videos. AssemblyAI recibe los bytes desde Apps Script y no necesita un enlace público. Para ver el reproductor de Drive entra en la cuenta con permiso sobre el archivo. Si el iframe pide acceso o el navegador bloquea cookies, usa **Abrir video en Drive**. Para pruebas desde otra cuenta, comparte el archivo/carpeta con esa cuenta desde Drive. Solo si lo deseas, puedes cambiar manualmente un archivo a “Cualquier persona con el enlace”; eso permite a cualquiera con ese enlace ver el video.
+El modelo predeterminado del paquete es **qwen3.5-4b-32k-fast**, elegido por el ejemplo de integración que compartiste; no afirmamos que sea un modelo predeterminado de todos los planes de AssemblyAI. Si `model` está vacío, usa ese mismo modelo. No se configura fallback a otros modelos.
 
-## Reintentos y diagnóstico
+La [hoja de ruta oficial](https://www.assemblyai.com/roadmap) anuncia acceso de cuentas gratuitas a LLM Gateway desde el 18 de agosto de 2026. Su [Quickstart](https://www.assemblyai.com/docs/llm-gateway/quickstart) utiliza este modelo y endpoint. Algunas páginas de soporte aún indican que el plan gratuito no incluye Gateway. Estas fuentes no permiten asegurar que los $50 iniciales sean un saldo intercambiable entre audio y LLM en tu cuenta.
 
-- Si no llega la respuesta de subida, consulta de nuevo o pulsa Guardar otra vez. El mismo `memory_id` y nombre determinista de archivo evitan duplicar la subida en un reintento. No pulses Grabar otro recuerdo antes de comprobar el resultado.
-- Fallos temporales HTTP 429/5xx al subir o consultar conservan el estado para otro intento. Un fallo de envío del trabajo que queda sin confirmar pasa a ERROR; revisa el panel AssemblyAI antes de pulsar Reintentar, porque ese reintento explícito podría crear otro trabajo facturable si el anterior sí fue aceptado.
-- Reintentar reutiliza un transcript_id existente si el trabajo sigue pendiente o ya terminó; solo solicita uno nuevo si el trabajo falló o no hay ID confirmado. No elimina el video.
-- Si falta la key o devuelve HTTP 401, revisa Script Properties. Si hay HTTP 400, saldo insuficiente o un modelo no disponible, revisa tu cuenta y los modelos vigentes en AssemblyAI. No se realiza reintento infinito de errores definitivos.
-- Si no carga ninguna pregunta, confirma APP_ORIGIN exacto, URL /exec y acceso Cualquier persona, y vuelve a implementar una nueva versión. Revisa **Ejecuciones** en Apps Script.
-- Si se cierra la página y no progresa, comprueba que el activador processPending esté habilitado. Se procesa una cola pequeña bajo bloqueo para evitar dos solicitudes simultáneas del mismo recuerdo.
-- Duración/bitrate dependen del navegador: se detiene automáticamente a 180 segundos, con tolerancia de los temporizadores del dispositivo. Apps Script valida la duración declarada; no analiza el contenedor para verificarla. Los límites de Google, tamaño efectivo de la grabación, memoria y tiempo de ejecución pueden afectar videos grandes. No se impone otro límite de MB en la interfaz. Prueba 10 s, 30 s, 1 min y 3 min en tus dispositivos.
+La prueba real de tu cuenta decidirá si la solicitud se acepta. Revisa el uso y saldo en el panel después del primer video. Este paquete no modifica tu plan, no agrega tarjeta y no recarga saldo. Si la cuenta devuelve un error de acceso/saldo/modelo, se conserva el video y transcript y se muestra el error de historia. El acceso de prueba no implica uso ilimitado gratuito.
 
-## Verificación
+## Estados: dos trabajos independientes
 
-`node tests/backend.test.cjs` ejecuta pruebas locales con servicios simulados: guardado, Base64/bytes, estados, autorización, reintentos y errores. No llama a Google ni AssemblyAI y no requiere una clave.
+**status** conserva el significado de 0.2A:
 
-Prueba real después de instalar:
+| Estado | Significado |
+| --- | --- |
+| VIDEO_SAVED | Archivo y fila guardados |
+| TRANSCRIBING | AssemblyAI aceptó la transcripción; hay transcript_id |
+| READY | Transcripción final guardada |
+| ERROR | Falló la transcripción |
 
-1. Graba un video con una frase en español; comprueba imagen y audio en la revisión.
-2. Guarda; confirma el archivo reproducible en Drive y la fila VIDEO_SAVED.
-3. Espera TRANSCRIBING y confirma transcript_id en Videos.
-4. Espera READY y compara transcript en Sheets y en la página con lo que dijiste.
-5. Recarga mientras está procesando; comprueba que recupera el mismo recuerdo. Cierra la página y revisa después que el activador guardó el resultado.
-6. Usa temporalmente una key inválida: el video debe conservarse y aparecer ERROR. Restaura la key y reintenta sin duplicar el archivo.
-7. Edita una pregunta y recarga. Finalmente prueba que una grabación se detiene a los tres minutos.
+**story_status** añade el estado del segundo trabajo:
 
-**Validación disponible:** pruebas automatizadas con servicios simulados y revisión de sintaxis. No se ha ejecutado una subida/transcripción real ni una prueba del puente entre dominios en tus cuentas; ese paso requiere instalar y grabar un video nuevo.
+| Estado | Significado |
+| --- | --- |
+| PENDING | Historia solicitada; esperando transcript/configuración |
+| GENERATING | Prompt preparado o llamada al LLM en curso |
+| READY | Título e historia guardados |
+| ERROR | Falló la historia; el transcript sigue disponible |
+| SKIPPED | Transcript vacío; no se llama al LLM |
+| NOT_REQUESTED | Recuerdo antiguo de 0.2A sin historia solicitada |
 
-## Referencias oficiales
+El front continúa consultando cada cinco segundos después de cada respuesta, sin solicitudes simultáneas. Se detiene cuando ambos trabajos terminaron o necesitan una acción. **status READY por sí solo no significa que la historia terminó.** El proceso de Apps Script continúa cada minuto si cierras la página. El panel muestra el video, la historia y la transcripción original por separado.
 
-- [AssemblyAI: subir un archivo](https://www.assemblyai.com/docs/pre-recorded-audio/api-reference/files/upload)
-- [AssemblyAI: solicitar transcripción](https://www.assemblyai.com/docs/pre-recorded-audio/api-reference/transcripts/submit)
-- [Google: aplicaciones web](https://developers.google.com/apps-script/guides/web)
-- [Google: HtmlService y sandbox](https://developers.google.com/apps-script/guides/html/restrictions)
+## Recuerdos anteriores y reintentos
 
-Archivos: cuatro archivos estáticos de la web, apps-script/Code.gs, apps-script/appsscript.json, este README y tests/backend.test.cjs.
+- Los nuevos videos 0.2B solicitan historia automáticamente.
+- Actualizar el proyecto no envía todos los videos anteriores al LLM. Si el navegador conserva el último recuerdo de 0.2A, al abrirlo verás **Crear historia de este recuerdo**. Ese botón reutiliza su transcript; no vuelve a subir ni transcribir el video.
+- **Reintentar historia** aparece ante un fallo del LLM y usa el prompt actualmente activo. No regraba, no vuelve a transcribir y no elimina el video.
+- Solicitudes repetidas de crear/reintentar durante GENERATING o después de READY no crean otra llamada.
+- HTTP 429 se reintenta con espera de 30 y 60 segundos, hasta tres intentos en total. No cambia el modelo. Si persiste, aparece ERROR.
+- Errores de red, HTTP 5xx, respuesta incompleta o JSON inválido requieren reintento explícito. Si una llamada quedó sin confirmar, revisa el uso de AssemblyAI: podría haberse procesado y un nuevo intento podría consumir más créditos.
+- No hay botón para regenerar una historia ya exitosa ni biblioteca de recuerdos en esta versión. **Grabar otro recuerdo** inicia un video nuevo, conserva las filas/archivos anteriores y reemplaza el acceso local al último recuerdo.
+
+## Qué se guarda
+
+Se conserva **Videos** de 0.2A y se añaden: story_status, story_title, story_text, story_error, prompt_id, prompt_snapshot, llm_model, llm_max_tokens, llm_temperature, llm_request_id, llm_response_id, llm_input_tokens, llm_output_tokens, story_requested_at, story_started_at, story_completed_at, story_attempts y story_next_attempt_at. Los IDs del proveedor y tokens se guardan cuando el proveedor los devuelve.
+
+No cambies los encabezados de Videos. El Sheet y su columna access_token no deben publicarse. El front recibe solo los campos necesarios; no recibe la API key ni el template editorial. Preguntas mantienen `id`, `question`, `active`, `featured`, `sortOrder`, con active TRUE para aparecer en la web.
+
+## Implementación y límites
+
+Apps Script llama a `https://llm-gateway.assemblyai.com/v1/chat/completions` con authorization tomada de Script Properties. Utiliza chat completions normal, como el ejemplo compartido. **No fuerza json_schema**, porque no asumimos que esa modalidad esté habilitada para esta variante exacta de Qwen en tu cuenta. Pide JSON por prompt y valida el objeto en el servidor: exactamente title y story, texto no vacío, hasta 250 caracteres de título y 20000 de historia. Se tolera un único bloque Markdown JSON exterior. Una respuesta cortada por max_tokens o inválida no se publica como historia lista.
+
+La interfaz inserta las respuestas con textContent, no como HTML. El puente POST/iframe/postMessage, el nombre de archivo determinista y la validación de Base64/bytes son los de 0.2A. Se conserva el identificador local `memora02a` y el protocolo `memora-02a` para compatibilidad; esos nombres internos no indican la versión visible.
+
+Los videos no se hacen públicos automáticamente. AssemblyAI recibe sus bytes desde Apps Script. Para reproducir desde Drive, usa una cuenta con permiso; si el iframe pide acceso, pulsa Abrir video en Drive o comparte el archivo con la cuenta de prueba desde Drive.
+
+El endpoint de Apps Script es público para este MVP. APP_ORIGIN controla la respuesta al sitio pero no sustituye autenticación ni protección contra abuso. Se mantiene el alcance de pruebas controladas de 0.2A. No hay cuentas, pagos, invitaciones o publicación de historias para terceros.
+
+Los bitrates y resolución son solicitudes al navegador, y los límites de tiempo/memoria/cuotas de Google siguen aplicando. El grabador se detiene a 180 segundos; Apps Script valida la duración declarada. La migración no altera esa parte.
+
+## Comprobación tras instalar
+
+1. Confirma que aparece 0.2B y que las preguntas del Sheet siguen cargando.
+2. Graba 15–30 segundos con un recuerdo concreto en español. Revisa audio y video localmente y guarda.
+3. Confirma el archivo en Drive, transcript_id y transcript en Videos.
+4. Confirma story_status GENERATING y después READY; compara story_title/story_text en Sheets y en la página.
+5. Revisa que la historia conserva los hechos, el idioma y la primera persona. Mira también el consumo en AssemblyAI.
+6. Edita el prompt en Prompts y graba otro video para comparar. La historia previa debe permanecer igual.
+7. Recarga durante la generación. Cierra la página y comprueba más tarde que el activador guardó el resultado.
+8. Si aparece ERROR de historia, corrige acceso/saldo/configuración y usa Reintentar historia. Verifica que no se crea otro archivo ni transcript_id.
+9. Comprueba finalmente el límite de tres minutos en tu dispositivo.
+
+**Validación del paquete:** pruebas locales con servicios simulados y revisión de sintaxis. No hemos ejecutado llamadas reales usando tu clave, ni publicado cambios en GitHub/Apps Script. La calidad editorial, acceso, saldo y respuesta real del modelo se verifican con tu primera grabación tras instalarlo.
+
+Para ejecutar las pruebas localmente, si tienes Node:
+
+```text
+node tests/backend.test.cjs
+node tests/frontend.test.cjs
+```
+
+## Archivos del paquete
+
+- index.html, styles.css, app.js y config.js: web estática.
+- apps-script/Code.gs y apps-script/appsscript.json: servidor y permisos.
+- PROMPT-STORY-V1.txt: copia del prompt inicial para leerlo/editarlo; el sistema usa la celda Prompts, no este archivo.
+- README.md y tests/: instrucciones y pruebas locales.
+
+Referencias: [Quickstart LLM Gateway](https://www.assemblyai.com/docs/llm-gateway/quickstart), [roadmap con acceso gratuito](https://www.assemblyai.com/roadmap), [Content/HTML Service de Google](https://developers.google.com/apps-script/guides/html/restrictions).

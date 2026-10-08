@@ -5,6 +5,7 @@ let questions = [], qi = 0, recorder, stream, chunks = [], blob, objectURL;
 let started = 0, duration = 0, clock, deadline, polling, pollGeneration = 0, current;
 const MAX = Math.min(180, Number(cfg.MAX_RECORDING_SECONDS) || 180);
 const labels = {VIDEO_SAVED:'VIDEO_SAVED · Video guardado. Preparando transcripción…',TRANSCRIBING:'TRANSCRIBING · Transcribiendo tu respuesta…',READY:'READY · Tu transcripción está lista.',ERROR:'ERROR · No se pudo transcribir.'};
+const storyLabels = {PENDING:'Preparando tu historia…',GENERATING:'Editando tu historia…',READY:'Tu historia está lista.',ERROR:'La transcripción está lista; no se pudo crear la historia.',SKIPPED:'No se pudo crear una historia porque no se detectó habla.',NOT_REQUESTED:'Puedes crear una historia con esta transcripción.'};
 
 // A form + iframe bridge avoids depending on cross-origin fetch/CORS in Apps Script.
 function api(action, data = {}, timeout = 90000) {
@@ -73,15 +74,23 @@ function render(memory) {
   $('driveLink').href = `https://drive.google.com/file/d/${encodeURIComponent(memory.drive_file_id)}/view`;
   $('transcript').textContent = memory.status === 'READY' ? (memory.transcript || 'No se detectó habla en el video.') : 'Esperando la transcripción…';
   $('retry').hidden = memory.status !== 'ERROR';
+  const stage = memory.story_status || 'NOT_REQUESTED';
+  if (memory.status === 'READY') $('status').textContent = storyLabels[stage] || labels.READY;
+  $('storyTitle').textContent = stage === 'READY' ? memory.story_title : 'Tu historia';
+  $('storyText').textContent = stage === 'READY' ? memory.story_text : (memory.status === 'READY' ? storyLabels[stage] || 'Esperando la historia…' : 'La historia aparecerá después de la transcripción.');
+  $('storyNotice').textContent = memory.story_error || '';
+  $('storyCredit').hidden = stage !== 'READY';
+  $('createStory').hidden = memory.status !== 'READY' || stage !== 'NOT_REQUESTED';
+  $('retryStory').hidden = memory.status !== 'READY' || stage !== 'ERROR';
 }
 function beginPolling() {
   clearTimeout(polling); const generation = ++pollGeneration; let failures = 0;
   const tick = async () => {
     try {
-      const memory = await api('getMemory',current);
+      const memory = await api('getMemory',current,180000);
       if (generation !== pollGeneration) return;
       failures = 0; render(memory); $('refresh').hidden = true;
-      if (memory.status === 'READY' || memory.status === 'ERROR') return;
+      if (memory.status === 'ERROR' || (memory.status === 'READY' && ['READY','ERROR','SKIPPED','NOT_REQUESTED'].includes(memory.story_status || 'NOT_REQUESTED'))) return;
     } catch (e) {
       if (generation !== pollGeneration) return;
       failures++; $('status').textContent = 'No se pudo consultar el estado. Tu video guardado se conserva. '+e.message;
@@ -102,6 +111,16 @@ $('save').onclick = async () => {
 };
 $('refresh').onclick = beginPolling;
 $('retry').onclick = async () => { $('retry').disabled = true; try { render(await api('retry',current,180000)); beginPolling(); } catch(e) { $('status').textContent = e.message; } finally { $('retry').disabled = false; } };
+async function requestStory(action) {
+  $('createStory').disabled = $('retryStory').disabled = true;
+  ++pollGeneration; clearTimeout(polling);
+  const requested = current;
+  try { const result = await api(action,requested,180000); if (current !== requested) return; render(result); beginPolling(); }
+  catch(e) { if (current !== requested) return; $('storyNotice').textContent = e.message; $('refresh').hidden = false; }
+  finally { $('createStory').disabled = $('retryStory').disabled = false; }
+}
+$('createStory').onclick = () => requestStory('generateStory');
+$('retryStory').onclick = () => requestStory('retryStory');
 $('newMemory').onclick = () => { ++pollGeneration; clearTimeout(polling); current = null; try { localStorage.removeItem('memora02a'); } catch (_) {} $('memory').hidden = true; resetRecording(); notice(''); };
 window.addEventListener('pagehide',stopTracks);
 (async () => {
