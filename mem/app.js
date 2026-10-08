@@ -1,6 +1,7 @@
 'use strict';
 const $ = id => document.getElementById(id);
 const cfg = window.REMENTO_CONFIG;
+const pageMode = document.body.dataset?.page || 'record';
 let questions = [], qi = 0, recorder, stream, chunks = [], blob, objectURL;
 let started = 0, duration = 0, clock, deadline, polling, pollGeneration = 0, current, draft;
 const MAX = Math.min(180, Number(cfg.MAX_RECORDING_SECONDS) || 180);
@@ -19,7 +20,7 @@ function api(action, data = {}, timeout = 90000) {
     const receive = event => {
       if (!/^https:\/\/(?:script|[a-z0-9-]+-script)\.googleusercontent\.com$/.test(event.origin) && event.origin !== 'https://script.google.com') return;
       const msg = event.data; if (!msg || msg.bridge !== 'memora-02a' || msg.requestId !== requestId) return;
-      if (msg.version !== '0.2B.1') { cleanup(); reject(new Error('La página y el servidor tienen versiones distintas. Actualiza Code.gs y publica una nueva versión de Apps Script antes de grabar.')); return; }
+      if (msg.version !== '0.2B.2') { cleanup(); reject(new Error('La página y el servidor tienen versiones distintas. Actualiza Code.gs y publica una nueva versión de Apps Script antes de grabar.')); return; }
       cleanup(); msg.ok ? resolve(msg.data) : reject(new Error(msg.error || 'Error del servidor.'));
     };
     const timer = setTimeout(() => { cleanup(); reject(new Error('No llegó la respuesta. Puedes consultar de nuevo o reintentar; se conservará el mismo identificador.')); }, timeout);
@@ -35,6 +36,7 @@ function clearMemoryView() {
   $('memory').hidden = true; $('driveVideo').removeAttribute('src'); delete $('driveVideo').dataset.file;
   $('driveLink').removeAttribute('href'); $('memoryQuestion').textContent = $('transcript').textContent = $('storyText').textContent = $('status').textContent = $('storyNotice').textContent = '';
   $('storyTitle').textContent = 'Tu historia editada'; $('refresh').hidden = true;
+  $('openMemory').hidden = $('copyMemory').hidden = true; $('linkNotice').textContent = '';
 }
 function beginNewCapture() {
   ++pollGeneration; clearTimeout(polling); forgetCurrent(); draft = null; clearMemoryView(); resetRecording();
@@ -102,6 +104,12 @@ function render(memory) {
   $('stepTranscript').textContent = memory.status === 'READY' ? '2. Transcripción original lista' : memory.status === 'ERROR' ? '2. Transcripción: necesita un reintento' : '2. Transcribiendo tu respuesta…';
   $('stepStory').textContent = stage === 'READY' ? '3. Historia editada lista' : stage === 'GENERATING' ? '3. Preparando tu historia editada…' : stage === 'ERROR' ? '3. Historia: necesita un reintento' : stage === 'SKIPPED' ? '3. Sin habla para crear la historia' : '3. Historia editada pendiente';
   if (memory.error && memory.status === 'READY') $('status').textContent += ' '+memory.error;
+  if (current && window.MEMORA_STORE) {
+    const saved = window.MEMORA_STORE.add({...current,question:memory.question,title:memory.story_title || '',status:memory.status,story_status:stage,created_at:memory.created_at || ''});
+    $('openMemory').href = window.MEMORA_STORE.url(current); $('openMemory').hidden = false;
+    $('copyMemory').hidden = false;
+    $('linkNotice').textContent = saved ? '' : 'Guarda el enlace de este recuerdo: este navegador no permite conservar la lista.';
+  }
 }
 function beginPolling() {
   if (!current) return;
@@ -149,15 +157,26 @@ async function requestStory(action) {
 }
 $('createStory').onclick = () => requestStory('generateStory');
 $('retryStory').onclick = () => requestStory('retryStory');
-$('newMemory').onclick = () => { beginNewCapture(); notice('Puedes responder la misma pregunta con un video nuevo.'); };
+$('newMemory').onclick = () => { if (pageMode === 'memory') { location.href = 'index.html'; return; } beginNewCapture(); notice('Puedes responder la misma pregunta con un video nuevo.'); };
+$('copyMemory').onclick = async () => {
+  const url = window.MEMORA_STORE.url(current);
+  try { await navigator.clipboard.writeText(url); $('linkNotice').textContent = 'Enlace copiado. Quien tenga este enlace podrá abrir el texto; el video mantiene sus permisos de Drive.'; }
+  catch (_) { $('linkNotice').textContent = 'Copia el enlace con Abrir página del recuerdo → Copiar dirección del enlace.'; }
+};
 window.addEventListener('pagehide',stopTracks);
 (async () => {
   try {
     if (!/^https:\/\/script\.google\.com\/macros\/s\/[^/]+\/exec$/.test(cfg.API_URL)) throw new Error('Configura la URL /exec de Apps Script en config.js.');
+    window.MEMORA_STORE.migrateLegacy();
+    if (pageMode === 'memory') {
+      $('recordingPanel').hidden = true;
+      current = window.MEMORA_STORE.fromURL(location.href);
+      if (!current) throw new Error('Este enlace está incompleto. Abre un recuerdo desde Recuerdos o usa su enlace completo.');
+      $('memory').hidden = false; $('status').textContent = 'Cargando tu recuerdo…'; beginPolling(); return;
+    }
     questions = await api('questions'); if (!questions.length) throw new Error('Activa al menos una pregunta en Sheets.');
     selectQuestion(); resetRecording();
-    try { current = JSON.parse(localStorage.getItem('memora02a')); } catch (_) { current = null; }
-    if (current && typeof current.memory_id === 'string' && typeof current.token === 'string') beginPolling();
-    else forgetCurrent();
-  } catch(e) { notice(e.message); }
+    // Entry is ALWAYS a fresh recorder. Old capabilities live in the library, never auto-open.
+    current = null;
+  } catch(e) { $('pageNotice').textContent = e.message; notice(e.message); }
 })();
