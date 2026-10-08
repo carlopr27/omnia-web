@@ -1,4 +1,23 @@
-# Memora / Remento · MVP 0.2B
+# Memora / Remento · MVP 0.2B.1
+
+## Corrección del video repetido y flujo continuo
+
+Esta actualización corrige un error de 0.2B: al abrir la web y recuperar el último recuerdo, se podía grabar otro video reutilizando el identificador de aquel recuerdo. El servidor lo interpretaba como un reintento y devolvía el primer archivo. El problema no era responder la misma pregunta ni el tamaño del video.
+
+Cada nueva grabación ahora obtiene su propio memory_id/token, separado del recuerdo que se está viendo. Al comenzar, se limpian el reproductor y los textos anteriores y se cancelan sus consultas. Un reintento de guardar conserva el ID solo para el mismo Blob. Además, Apps Script comprueba una huella SHA-256 de los bytes y rechaza un ID reutilizado para un video distinto, incluso si tienen el mismo tamaño. Las grabaciones que el error anterior nunca llegó a guardar no pueden recuperarse desde Drive.
+
+El flujo visible es **Grabar → Revisar → Guardar video → Transcripción original → Historia editada**. No hay que pulsar otro botón entre esas etapas en una grabación nueva. La transcripción se solicita en la misma ejecución de Apps Script inmediatamente después de guardar el archivo. La historia comienza al completar el transcript. La página muestra el progreso de las tres etapas; se conserva el video y el texto original ante errores.
+
+### Actualizar desde 0.2B (tu instalación actual)
+
+1. Sustituye Code.gs por el incluido, ejecuta **setupMvp** para añadir `video_sha256` a Videos, y despliega **una nueva versión** de tu misma implementación. Conserva tus propiedades, carpeta, Sheet y Prompts.
+2. En `mem/` sustituye **index.html, app.js y styles.css**. **Conserva tu config.js actual con la URL /exec que ya funciona**. El config.js incluido solo es un ejemplo para instalaciones nuevas.
+3. Espera a que se publique GitHub Pages y recarga https://omniaex.com/mem/index.html. Debe decir **MVP 0.2B.1**. HTML incluye una versión en la URL de JS/CSS para evitar la caché anterior. El nuevo front comprueba también la versión del servidor; si Code.gs no se redesplegó, muestra un mensaje antes de grabar.
+4. Graba una respuesta de 10 segundos y espera la transcripción y la historia. Pulsa **Grabar otro recuerdo**, conserva la misma pregunta y graba una respuesta distinta de 20 segundos. Debes ver un video distinto, transcript distinto y otra fila de Videos con otro memory_id, drive_file_id y transcript_id.
+
+Se verificó con **43 pruebas locales**: 23 de servidor, 11 de interfaz y 9 que simulan cámara/grabaciones/reintentos. Estas últimas reproducen el caso de recargar con un recuerdo anterior y grabar dos nuevos videos para la misma pregunta. No son llamadas reales a Google/AssemblyAI ni una prueba con una cámara física.
+
+Las instrucciones generales de instalación y edición del prompt siguen abajo.
 
 **Video → Drive → transcripción → título e historia autobiográfica → Sheets y página del recuerdo.**
 
@@ -23,7 +42,7 @@ Este paquete extiende los archivos del MVP 0.2A entregado en este chat. Conserva
 5. **Implementar → Administrar implementaciones → Editar → Nueva versión → Implementar**. Conserva ejecutar como Yo y acceso Cualquier persona. Si editas la misma implementación, la URL `/exec` sigue siendo la misma.
 6. En el paquete, pega **tu URL `/exec` existente** en `config.js`. No subas el archivo con el marcador `PEGA_AQUI_TU_URL_EXEC`.
 7. Sustituye en la carpeta **`mem/`** de tu repositorio `omnia-web` estos cuatro archivos: **index.html, app.js, styles.css y config.js**. Publica el commit y espera a que GitHub Pages actualice el sitio.
-8. Abre **https://omniaex.com/mem/index.html** y recarga sin caché. El encabezado debe mostrar MVP 0.2B.
+8. Abre **https://omniaex.com/mem/index.html** y recarga sin caché. El encabezado debe mostrar MVP 0.2B.1.
 9. Graba una respuesta nueva de 15–30 segundos. Primero debe aparecer la transcripción; después, un título y una historia debajo del video.
 
 Los archivos de Apps Script y las pruebas no necesitan subirse a la carpeta pública. No hay instalación de paquetes ni proceso de compilación.
@@ -93,7 +112,7 @@ La prueba real de tu cuenta decidirá si la solicitud se acepta. Revisa el uso y
 | SKIPPED | Transcript vacío; no se llama al LLM |
 | NOT_REQUESTED | Recuerdo antiguo de 0.2A sin historia solicitada |
 
-El front continúa consultando cada cinco segundos después de cada respuesta, sin solicitudes simultáneas. Se detiene cuando ambos trabajos terminaron o necesitan una acción. **status READY por sí solo no significa que la historia terminó.** El proceso de Apps Script continúa cada minuto si cierras la página. El panel muestra el video, la historia y la transcripción original por separado.
+El front continúa consultando cada cinco segundos después de cada respuesta, sin solicitudes simultáneas. Se detiene cuando ambos trabajos terminaron o necesitan una acción. **status READY por sí solo no significa que la historia terminó.** El proceso de Apps Script continúa cada minuto si cierras la página. El panel muestra primero el video, después la transcripción original y finalmente la historia editada.
 
 ## Recuerdos anteriores y reintentos
 
@@ -142,6 +161,7 @@ Para ejecutar las pruebas localmente, si tienes Node:
 ```text
 node tests/backend.test.cjs
 node tests/frontend.test.cjs
+node tests/recording-regression.test.cjs
 ```
 
 ## Archivos del paquete

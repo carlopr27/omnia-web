@@ -2,9 +2,9 @@
 const $ = id => document.getElementById(id);
 const cfg = window.REMENTO_CONFIG;
 let questions = [], qi = 0, recorder, stream, chunks = [], blob, objectURL;
-let started = 0, duration = 0, clock, deadline, polling, pollGeneration = 0, current;
+let started = 0, duration = 0, clock, deadline, polling, pollGeneration = 0, current, draft;
 const MAX = Math.min(180, Number(cfg.MAX_RECORDING_SECONDS) || 180);
-const labels = {VIDEO_SAVED:'VIDEO_SAVED · Video guardado. Preparando transcripción…',TRANSCRIBING:'TRANSCRIBING · Transcribiendo tu respuesta…',READY:'READY · Tu transcripción está lista.',ERROR:'ERROR · No se pudo transcribir.'};
+const labels = {VIDEO_SAVED:'Video guardado. Preparando la transcripción…',TRANSCRIBING:'Video guardado. Transcribiendo tu respuesta…',READY:'Tu transcripción está lista.',ERROR:'Tu video está guardado, pero no se pudo transcribir.'};
 const storyLabels = {PENDING:'Preparando tu historia…',GENERATING:'Editando tu historia…',READY:'Tu historia está lista.',ERROR:'La transcripción está lista; no se pudo crear la historia.',SKIPPED:'No se pudo crear una historia porque no se detectó habla.',NOT_REQUESTED:'Puedes crear una historia con esta transcripción.'};
 
 // A form + iframe bridge avoids depending on cross-origin fetch/CORS in Apps Script.
@@ -19,6 +19,7 @@ function api(action, data = {}, timeout = 90000) {
     const receive = event => {
       if (!/^https:\/\/(?:script|[a-z0-9-]+-script)\.googleusercontent\.com$/.test(event.origin) && event.origin !== 'https://script.google.com') return;
       const msg = event.data; if (!msg || msg.bridge !== 'memora-02a' || msg.requestId !== requestId) return;
+      if (msg.version !== '0.2B.1') { cleanup(); reject(new Error('La página y el servidor tienen versiones distintas. Actualiza Code.gs y publica una nueva versión de Apps Script antes de grabar.')); return; }
       cleanup(); msg.ok ? resolve(msg.data) : reject(new Error(msg.error || 'Error del servidor.'));
     };
     const timer = setTimeout(() => { cleanup(); reject(new Error('No llegó la respuesta. Puedes consultar de nuevo o reintentar; se conservará el mismo identificador.')); }, timeout);
@@ -29,14 +30,26 @@ function notice(text) { $('notice').textContent = text; }
 function selectQuestion() { $('question').textContent = questions[qi].question; }
 function stopTracks() { if (stream) stream.getTracks().forEach(t => t.stop()); stream = null; }
 function stopRecording() { if (recorder && recorder.state === 'recording') recorder.stop(); }
+function forgetCurrent() { current = null; try { localStorage.removeItem('memora02a'); } catch (_) {} }
+function clearMemoryView() {
+  $('memory').hidden = true; $('driveVideo').removeAttribute('src'); delete $('driveVideo').dataset.file;
+  $('driveLink').removeAttribute('href'); $('memoryQuestion').textContent = $('transcript').textContent = $('storyText').textContent = $('status').textContent = $('storyNotice').textContent = '';
+  $('storyTitle').textContent = 'Tu historia editada'; $('refresh').hidden = true;
+}
+function beginNewCapture() {
+  ++pollGeneration; clearTimeout(polling); forgetCurrent(); draft = null; clearMemoryView(); resetRecording();
+}
 function resetRecording() {
   stopTracks(); if (objectURL) URL.revokeObjectURL(objectURL); objectURL = null; blob = null;
   $('preview').srcObject = null; $('preview').removeAttribute('src'); $('preview').hidden = true;
   $('save').hidden = $('retake').hidden = $('stop').hidden = true; $('record').hidden = false;
   $('record').disabled = $('another').disabled = !questions.length; $('timer').textContent = '00:00 / 03:00';
+  $('recordingPanel').hidden = false;
 }
 $('another').onclick = () => { qi = (qi + 1) % questions.length; selectQuestion(); };
 $('record').onclick = async () => {
+  // A restored memory is a viewer, never the identity of a new recording.
+  beginNewCapture();
   $('record').disabled = true; $('another').disabled = true;
   try {
     if (!navigator.mediaDevices || !window.MediaRecorder) throw new Error('Este navegador no permite grabar video. Abre el sitio HTTPS en Chrome o Safari actualizado.');
@@ -54,13 +67,15 @@ $('record').onclick = async () => {
       notice(blob.size ? 'Revisa el video y el audio antes de guardarlo.' : 'La grabación está vacía. Vuelve a grabar.');
     };
     recorder.onerror = () => { notice('Falló la grabación. Vuelve a intentarlo.'); stopRecording(); stopTracks(); };
-    recorder.start(1000); started = performance.now(); $('record').hidden = true; $('stop').hidden = false;
+    recorder.start(1000); started = performance.now();
+    draft = {memory_id:crypto.randomUUID(),token:crypto.randomUUID(),question_id:questions[qi].id};
+    $('record').hidden = true; $('stop').hidden = false;
     clock = setInterval(() => { const s = Math.min(MAX,Math.floor((performance.now()-started)/1000)); $('timer').textContent = `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')} / 03:00`; if (s >= MAX) stopRecording(); },250);
     deadline = setTimeout(stopRecording,MAX*1000); notice('Grabando…');
   } catch (e) { stopTracks(); resetRecording(); notice(e.message); }
 };
 $('stop').onclick = stopRecording;
-$('retake').onclick = () => { current = null; resetRecording(); notice('Puedes grabar otra vez.'); };
+$('retake').onclick = () => { beginNewCapture(); notice('Puedes grabar otra vez.'); };
 async function base64(video) {
   const bytes = new Uint8Array(await video.arrayBuffer()); let binary = '';
   for (let i=0;i<bytes.length;i+=32768) binary += String.fromCharCode(...bytes.subarray(i,i+32768));
@@ -68,6 +83,7 @@ async function base64(video) {
 }
 function remember() { try { localStorage.setItem('memora02a',JSON.stringify(current)); } catch (_) { notice('El navegador no permite recordar esta sesión al cerrar la página.'); } }
 function render(memory) {
+  $('recordingPanel').hidden = true;
   $('memory').hidden = false; $('memoryQuestion').textContent = memory.question;
   $('status').textContent = labels[memory.status] + (memory.error ? ' '+memory.error:'');
   if ($('driveVideo').dataset.file !== memory.drive_file_id) { $('driveVideo').src = `https://drive.google.com/file/d/${encodeURIComponent(memory.drive_file_id)}/preview`; $('driveVideo').dataset.file = memory.drive_file_id; }
@@ -76,18 +92,23 @@ function render(memory) {
   $('retry').hidden = memory.status !== 'ERROR';
   const stage = memory.story_status || 'NOT_REQUESTED';
   if (memory.status === 'READY') $('status').textContent = storyLabels[stage] || labels.READY;
-  $('storyTitle').textContent = stage === 'READY' ? memory.story_title : 'Tu historia';
+  $('storyTitle').textContent = stage === 'READY' ? memory.story_title : 'Tu historia editada';
   $('storyText').textContent = stage === 'READY' ? memory.story_text : (memory.status === 'READY' ? storyLabels[stage] || 'Esperando la historia…' : 'La historia aparecerá después de la transcripción.');
   $('storyNotice').textContent = memory.story_error || '';
   $('storyCredit').hidden = stage !== 'READY';
   $('createStory').hidden = memory.status !== 'READY' || stage !== 'NOT_REQUESTED';
   $('retryStory').hidden = memory.status !== 'READY' || stage !== 'ERROR';
+  $('stepSave').textContent = '1. Video guardado';
+  $('stepTranscript').textContent = memory.status === 'READY' ? '2. Transcripción original lista' : memory.status === 'ERROR' ? '2. Transcripción: necesita un reintento' : '2. Transcribiendo tu respuesta…';
+  $('stepStory').textContent = stage === 'READY' ? '3. Historia editada lista' : stage === 'GENERATING' ? '3. Preparando tu historia editada…' : stage === 'ERROR' ? '3. Historia: necesita un reintento' : stage === 'SKIPPED' ? '3. Sin habla para crear la historia' : '3. Historia editada pendiente';
+  if (memory.error && memory.status === 'READY') $('status').textContent += ' '+memory.error;
 }
 function beginPolling() {
-  clearTimeout(polling); const generation = ++pollGeneration; let failures = 0;
+  if (!current) return;
+  clearTimeout(polling); const generation = ++pollGeneration, requested = current; let failures = 0;
   const tick = async () => {
     try {
-      const memory = await api('getMemory',current,180000);
+      const memory = await api('getMemory',requested,180000);
       if (generation !== pollGeneration) return;
       failures = 0; render(memory); $('refresh').hidden = true;
       if (memory.status === 'ERROR' || (memory.status === 'READY' && ['READY','ERROR','SKIPPED','NOT_REQUESTED'].includes(memory.story_status || 'NOT_REQUESTED'))) return;
@@ -100,14 +121,21 @@ function beginPolling() {
   }; tick();
 }
 $('save').onclick = async () => {
+  if ($('save').disabled || !draft || !blob) return;
+  const savingDraft = draft, savingBlob = blob, savingDuration = duration;
   $('save').disabled = $('retake').disabled = true;
+  current = {memory_id:savingDraft.memory_id,token:savingDraft.token}; remember();
   try {
-    if (!current) { current = {memory_id:crypto.randomUUID(),token:crypto.randomUUID()}; remember(); }
-    notice('Guardando el video en Drive…');
-    const memory = await api('saveVideo',{...current,question_id:questions[qi].id,mime_type:blob.type,byte_length:blob.size,duration_seconds:duration,base64:await base64(blob)},240000);
-    render(memory); $('save').hidden = $('retake').hidden = true; notice('Video guardado. La transcripción se solicita automáticamente.'); beginPolling();
-  } catch (e) { notice(e.message); $('refresh').hidden = false; $('memory').hidden = false; }
-  finally { $('save').disabled = $('retake').disabled = false; }
+    notice('Guardando tu video…');
+    const memory = await api('saveVideo',{...savingDraft,mime_type:savingBlob.type,byte_length:savingBlob.size,duration_seconds:savingDuration,base64:await base64(savingBlob)},240000);
+    if (draft !== savingDraft) return;
+    render(memory); draft = null; $('save').hidden = $('retake').hidden = true; notice(''); beginPolling();
+  } catch (e) {
+    if (draft !== savingDraft) return;
+    notice(e.message+' Puedes pulsar Guardar video otra vez para recuperar esta misma grabación.');
+    $('refresh').hidden = false;
+  }
+  finally { if (draft === savingDraft || !draft) $('save').disabled = $('retake').disabled = false; }
 };
 $('refresh').onclick = beginPolling;
 $('retry').onclick = async () => { $('retry').disabled = true; try { render(await api('retry',current,180000)); beginPolling(); } catch(e) { $('status').textContent = e.message; } finally { $('retry').disabled = false; } };
@@ -121,7 +149,7 @@ async function requestStory(action) {
 }
 $('createStory').onclick = () => requestStory('generateStory');
 $('retryStory').onclick = () => requestStory('retryStory');
-$('newMemory').onclick = () => { ++pollGeneration; clearTimeout(polling); current = null; try { localStorage.removeItem('memora02a'); } catch (_) {} $('memory').hidden = true; resetRecording(); notice(''); };
+$('newMemory').onclick = () => { beginNewCapture(); notice('Puedes responder la misma pregunta con un video nuevo.'); };
 window.addEventListener('pagehide',stopTracks);
 (async () => {
   try {
@@ -129,6 +157,7 @@ window.addEventListener('pagehide',stopTracks);
     questions = await api('questions'); if (!questions.length) throw new Error('Activa al menos una pregunta en Sheets.');
     selectQuestion(); resetRecording();
     try { current = JSON.parse(localStorage.getItem('memora02a')); } catch (_) { current = null; }
-    if (current) beginPolling();
+    if (current && typeof current.memory_id === 'string' && typeof current.token === 'string') beginPolling();
+    else forgetCurrent();
   } catch(e) { notice(e.message); }
 })();
